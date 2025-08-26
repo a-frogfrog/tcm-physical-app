@@ -120,7 +120,12 @@
 
 @layer components {
   .font-ali-mama {
-    font-family: '阿里妈妈刀隶体 Regular';
+    font-family: '阿里妈妈刀隶体 Regular' !important;
+    font-variation-settings: normal; /* Chrome 140 以下版本需要 */
+  }
+
+  .font-inter {
+    font-family: Inter, sans-serif;
     font-variation-settings: normal; /* Chrome 140 以下版本需要 */
   }
 }

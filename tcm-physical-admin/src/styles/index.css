@@ -1,1 +1,5 @@
 @import './fonts.css';
+
+* {
+  font-family: inter;
+}
