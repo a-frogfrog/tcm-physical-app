@@ -12,7 +12,7 @@ const ProductHeader = () => {
         </p>
       </div>
 
-      <Button className='ml-auto h-12 w-24 text-lg'>新增产品</Button>
+      <Button className='ml-auto h-10 w-22 text-base'>新增产品</Button>
     </section>
   );
 };

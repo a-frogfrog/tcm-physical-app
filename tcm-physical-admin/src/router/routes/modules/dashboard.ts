@@ -4,6 +4,7 @@ const dashboardRoutes = {
   path: '/dashboard',
   children: [
     {
+      index: true,
       path: 'workbench',
       Component: lazy(() => import('#/pages/dashboard/workbench')),
     },

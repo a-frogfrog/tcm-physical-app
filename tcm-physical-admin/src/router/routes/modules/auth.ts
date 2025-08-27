@@ -1,10 +1,11 @@
 import { lazy } from 'react';
+import { ROUTES } from '#/constants';
 
 const authRoutes = {
   path: '/auth',
   children: [
     {
-      path: 'login',
+      path: ROUTES.LOGIN,
       Component: lazy(() => import('#/pages/auth/login')),
     },
   ],
