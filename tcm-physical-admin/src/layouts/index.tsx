@@ -9,7 +9,9 @@ export default function Layout() {
       <AppSidebar />
       <main className='flex-1'>
         <Header />
-        <Outlet />
+        <div className='px-4 py-2 h-screen overflow-auto bg-[#F9F6F0]'>
+          <Outlet />
+        </div>
       </main>
     </SidebarProvider>
   );

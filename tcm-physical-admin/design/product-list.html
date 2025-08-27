@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中医理疗管理系统 - 产品列表</title>
+  <!-- 引入外部资源 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- Tailwind 配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // 中医风格配色体系
+            primary: '#A65E44',    // 赭石色（主色）- 体现传统中医氛围
+            secondary: '#F5EFE0',  // 米白色（辅助色）- 提升页面柔和度
+            accent: '#8B4513',     // 深棕色（强调色）- 用于按钮、标题
+            neutral: '#F9F6F0',    // 浅米色（背景色）- 页面主背景
+            success: '#6A994E',    // 草木绿（成功色）- 状态标识
+            warning: '#E9C46A',    // 琥珀色（警告色）- 状态标识
+            danger: '#E63946',     // 赤色（危险色）- 删除、禁用标识
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <!-- 自定义工具类 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .table-shadow {
+        box-shadow: 0 2px 8px rgba(166, 94, 68, 0.1);
+      }
+      .btn-hover {
+        @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+      }
+    }
+  </style>
+</head>
+<body class="bg-neutral min-h-screen">
+  <!-- 顶部导航栏 -->
+  <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+    <div class="flex items-center justify-between px-6 py-3">
+      <!-- 左侧Logo与系统名称 -->
+      <div class="flex items-center space-x-3">
+        <div class="text-primary text-2xl">
+          <i class="fa fa-leaf" aria-hidden="true"></i>
+        </div>
+        <h1 class="text-xl font-bold text-accent">中医理疗管理系统</h1>
+      </div>
+
+      <!-- 右侧用户信息 -->
+      <div class="flex items-center space-x-4">
+        <button class="text-gray-600 hover:text-primary transition-colors">
+          <i class="fa fa-bell-o text-lg" aria-hidden="true"></i>
+        </button>
+        <div class="flex items-center space-x-2">
+          <img src="https://picsum.photos/id/64/40/40" alt="用户头像" class="w-8 h-8 rounded-full border-2 border-primary">
+          <span class="text-gray-700 font-medium">管理员</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体内容区（侧边栏 + 产品列表） -->
+  <div class="flex pt-16">
+    <!-- 侧边栏导航 -->
+    <aside class="w-64 bg-white shadow-md fixed h-[calc(100vh-4rem)] overflow-y-auto">
+      <nav class="py-4">
+        <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">系统导航</div>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-secondary hover:text-primary transition-colors">
+          <i class="fa fa-tachometer w-6 text-center" aria-hidden="true"></i>
+          <span>仪表盘</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 bg-secondary text-primary font-medium border-l-4 border-primary">
+          <i class="fa fa-list-alt w-6 text-center" aria-hidden="true"></i>
+          <span>产品管理</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-secondary hover:text-primary transition-colors">
+          <i class="fa fa-users w-6 text-center" aria-hidden="true"></i>
+          <span>客户管理</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-secondary hover:text-primary transition-colors">
+          <i class="fa fa-calendar w-6 text-center" aria-hidden="true"></i>
+          <span>预约管理</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-secondary hover:text-primary transition-colors">
+          <i class="fa fa-credit-card w-6 text-center" aria-hidden="true"></i>
+          <span>订单管理</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-secondary hover:text-primary transition-colors">
+          <i class="fa fa-bar-chart w-6 text-center" aria-hidden="true"></i>
+          <span>数据统计</span>
+        </a>
+
+        <div class="px-4 py-2 mt-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">系统设置</div>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-secondary hover:text-primary transition-colors">
+          <i class="fa fa-cog w-6 text-center" aria-hidden="true"></i>
+          <span>基础设置</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-secondary hover:text-primary transition-colors">
+          <i class="fa fa-user-circle w-6 text-center" aria-hidden="true"></i>
+          <span>用户权限</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- 产品列表主内容 -->
+    <main class="ml-64 flex-1 p-6">
+      <!-- 页面标题与操作栏 -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+          <h2 class="text-[clamp(1.25rem,3vw,1.75rem)] font-bold text-accent">中医理疗产品列表</h2>
+          <p class="text-gray-500 mt-1">管理中医理疗项目、套餐及相关产品信息</p>
+        </div>
+        <button class="mt-4 md:mt-0 bg-primary text-white px-4 py-2 rounded-md btn-hover flex items-center">
+          <i class="fa fa-plus mr-2" aria-hidden="true"></i>
+          <span>新增产品</span>
+        </button>
+      </div>
+
+      <!-- 筛选与搜索区 -->
+      <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- 产品分类筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">产品分类</label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <option value="">全部分类</option>
+              <option value="1">针灸理疗</option>
+              <option value="2">推拿按摩</option>
+              <option value="3">中药调理</option>
+              <option value="4">艾灸养生</option>
+              <option value="5">中医套餐</option>
+            </select>
+          </div>
+
+          <!-- 产品状态筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">产品状态</label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <option value="">全部状态</option>
+              <option value="1" selected>启用</option>
+              <option value="0">禁用</option>
+            </select>
+          </div>
+
+          <!-- 价格区间筛选 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">价格区间</label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <option value="">全部价格</option>
+              <option value="0-100">0-100元</option>
+              <option value="100-300">100-300元</option>
+              <option value="300-500">300-500元</option>
+              <option value="500+">500元以上</option>
+            </select>
+          </div>
+
+          <!-- 搜索框 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">关键词搜索</label>
+            <div class="relative">
+              <input type="text" placeholder="输入产品名称/编号" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- 筛选按钮 -->
+        <div class="flex justify-end mt-4 space-x-3">
+          <button class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+            重置筛选
+          </button>
+          <button class="px-4 py-2 bg-primary text-white rounded-md btn-hover">
+            执行筛选
+          </button>
+        </div>
+      </div>
+
+      <!-- 产品列表表格 -->
+      <div class="bg-white rounded-lg shadow-sm overflow-hidden table-shadow">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-secondary">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-accent uppercase tracking-wider">
+                <div class="flex items-center">
+                  <input type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                </div>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-accent uppercase tracking-wider">产品图片</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-accent uppercase tracking-wider">产品信息</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-accent uppercase tracking-wider">分类</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-accent uppercase tracking-wider">价格</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-accent uppercase tracking-wider">库存</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-accent uppercase tracking-wider">状态</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-accent uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <!-- 产品1：针灸理疗-普通针灸 -->
+            <tr class="hover:bg-secondary/30 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <input type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <img src="https://picsum.photos/id/235/80/80" alt="普通针灸" class="w-16 h-16 object-cover rounded-md border border-gray-200">
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm font-medium text-gray-900">普通针灸理疗</div>
+                <div class="text-sm text-gray-500 mt-1">产品编号：ZY-LY-001</div>
+                <div class="text-sm text-gray-600 mt-1 line-clamp-2">通过针刺穴位调节气血，缓解颈肩腰腿痛、失眠等症状，单次30分钟</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">针灸理疗</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-bold text-gray-900">¥128.00</div>
+                <div class="text-sm text-gray-500 line-through">¥158.00</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">不限</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-success/10 text-success">
+                  启用
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button class="text-primary hover:text-accent mr-3 transition-colors">
+                  <i class="fa fa-pencil" aria-hidden="true"></i> 编辑
+                </button>
+                <button class="text-danger hover:text-red-700 transition-colors">
+                  <i class="fa fa-trash" aria-hidden="true"></i> 删除
+                </button>
+              </td>
+            </tr>
+
+            <!-- 产品2：推拿按摩-全身推拿 -->
+            <tr class="hover:bg-secondary/30 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <input type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <img src="https://picsum.photos/id/237/80/80" alt="全身推拿" class="w-16 h-16 object-cover rounded-md border border-gray-200">
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm font-medium text-gray-900">全身经络推拿</div>
+                <div class="text-sm text-gray-500 mt-1">产品编号：ZY-LY-002</div>
+                <div class="text-sm text-gray-600 mt-1 line-clamp-2">疏通全身经络，缓解肌肉疲劳，改善血液循环，单次60分钟</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">推拿按摩</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-bold text-gray-900">¥198.00</div>
+                <div class="text-sm text-gray-500 line-through">¥228.00</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">不限</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-
