@@ -110,18 +110,25 @@ const Login = () => {
         <div id="particles" className="absolute inset-0" ref={particlesRef}></div>
       </div>
 
-      <div className="relative z-10 w-full max-w-md px-4">
-        {/* 半透明玻璃态卡片 - 适配淡蓝色背景 */}
-        <div className={`bg-white/80 backdrop-blur-md rounded-2xl p-8 shadow-xl 
+      <div className="relative z-10 w-full max-w-md px-4 py-8">
+        {/* 半透明玻璃态卡片 - 适配淡蓝色背景（优化内边距避免溢出） */}
+        <div className={`bg-white/80 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-xl 
                       transform transition-all duration-1000 
                       hover:shadow-blue-200/50 hover:shadow-cyan-200/30 
                       ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="text-center mb-8">
-            <h1 className="text-[clamp(1.8rem,5vw,2.5rem)] font-bold text-blue-800 text-shadow-sm mb-2">账户登录</h1>
-            <p className="text-blue-600/70">请输入您的账号信息</p>
+          {/* 御和堂logo区域（优化间距，减少垂直占用） */}
+          <div className="flex flex-col items-center mb-6">
+            <div className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-blue-600 text-white mb-2">
+              <i className="fa fa-building text-xl sm:text-2xl"></i>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-800 mb-1">御和堂</h1>
+            <p className="text-blue-500/80 text-sm">专业健康服务平台</p>
           </div>
+
+          {/* 移除原"账户登录"标题区域，直接显示表单说明 */}
+          <p className="text-center text-blue-600/70 mb-6">请输入您的账号信息进行登录</p>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                 <i className="fa fa-user text-blue-400"></i>
@@ -132,7 +139,7 @@ const Login = () => {
                 value={account}
                 onChange={e => setAccount(e.target.value)}
                 placeholder="用户名或邮箱" 
-                className="w-full pl-12 pr-4 py-3 rounded-lg bg-white/60 border border-blue-100 text-blue-800 placeholder-blue-400/60 focus:outline-none focus:ring-2 focus:ring-blue-300/50 transition-all"
+                className="w-full pl-12 pr-4 py-2.5 sm:py-3 rounded-lg bg-white/60 border border-blue-100 text-blue-800 placeholder-blue-400/60 focus:outline-none focus:ring-2 focus:ring-blue-300/50 transition-all"
                 required
               />
             </div>
@@ -147,7 +154,7 @@ const Login = () => {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="密码" 
-                className="w-full pl-12 pr-12 py-3 rounded-lg bg-white/60 border border-blue-100 text-blue-800 placeholder-blue-400/60 focus:outline-none focus:ring-2 focus:ring-blue-300/50 transition-all"
+                className="w-full pl-12 pr-12 py-2.5 sm:py-3 rounded-lg bg-white/60 border border-blue-100 text-blue-800 placeholder-blue-400/60 focus:outline-none focus:ring-2 focus:ring-blue-300/50 transition-all"
                 required
               />
               <div 
@@ -168,20 +175,20 @@ const Login = () => {
             
             <button 
               type="submit" 
-              className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-200/50"
+              className="w-full py-2.5 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-200/50"
               disabled={isLogging}
             >
               {isLogging ? '登录中...' : '登录'}
             </button>
           </form>
           
-          <div className="my-6 flex items-center">
+          <div className="my-5 flex items-center">
             <div className="flex-grow h-px bg-blue-100"></div>
             <span className="px-4 text-blue-500/70 text-sm">或使用以下方式登录</span>
             <div className="flex-grow h-px bg-blue-100"></div>
           </div>
           
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-3 gap-4 mb-6">
             <button className="flex items-center justify-center py-2 rounded-lg bg-blue-50 hover:bg-blue-100 transition-all">
               <i className="fa fa-weixin text-green-600 text-xl"></i>
             </button>
@@ -220,6 +227,12 @@ const Login = () => {
         .animate-float-delay-3 { animation: float 18s ease-in-out 3s infinite; }
         .animate-rotate { animation: float 20s linear infinite; }
         .animate-rotate-reverse { animation: float 25s linear infinite reverse; }
+        /* 防止页面整体溢出 */
+        html, body {
+          overflow-x: hidden;
+          height: 100%;
+          margin: 0;
+        }
       `}</style>
     </div>
   );
