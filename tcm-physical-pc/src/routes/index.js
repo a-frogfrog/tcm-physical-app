@@ -14,7 +14,7 @@ const LoadingRoute = () => {
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 600);
+    }, 1000);
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
