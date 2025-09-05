@@ -31,16 +31,34 @@ const TopActionBar = () => {
   return (
     <nav className='flex items-center gap-4'>
       <Switch />
-      <Bell strokeWidth={1.75} className='cursor-pointer' />
-      <Maximize strokeWidth={1.75} className='cursor-pointer' />
-      <Github strokeWidth={1.75} className='cursor-pointer' />
+      <button>
+        <Bell
+          aria-label='Notifications'
+          strokeWidth={1.75}
+          className='cursor-pointer'
+        />
+      </button>
+      <button>
+        <Maximize
+          aria-label='Expand'
+          strokeWidth={1.75}
+          className='cursor-pointer'
+        />
+      </button>
+      <button>
+        <Github
+          aria-label='GitHub'
+          strokeWidth={1.75}
+          className='cursor-pointer'
+        />
+      </button>
     </nav>
   );
 };
 
 export default function AppHeader() {
   return (
-    <header className='flex px-4 h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
+    <div className='flex px-4 h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
       <div className='flex flex-1 items-center gap-2 px-4'>
         <SidebarTrigger className='-ml-1' />
         <Separator
@@ -50,6 +68,6 @@ export default function AppHeader() {
         <BreadcrumbUI />
       </div>
       <TopActionBar />
-    </header>
+    </div>
   );
 }

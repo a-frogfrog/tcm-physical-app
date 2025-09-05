@@ -8,12 +8,26 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     port: 4444,
-    open: true,
+    // open: true,
     host: '0.0.0.0',
+  },
+  preview: {
+    port: 5000,
   },
   resolve: {
     alias: {
       '#': path.resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    minify: false,
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
     },
   },
 });

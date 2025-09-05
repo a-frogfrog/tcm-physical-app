@@ -31,7 +31,7 @@ export const filterItems = [
   {
     name: '产品搜索',
     options: ['0-100', '100-200', '200-300'],
-    element: <Input placeholder='产品搜索' />,
+    element: <Input type='search' placeholder='产品搜索' />,
   },
 ];
 

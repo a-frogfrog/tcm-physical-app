@@ -1,10 +1,13 @@
 import { useApplication } from '#/hooks';
 import {
-  BookOpen,
-  Bot,
+  Barcode,
+  Building2,
+  ClockFading,
   GalleryVerticalEnd,
-  Settings2,
-  SquareTerminal,
+  Gauge,
+  ListOrdered,
+  MessageSquareShare,
+  UserStar,
 } from 'lucide-react';
 
 export const useFetchSidebarData = () => {
@@ -25,7 +28,7 @@ export const useFetchSidebarData = () => {
     {
       title: '仪表板',
       url: '/dashboard',
-      icon: SquareTerminal,
+      icon: Gauge,
       isActive: true,
       items: [
         {
@@ -41,7 +44,7 @@ export const useFetchSidebarData = () => {
     {
       title: '产品管理',
       url: '/product',
-      icon: Bot,
+      icon: Barcode,
       items: [
         {
           title: '列表',
@@ -56,7 +59,7 @@ export const useFetchSidebarData = () => {
     {
       title: '订单',
       url: '/order',
-      icon: Bot,
+      icon: ListOrdered,
       items: [
         {
           title: '列表',
@@ -67,7 +70,7 @@ export const useFetchSidebarData = () => {
     {
       title: '排班',
       url: '/schedule',
-      icon: BookOpen,
+      icon: ClockFading,
       items: [
         {
           title: '列表',
@@ -78,7 +81,7 @@ export const useFetchSidebarData = () => {
     {
       title: '推广',
       url: '/promote',
-      icon: Settings2,
+      icon: MessageSquareShare,
       items: [
         {
           title: '列表',
@@ -89,7 +92,7 @@ export const useFetchSidebarData = () => {
     {
       title: '客户',
       url: '/customer',
-      icon: Settings2,
+      icon: UserStar,
       items: [
         {
           title: '列表',
@@ -100,7 +103,7 @@ export const useFetchSidebarData = () => {
     {
       title: '组织架构',
       url: '/org',
-      icon: Settings2,
+      icon: Building2,
       items: [
         {
           title: '用户',

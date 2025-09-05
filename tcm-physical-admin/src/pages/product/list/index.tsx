@@ -7,6 +7,7 @@ import {
 } from './ProductFilter';
 import { filterItems } from './constants';
 import { useProductListEvents } from './useProductList';
+import ProductTable from './ProductTable';
 
 export default function ProductListPage() {
   const { handleApply, handleReset } = useProductListEvents();
@@ -30,6 +31,7 @@ export default function ProductListPage() {
         </ProductFilterItems>
         <ProductFilterActions onApply={handleApply} onReset={handleReset} />
       </ProductFilter>
+      <ProductTable />
     </div>
   );
 }

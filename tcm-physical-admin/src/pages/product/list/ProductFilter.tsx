@@ -1,5 +1,4 @@
 import { Button } from '#/components/ui/button';
-import React from 'react';
 import { useChildren } from '#/hooks';
 import {
   Select,
@@ -22,10 +21,12 @@ const ProductFilter = ({ className, children }: ProductFilterProps) => {
   const actions = useChildren(children, ProductFilterActions);
 
   return (
-    <div className={`bg-white my-4 p-4 rounded-md shadow  ${className}`}>
-      <article className='flex justify-between gap-6'>{items}</article>
+    <form className={`bg-white my-4 p-4 rounded-md shadow  ${className}`}>
+      <article className='flex flex-wrap md:flex-nowrap justify-between gap-6'>
+        {items}
+      </article>
       {actions}
-    </div>
+    </form>
   );
 };
 
@@ -35,10 +36,12 @@ const ProductFilterActions = ({
 }: Partial<ProductFilterActionsProps>) => {
   return (
     <section className='py-2 mt-5 flex justify-end gap-2'>
-      <Button variant='outline' onClick={onReset}>
+      <Button type='reset' variant='outline' onClick={onReset}>
         重置
       </Button>
-      <Button onClick={onApply}>筛选</Button>
+      <Button type='submit' onClick={onApply}>
+        筛选
+      </Button>
     </section>
   );
 };
@@ -77,7 +80,11 @@ const ProductFilterItem = ({
 
   return (
     <section className='w-full'>
-      <p className='text-gray-700 px-1 py-1 font-inter text-sm'>{name}</p>
+      <label
+        aria-label={name}
+        className='text-gray-700 px-1 py-1 font-inter text-sm'>
+        {name}
+      </label>
       {element ? element : <SelectFilter />}
     </section>
   );
