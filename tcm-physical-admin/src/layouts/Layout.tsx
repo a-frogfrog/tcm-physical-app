@@ -1,7 +1,7 @@
+import { useLayoutStore } from '#/stores';
 import { debounce } from '#/utils';
 import clsx from 'clsx';
 import React from 'react';
-import { useHeaderShadow } from './useLayout';
 
 const APP_HEADER_HEIGHT = 64;
 const APP_FOOTER_HEIGHT = 40;
@@ -30,8 +30,8 @@ const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 const Layout = ({ className, children }: React.ComponentProps<'div'>) => {
-  const { headerShadow, appHeaderHeight } = React.useContext(LayoutContext);
-  const { setHeaderShadow } = useHeaderShadow();
+  const { appHeaderHeight } = React.useContext(LayoutContext);
+  const { headerShadow, setHeaderShadow } = useLayoutStore();
 
   const handleScroll = (scrollTop: number) => {
     if (scrollTop > appHeaderHeight && !headerShadow) {
@@ -61,7 +61,7 @@ const Layout = ({ className, children }: React.ComponentProps<'div'>) => {
 };
 
 const LayoutHeader = ({ children }: { children: React.ReactNode }) => {
-  const { headerShadow } = useHeaderShadow();
+  const { headerShadow } = useLayoutStore();
 
   return (
     <header
