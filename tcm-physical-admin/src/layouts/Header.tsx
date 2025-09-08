@@ -38,50 +38,46 @@ const TopActionBar = () => {
     <nav className='flex items-center gap-4'>
       <Switch />
 
-      <button>
-        <Tooltip>
-          <TooltipTrigger>
-            <Bell
-              aria-label='Notifications'
-              strokeWidth={1.75}
-              className='cursor-pointer'
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>通知</p>
-          </TooltipContent>
-        </Tooltip>
-      </button>
+      <Tooltip>
+        <TooltipTrigger>
+          <Bell
+            aria-label='Notifications'
+            strokeWidth={1.75}
+            className='cursor-pointer'
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>通知</p>
+        </TooltipContent>
+      </Tooltip>
 
-      <button>
-        <Tooltip>
-          <TooltipTrigger>
-            <Maximize
-              aria-label='Expand'
-              strokeWidth={1.75}
-              className='cursor-pointer'
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>最大化</p>
-          </TooltipContent>
-        </Tooltip>
-      </button>
+      <Tooltip>
+        <TooltipTrigger>
+          <Maximize
+            aria-label='Expand'
+            strokeWidth={1.75}
+            className='cursor-pointer'
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>最大化</p>
+        </TooltipContent>
+      </Tooltip>
 
-      <a href={LIKE.github} target='_blank'>
-        <Tooltip>
-          <TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger>
+          <a href={LIKE.github} target='_blank'>
             <Github
               aria-label='GitHub'
               strokeWidth={1.75}
               className='cursor-pointer'
             />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>GitHub 仓库</p>
-          </TooltipContent>
-        </Tooltip>
-      </a>
+          </a>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>GitHub 仓库</p>
+        </TooltipContent>
+      </Tooltip>
     </nav>
   );
 };

@@ -1,6 +1,6 @@
 import { SidebarProvider } from '#/components/ui/sidebar';
 import { Outlet } from 'react-router-dom';
-import AppSidebar from './sidebar';
+import AppSidebar, { AppSidebarError } from './sidebar';
 import AppHeader from './Header';
 import {
   LayoutFooter,
@@ -27,7 +27,10 @@ export default function AppLayout() {
   return (
     <LayoutProvider>
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebarError>
+          <AppSidebar />
+        </AppSidebarError>
+
         <Layout className='bg-[#F4F5FA]'>
           <LayoutHeader>
             <AppHeader />
