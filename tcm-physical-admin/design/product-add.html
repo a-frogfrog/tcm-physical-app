@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗管理系统 - 新增产品</title>
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+
+    <!-- Tailwind 配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 深棕色 - 主色调
+              secondary: '#4F7942', // 绿色 - 辅助色
+              accent: '#D2B48C', // 棕褐色 - 强调色
+              neutral: '#F5F5DC', // 米色 - 中性色
+              'neutral-dark': '#3E2723', // 深棕黑色 - 文字色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .sidebar-item {
+          @apply flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary rounded-lg transition-all duration-200;
+        }
+        .sidebar-item.active {
+          @apply bg-primary/20 text-primary font-medium;
+        }
+        .form-label {
+          @apply block text-sm font-medium text-gray-700 mb-1.5;
+        }
+        .form-input {
+          @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors;
+        }
+        .form-hint {
+          @apply text-xs text-gray-500 mt-1;
+        }
+        .product-tab {
+          @apply px-4 py-2.5 border-b-2 border-transparent text-gray-500 hover:text-primary transition-colors cursor-pointer;
+        }
+        .product-tab.active {
+          @apply border-primary text-primary font-medium;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-neutral-dark min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm z-10">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- 左侧Logo和标题 -->
+          <div class="flex items-center gap-3">
+            <button
+              id="sidebar-toggle"
+              class="lg:hidden text-gray-600 hover:text-primary">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2">
+              <i class="fa fa-leaf text-2xl text-secondary"></i>
+              <h1 class="text-xl font-semibold text-primary hidden sm:block">
+                中医理疗管理系统
+              </h1>
+            </div>
+          </div>
+
+          <!-- 右侧用户信息和操作 -->
+          <div class="flex items-center gap-5">
+            <button
+              class="relative text-gray-600 hover:text-primary transition-colors">
+              <i class="fa fa-bell text-xl"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+                >3</span
+              >
+            </button>
+            <div class="flex items-center gap-2 cursor-pointer group">
+              <img
+                src="https://picsum.photos/id/64/200/200"
+                alt="用户头像"
+                class="w-8 h-8 rounded-full object-cover border-2 border-primary/20" />
+              <div class="hidden md:block">
+                <p class="text-sm font-medium">王医生</p>
+                <p class="text-xs text-gray-500">管理员</p>
+              </div>
+              <i
+                class="fa fa-chevron-down text-xs text-gray-500 group-hover:text-primary transition-colors"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- 侧边栏导航 -->
+      <aside
+        id="sidebar"
+        class="bg-white w-64 shadow-sm transform -translate-x-full lg:translate-x-0 fixed lg:static h-[calc(100vh-4rem)] z-20 transition-transform duration-300 overflow-y-auto">
+        <div class="p-4">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="搜索功能..."
+              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
+            <i
+              class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
+        </div>
+
+        <nav class="p-2">
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            主菜单
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-tachometer w-5 text-center"></i> 仪表盘</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-bullhorn w-5 text-center"></i> 推广管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-users w-5 text-center"></i> 客户管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-calendar w-5 text-center"></i> 预约管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item active"
+                ><i class="fa fa-stethoscope w-5 text-center"></i> 理疗项目</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-credit-card w-5 text-center"></i> 财务管理</a
+              >
+            </li>
+          </ul>
+
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">
+            系统设置
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-cog w-5 text-center"></i> 系统设置</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-user-circle w-5 text-center"></i> 员工管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-file-text w-5 text-center"></i> 日志管理</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">
+        <!-- 面包屑导航 -->
+        <div class="flex items-center text-sm text-gray-500 mb-6">
+          <a href="#" class="hover:text-primary transition-colors">首页</a>
+          <i class="fa fa-angle-right mx-2 text-xs"></i>
+          <a href="#" class="hover:text-primary transition-colors">理疗项目</a>
+          <i class="fa fa-angle-right mx-2 text-xs"></i>
+          <span class="text-primary">新增产品</span>
+        </div>
+
+        <!-- 页面标题 -->
+        <div class="mb-8">
+          <h2
+            class="text-[clamp(1.25rem,3vw,1.75rem)] font-bold text-neutral-dark">
+            新增理疗产品
+          </h2>
+          <p class="text-gray-500 mt-1">
+            添加新的中医理疗服务项目，完善您的服务体系
+          </p>
+        </div>
+
+        <!-- 表单卡片 -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8 mb-6 max-w-4xl mx-auto">
+          <!-- 产品类型选项卡 -->
+          <div class="mb-8 border-b border-gray-200">
+            <div class="flex flex-wrap -mb-px">
+              <button class="product-tab active" data-tab="physical">
+                <i class="fa fa-hand-paper-o mr-1.5"></i> 理疗服务
+              </button>
+              <button class="product-tab" data-tab="medicine">
+                <i class="fa fa-flask mr-1.5"></i> 中药产品
+              </button>
+              <button class="product-tab" data-tab="package">
+                <i class="fa fa-cube mr-1.5"></i> 套餐组合
+              </button>
+            </div>
+          </div>
+
+          <form id="product-form">
+            <!-- 基础信息区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-info-circle text-primary"></i>
+                基础信息
+              </h3>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 产品名称 -->
+                <div>
+                  <label class="form-label" for="product-name"
+                    >产品名称 <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="product-name"
+                    class="form-input"
+                    placeholder="例如：经络推拿、艾灸调理"
+                    required />
+                  <p class="form-hint">填写准确的产品名称，体现中医特色</p>
+                </div>
+
+                <!-- 产品分类 -->
+                <div>
+                  <label class="form-label" for="product-category"
+                    >产品分类 <span class="text-red-500">*</span></label
+                  >
+                  <select id="product-category" class="form-input" required>
+                    <option value="">请选择产品分类</option>
+                    <option value="tuina">推拿按摩类</option>
+                    <option value="acupuncture">针灸类</option>
+                    <option value="moxibustion">艾灸类</option>
+                    <option value="cupping">拔罐类</option>
+                    <option value="herbal">中药类</option>
+                    <option value="scraping">刮痧类</option>
+                    <option value="foot">足疗类</option>
+                    <option value="other">其他类</option>
+                  </select>
+                </div>
+
+                <!-- 产品编码 -->
+                <div>
+                  <label class="form-label" for="product-code">产品编码</label>
+                  <input
+                    type="text"
+                    id="product-code"
+                    class="form-input"
+                    placeholder="例如：TCM-TN-001" />
+                  <p class="form-hint">
+                    系统可自动生成，也可手动输入，用于内部管理
+                  </p>
+                </div>
+
+                <!-- 服务时长 -->
+                <div id="duration-field">
+                  <label class="form-label" for="service-duration"
+                    >服务时长（分钟）</label
+                  >
+                  <input
+                    type="number"
+                    id="service-duration"
+                    class="form-input"
+                    min="5"
+                    placeholder="例如：60" />
+                  <p class="form-hint">
+                    适用于理疗服务，填写服务时长，单位为分钟
+                  </p>
+                </div>
+
+                <!-- 产品图片 -->
+                <div class="lg:col-span-2">
+                  <label class="form-label">产品图片</label>
+                  <div
+                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="space-y-1 text-center">
+                      <i class="fa fa-cloud-upload text-3xl text-gray-400"></i>
+                      <div class="flex text-sm text-gray-600">
+                        <label
+                          for="product-image"
+                          class="relative cursor-pointer bg-white rounded-lg font-medium text-primary hover:text-primary/80 focus-within:outline-none">
+                          <span>上传图片</span>
+                          <input
+                            id="product-image"
+                            name="product-image"
+                            type="file"
+                            class="sr-only"
+                            accept="image/*"
+                            multiple />
+                        </label>
+                        <p class="pl-1">或拖放文件</p>
+                      </div>
+                      <p class="text-xs text-gray-500">
+                        支持 PNG, JPG, GIF 格式，建议尺寸 800×600px，最多上传5张
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 价格与库存区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-cny text-primary"></i>
+                价格与库存设置
+              </h3>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 原价 -->
+                <div>
+                  <label class="form-label" for="original-price"
+                    >原价（元） <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="number"
+                    id="original-price"
+                    class="form-input"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    required />
+                  <p class="form-hint">产品的标准定价</p>
+                </div>
+
+                <!-- 会员价 -->
+                <div>
+                  <label class="form-label" for="member-price"
+                    >会员价（元）</label
+                  >
+                  <input
+                    type="number"
+                    id="member-price"
+                    class="form-input"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00" />
+                  <p class="form-hint">会员专享价格，不填写则默认为原价</p>
+                </div>
+
+                <!-- 库存数量 -->
+                <div id="stock-field">
+                  <label class="form-label" for="stock-quantity"
+                    >库存数量</label
+                  >
+                  <input
+                    type="number"
+                    id="stock-quantity"
+                    class="form-input"
+                    min="0"
+                    placeholder="0" />
+                  <p class="form-hint">
+                    适用于实物产品，服务类可填写0表示无限制
+                  </p>
+                </div>
+
+                <!-- 限购数量 -->
+                <div>
+                  <label class="form-label" for="limit-quantity"
+                    >每人限购数量</label
+                  >
+                  <select id="limit-quantity" class="form-input">
+                    <option value="0">不限购</option>
+                    <option value="1">1份</option>
+                    <option value="2">2份</option>
+                    <option value="3">3份</option>
+                    <option value="5">5份</option>
+                    <option value="10">10份</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 产品详情区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-file-text-o text-primary"></i>
+                产品详情
+              </h3>
+
+              <!-- 产品简介 -->
+              <div class="mb-6">
+                <label class="form-label" for="product-brief"
+                  >产品简介 <span class="text-red-500">*</span></label
+                >
+                <textarea
+                  id="product-brief"
+                  rows="3"
+                  class="form-input"
+                  placeholder="简要介绍产品特点和功效..."
+                  required></textarea>
+                <p class="form-hint">简短描述，将显示在产品列表页</p>
+              </div>
+
+              <!-- 详细说明 -->
+              <div class="mb-6">
+                <label class="form-label" for="product-description"
+                  >详细说明</label
+                >
+                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                  <!-- 简易富文本编辑器工具栏 -->
+                  <div
+                    class="bg-gray-50 px-3 py-2 border-b border-gray-300 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      class="p-1.5 hover:bg-gray-200 rounded"
+                      title="加粗">
+                      <i class="fa fa-bold"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="p-1.5 hover:bg-gray-200 rounded"
+                      title="斜体">
+                      <i class="fa fa-italic"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="p-1.5 hover:bg-gray-200 rounded"
+                      title="下划线">
+                      <i class="fa fa-underline"></i>
+                    </button>
+                    <span class="h-4 border-r border-gray-300 mx-1"></span>
+                    <button
+                      type="button"
+                      class="p-1.5 hover:bg-gray-200 rounded"
+                      title="无序列表">
+                      <i class="fa fa-list-ul"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="p-1.5 hover:bg-gray-200 rounded"
+                      title="有序列表">
+                      <i class="fa fa-list-ol"></i>
+                    </button>
+                    <span class="h-4 border-r border-gray-300 mx-1"></span>
+                    <button
+                      type="button"
+                      class="p-1.5 hover:bg-gray-200 rounded"
+                      title="插入图片">
+                      <i class="fa fa-image"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="p-1.5 hover:bg-gray-200 rounded"
+                      title="插入链接">
+                      <i class="fa fa-link"></i>
+                    </button>
+                  </div>
+                  <textarea
+                    id="product-description"
+                    rows="8"
+                    class="form-input border-0 rounded-none focus:ring-0"
+                    placeholder="详细介绍产品的功效、适应症、操作流程、注意事项等..."></textarea>
+                </div>
+                <p class="form-hint">详细描述产品信息，帮助客户全面了解产品</p>
+              </div>
+
+              <!-- 适合人群 -->
+              <div>
+                <label class="form-label">适合人群</label>
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="suitable-people"
+                      value="subhealth" />
+                    <span class="ml-2">亚健康人群</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="suitable-people"
+                      value="middle-aged" />
+                    <span class="ml-2">中老年人群</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="suitable-people"
+                      value="office" />
+                    <span class="ml-2">办公室人群</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="suitable-people"
+                      value="insomnia" />
+                    <span class="ml-2">失眠人群</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="suitable-people"
+                      value="pain" />
+                    <span class="ml-2">疼痛人群</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="suitable-people"
+                      value="other" />
+                    <span class="ml-2">其他人群</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 其他设置区域 -->
+            <div class="mb-8">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-cog text-primary"></i>
+                其他设置
+              </h3>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 产品状态 -->
+                <div>
+                  <label class="form-label" for="product-status"
+                    >产品状态 <span class="text-red-500">*</span></label
+                  >
+                  <select id="product-status" class="form-input" required>
+                    <option value="active">上架（可预约/购买）</option>
+                    <option value="inactive">下架（不可预约/购买）</option>
+                    <option value="pending">待审核</option>
+                  </select>
+                </div>
+
+                <!-- 技师要求 -->
+                <div>
+                  <label class="form-label" for="technician-level"
+                    >技师要求</label
+                  >
+                  <select id="technician-level" class="form-input">
+                    <option value="any">无特殊要求</option>
+                    <option value="junior">初级及以上技师</option>
+                    <option value="middle">中级及以上技师</option>
+                    <option value="senior">高级技师</option>
+                    <option value="expert">专家级技师</option>
+                  </select>
+                </div>
+
+                <!-- 预约提示 -->
+                <div class="lg:col-span-2">
+                  <label class="form-label" for="booking-notes">预约提示</label>
+                  <textarea
+                    id="booking-notes"
+                    rows="3"
+                    class="form-input"
+                    placeholder="例如：请提前24小时预约，预约后如需取消请提前12小时通知..."></textarea>
+                  <p class="form-hint">显示在预约页面，提醒客户注意事项</p>
+                </div>
+
+                <!-- 内部备注 -->
+                <div class="lg:col-span-2">
+                  <label class="form-label" for="internal-notes"
+                    >内部备注（仅员工可见）</label
+                  >
+                  <textarea
+                    id="internal-notes"
+                    rows="3"
+                    class="form-input"
+                    placeholder="填写内部管理备注信息..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- 表单操作按钮 -->
+            <div
+              class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-100">
+              <button
+                type="button"
+                class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                保存草稿
+              </button>
+              <button
+                type="button"
+                class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                预览
+              </button>
+              <button
+                type="submit"
+                class="px-6 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors shadow-sm hover:shadow">
+                确认添加
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- 遮罩层（移动端侧边栏打开时显示） -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"></div>
+
+    <script>
+      // 侧边栏切换功能
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+
+      // 产品类型选项卡切换
+      const productTabs = document.querySelectorAll('.product-tab');
+      const durationField = document.getElementById('duration-field');
+      const stockField = document.getElementById('stock-field');
+
+      productTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          // 移除所有选项卡的active类
+          productTabs.forEach((t) => t.classList.remove('active'));
+          // 给当前点击的选项卡添加active类
+          tab.classList.add('active');
+
+          const tabType = tab.getAttribute('data-tab');
+
+          // 根据选项卡类型显示/隐藏特定字段
+          if (tabType === 'physical') {
+            durationField.classList.remove('hidden');
+            stockField.classList.remove('hidden');
+            stockField.querySelector('p').textContent =
+              '适用于实物产品，服务类可填写0表示无限制';
+          } else if (tabType === 'medicine') {
+            durationField.classList.add('hidden');
+            stockField.classList.remove('hidden');
+            stockField.querySelector('p').textContent =
+              '中药产品库存数量，建议根据实际库存填写';
+          } else if (tabType === 'package') {
+            durationField.classList.remove('hidden');
+            stockField.classList.remove('hidden');
+            stockField.querySelector('p').textContent =
+              '套餐可售数量，0表示无限制';
+          }
+        });
+      });
+
+      // 表单提交处理
+      const productForm = document.getElementById('product-form');
+
+      productForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // 简单验证逻辑
+        const name = document.getElementById('product-name').value;
+        const category = document.getElementById('product-category').value;
+        const price = document.getElementById('original-price').value;
+        const brief = document.getElementById('product-brief').value;
+
+        let isValid = true;
+
+        if (!name) {
+          isValid = false;
+          alert('请填写产品名称');
+        } else if (!category) {
+          isValid = false;
+          alert('请选择产品分类');
+        } else if (!price) {
+          isValid = false;
+          alert('请填写产品原价');
+        } else if (!brief) {
+          isValid = false;
+          alert('请填写产品简介');
+        }
+
+        if (isValid) {
+          // 模拟表单提交成功
+          alert('产品添加成功！');
+          // 实际应用中这里会提交表单数据到服务器
+          // 然后跳转到产品列表页
+          // window.location.href = 'product-list.html';
+        }
+      });
+
+      // 按钮点击效果
+      document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((button) => {
+          button.addEventListener('click', function () {
+            this.classList.add('scale-95');
+            setTimeout(() => {
+              this.classList.remove('scale-95');
+            }, 150);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
