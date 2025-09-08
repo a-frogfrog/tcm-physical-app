@@ -7,6 +7,10 @@ const promotionRoutes = {
       path: 'list',
       Component: lazy(() => import('#/pages/promotion/list')),
     },
+    {
+      path: 'add',
+      Component: lazy(() => import('#/pages/promotion/add')),
+    },
   ],
 };
 

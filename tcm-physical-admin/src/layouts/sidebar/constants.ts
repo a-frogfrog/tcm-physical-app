@@ -54,6 +54,10 @@ export const useFetchSidebarData = () => {
           title: '套餐',
           url: '/product/package',
         },
+        {
+          title: '新增',
+          url: '/product/add',
+        },
       ],
     },
     {
@@ -87,6 +91,10 @@ export const useFetchSidebarData = () => {
           title: '列表',
           url: '/promotion/list',
         },
+        {
+          title: '新增',
+          url: '/promotion/add',
+        },
       ],
     },
     {
@@ -97,6 +105,10 @@ export const useFetchSidebarData = () => {
         {
           title: '列表',
           url: '/customer/list',
+        },
+        {
+          title: '新增',
+          url: '/customer/add',
         },
       ],
     },

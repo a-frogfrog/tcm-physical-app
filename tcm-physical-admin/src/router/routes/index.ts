@@ -8,6 +8,7 @@ import orderRoutes from './modules/order';
 import orgRoutes from './modules/org';
 import promotionRoutes from './modules/promotion';
 import scheduleRoutes from './modules/schedule';
+import userRoutes from './modules/user';
 
 const routes = [
   {
@@ -21,6 +22,7 @@ const routes = [
       orgRoutes,
       promotionRoutes,
       scheduleRoutes,
+      userRoutes,
     ],
   },
   authRoutes,

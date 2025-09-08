@@ -7,6 +7,10 @@ const customerRoutes = {
       path: 'list',
       Component: lazy(() => import('#/pages/customer/list')),
     },
+    {
+      path: 'add',
+      Component: lazy(() => import('#/pages/customer/add')),
+    },
   ],
 };
 

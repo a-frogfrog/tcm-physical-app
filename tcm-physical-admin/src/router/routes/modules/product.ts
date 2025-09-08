@@ -11,6 +11,10 @@ const productRoutes = {
       path: 'package',
       Component: lazy(() => import('#/pages/product/package')),
     },
+    {
+      path: 'add',
+      Component: lazy(() => import('#/pages/product/add')),
+    },
   ],
 };
 
