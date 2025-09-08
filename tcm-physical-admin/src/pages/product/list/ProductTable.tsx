@@ -1,3 +1,6 @@
+import { Button } from '#/components/ui/button';
+import { Badge } from '#/components/ui/badge';
+import { Checkbox } from '#/components/ui/checkbox';
 import {
   Table,
   TableBody,
@@ -8,99 +11,114 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '#/components/ui/pagination';
 
-const invoices = [
-  {
-    invoice: 'INV001',
-    paymentStatus: 'Paid',
-    totalAmount: '$250.00',
-    paymentMethod: 'Credit Card',
-  },
-  {
-    invoice: 'INV002',
-    paymentStatus: 'Pending',
-    totalAmount: '$150.00',
-    paymentMethod: 'PayPal',
-  },
-  {
-    invoice: 'INV003',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$350.00',
-    paymentMethod: 'Bank Transfer',
-  },
-  {
-    invoice: 'INV004',
-    paymentStatus: 'Paid',
-    totalAmount: '$450.00',
-    paymentMethod: 'Credit Card',
-  },
-  {
-    invoice: 'INV005',
-    paymentStatus: 'Paid',
-    totalAmount: '$550.00',
-    paymentMethod: 'PayPal',
-  },
-  {
-    invoice: 'INV006',
-    paymentStatus: 'Pending',
-    totalAmount: '$200.00',
-    paymentMethod: 'Bank Transfer',
-  },
-  {
-    invoice: 'INV007',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$300.00',
-    paymentMethod: 'Credit Card',
-  },
-  {
-    invoice: 'INV008',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$300.00',
-    paymentMethod: 'Credit Card',
-  },
-  {
-    invoice: 'INV009',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$300.00',
-    paymentMethod: 'Credit Card',
-  },
-  {
-    invoice: 'INV0010',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$300.00',
-    paymentMethod: 'Credit Card',
-  },
-];
+export interface Product {
+  id: number;
+  productName: string;
+  productInfo: string;
+  photo: string;
+  category: string;
+  price: string;
+  stock: number;
+  status: string;
+  description: string;
+}
 
-export default function ProductTable() {
+const ProductPagination = () => {
+  return (
+    <Pagination className='w-full justify-end'>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious href='#' />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href='#'>1</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href='#' isActive>
+            2
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href='#'>3</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationEllipsis />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext href='#' />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+};
+
+export default function ProductTable({ data }: { data: Product[] }) {
   return (
     <section className='bg-white p-4 rounded-md shadow-md mt-4'>
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableCaption>A list of your products.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className='w-[100px]'>Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className='text-right'>Amount</TableHead>
+            <TableHead className='w-[50px]'>
+              <Checkbox />
+            </TableHead>
+            <TableHead>产品图片</TableHead>
+            <TableHead>产品信息</TableHead>
+            <TableHead>分类</TableHead>
+            <TableHead>价格</TableHead>
+            <TableHead>库存</TableHead>
+            <TableHead>状态</TableHead>
+            <TableHead className='text-right'>操作</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className='font-medium'>{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
+          {data.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell>
+                <Checkbox />
+              </TableCell>
+              <TableCell>
+                <img
+                  className='w-16 h-16 rounded-md'
+                  src={item.photo}
+                  alt={item.productName}
+                />
+              </TableCell>
+              <TableCell>
+                <article>
+                  <h3 className='text-lg font-bold'>{item.productName}</h3>
+                  <p className='text-sm text-gray-500'>{item.productInfo}</p>
+                  <p className='text-sm text-gray-500'>{item.description}</p>
+                </article>
+              </TableCell>
+              <TableCell>{item.category}</TableCell>
+              <TableCell>{item.price}</TableCell>
+              <TableCell>{item.stock}</TableCell>
+              <TableCell>
+                <Badge variant='secondary'>{item.status}</Badge>
+              </TableCell>
               <TableCell className='text-right'>
-                {invoice.totalAmount}
+                <Button>编辑</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className='text-right'>$2,500.00</TableCell>
+            <TableCell colSpan={1}>Total:{data.length}</TableCell>
+            <TableCell colSpan={Object.keys(data).length + 1}>
+              <ProductPagination />
+            </TableCell>
           </TableRow>
         </TableFooter>
       </Table>

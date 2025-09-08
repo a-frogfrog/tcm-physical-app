@@ -35,6 +35,75 @@ export const filterItems = [
   },
 ];
 
+export const tableData = [
+  {
+    id: 1,
+    productName: 'Product 1',
+    productInfo: 'Product 1 Info',
+    photo: 'https://picsum.photos/200/300',
+    category: 'Category 1',
+    price: '￥100.00',
+    stock: 10,
+    status: 'Active',
+    description: 'Product 1 Description',
+  },
+  {
+    id: 2,
+    productName: 'Product 2',
+    productInfo: 'Product 2 Info',
+    photo: 'https://picsum.photos/200/300',
+    category: 'Category 2',
+    price: '￥200.00',
+    stock: 20,
+    status: 'Active',
+    description: 'Product 2 Description',
+  },
+  {
+    id: 3,
+    productName: 'Product 3',
+    productInfo: 'Product 3 Info',
+    photo: 'https://picsum.photos/200/300',
+    category: 'Category 3',
+    price: '￥300.00',
+    stock: 30,
+    status: 'Active',
+    description: 'Product 3 Description',
+  },
+  {
+    id: 4,
+    productName: 'Product 4',
+    productInfo: 'Product 4 Info',
+    photo: 'https://picsum.photos/200/300',
+    category: 'Category 4',
+    price: '￥400.00', 
+    stock: 40,
+    status: 'Active',
+    description: 'Product 4 Description',
+  },
+  {
+    id: 5,
+    productName: 'Product 5',
+    productInfo: 'Product 5 Info',
+    photo: 'https://picsum.photos/200/300',
+    category: 'Category 5',
+    price: '￥500.00',
+    stock: 50,
+    status: 'Active', 
+    description: 'Product 5 Description',
+  },
+  {
+    id: 6,
+    productName: 'Product 6',
+    productInfo: 'Product 6 Info',
+    photo: 'https://picsum.photos/200/300',
+    category: 'Category 6',
+    price: '￥600.00',
+    stock: 60,
+    status: 'Active',
+    description: 'Product 6 Description',
+  },
+];
+
 export type ProductFilterItemProps = {
   name: string;
   group: string;

@@ -11,7 +11,6 @@ const ProductHeader = () => {
           管理中医理疗项目、套餐及相关产品信息
         </p>
       </article>
-
       <div>
         <Button className='ml-auto h-10 w-22 text-base'>新增产品</Button>
       </div>

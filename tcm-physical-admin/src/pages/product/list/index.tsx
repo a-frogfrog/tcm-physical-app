@@ -5,7 +5,7 @@ import {
   ProductFilterItems,
   ProductFilterActions,
 } from './ProductFilter';
-import { filterItems } from './constants';
+import { filterItems, tableData } from './constants';
 import { useProductListEvents } from './useProductList';
 import ProductTable from './ProductTable';
 
@@ -31,7 +31,7 @@ export default function ProductListPage() {
         </ProductFilterItems>
         <ProductFilterActions onApply={handleApply} onReset={handleReset} />
       </ProductFilter>
-      <ProductTable />
+      <ProductTable data={tableData} />
     </div>
   );
 }
