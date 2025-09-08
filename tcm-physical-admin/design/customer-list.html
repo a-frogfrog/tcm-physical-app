@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗 - 客户列表</title>
+    <!-- 外部资源引入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <!-- Tailwind自定义配置（中医风格配色体系） -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 主色：中医传统棕色（专业感）
+              secondary: '#4A6741', // 辅助色：自然绿色（健康属性）
+              accent: '#D2B48C', // 强调色：棕褐色（层次区分）
+              light: '#F5F5DC', // 浅色：米色（阅读舒适）
+              dark: '#3E2723', // 深色：深棕色（文本主色）
+              // 客户状态语义化配色
+              active: '#22C55E', // 活跃客户：绿色
+              inactive: '#9CA3AF', // 非活跃客户：灰色
+              vip: '#EAB308', // VIP客户：金色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'], // 跨设备适配字体
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- 自定义工具类（提升样式复用性） -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .card-shadow {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .hover-lift {
+          transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .status-badge {
+          @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+        }
+        .table-hover {
+          @apply hover:bg-light/50 transition-colors;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 font-sans text-dark">
+    <div class="flex h-screen overflow-hidden">
+      <!-- 侧边栏导航（与系统其他页面保持一致） -->
+      <aside
+        class="hidden md:flex flex-col w-64 bg-white shadow-lg fixed h-full z-20">
+        <!-- 品牌标识 -->
+        <div
+          class="flex items-center justify-center h-16 bg-primary text-white">
+          <i class="fa fa-leaf text-2xl mr-2"></i>
+          <h1 class="text-xl font-bold">中医理疗管理系统</h1>
+        </div>
+
+        <!-- 导航菜单 -->
+        <nav class="flex-1 overflow-y-auto py-6 px-4">
+          <ul class="space-y-1">
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-tachometer w-5 h-5 mr-3"></i>
+                <span>仪表盘</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-list-alt w-5 h-5 mr-3"></i>
+                <span>产品套餐</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-calendar w-5 h-5 mr-3"></i>
+                <span>订单管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 bg-primary/10 text-primary rounded-lg font-medium transition-colors">
+                <i class="fa fa-users w-5 h-5 mr-3"></i>
+                <span>客户管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-user-md w-5 h-5 mr-3"></i>
+                <span>医师管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-bar-chart w-5 h-5 mr-3"></i>
+                <span>销售统计</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-cog w-5 h-5 mr-3"></i>
+                <span>系统设置</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 用户信息 -->
+        <div class="p-4 border-t border-gray-200">
+          <div class="flex items-center">
+            <img
+              src="https://picsum.photos/id/1005/40/40"
+              alt="管理员头像"
+              class="w-10 h-10 rounded-full object-cover border-2 border-primary/20" />
+            <div class="ml-3">
+              <p class="text-sm font-medium">张医生</p>
+              <p class="text-xs text-gray-500">系统管理员</p>
+            </div>
+            <button
+              class="ml-auto text-gray-400 hover:text-gray-600 transition-colors">
+              <i class="fa fa-sign-out"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <div class="flex-1 flex flex-col overflow-hidden md:ml-64">
+        <!-- 顶部导航栏 -->
+        <header class="bg-white shadow-sm z-10 sticky top-0">
+          <div class="flex items-center justify-between h-16 px-6">
+            <!-- 移动端菜单按钮 -->
+            <button
+              id="mobileMenuBtn"
+              class="md:hidden text-gray-500 hover:text-gray-700 transition-colors">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+
+            <!-- 搜索栏 -->
+            <div class="relative max-w-md w-full mx-4">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                <i class="fa fa-search"></i>
+              </span>
+              <input
+                type="text"
+                placeholder="搜索客户姓名/手机号/会员号..."
+                class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" />
+            </div>
+
+            <!-- 右侧工具栏 -->
+            <div class="flex items-center space-x-4">
+              <!-- 新增客户按钮 -->
+              <button
+                class="hidden md:flex items-center px-3 py-1.5 text-sm font-medium text-white bg-secondary rounded-lg hover:bg-secondary/90 transition-colors">
+                <i class="fa fa-plus mr-2"></i>
+                <span>新增客户</span>
+              </button>
+
+              <!-- 新增客户按钮（移动端） -->
+              <button
+                class="md:hidden p-2 text-white bg-secondary rounded-full hover:bg-secondary/90 transition-colors">
+                <i class="fa fa-plus"></i>
+              </button>
+
+              <!-- 筛选按钮 -->
+              <div class="relative group">
+                <button
+                  class="flex items-center px-3 py-1.5 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                  <i class="fa fa-filter mr-2"></i>
+                  <span>筛选</span>
+                  <i class="fa fa-chevron-down ml-1 text-xs"></i>
+                </button>
+                <div
+                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-20">
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >全部客户</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-active hover:bg-gray-100 transition-colors"
+                    >活跃客户</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-vip hover:bg-gray-100 transition-colors"
+                    >VIP客户</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-inactive hover:bg-gray-100 transition-colors"
+                    >非活跃客户</a
+                  >
+                  <div class="border-t border-gray-100 my-1"></div>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-primary hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-sliders mr-1"></i> 高级筛选
+                  </a>
+                </div>
+              </div>
+
+              <!-- 通知图标 -->
+              <button
+                class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+                <i class="fa fa-bell"></i>
+                <span
+                  class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- 页面内容 -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+          <!-- 页面标题与统计 -->
+          <div class="mb-8">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+              <div>
+                <h2
+                  class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-gray-800 mb-2">
+                  客户管理
+                </h2>
+                <p class="text-gray-600">
+                  查看和管理所有客户信息，包括基本资料、消费记录和健康档案
+                </p>
+              </div>
+
+              <!-- 客户统计数据 -->
+              <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+                <div class="text-center">
+                  <p class="text-gray-500 text-sm">总客户数</p>
+                  <p class="text-xl font-bold">248</p>
+                </div>
+                <div class="h-8 w-px bg-gray-300"></div>
+                <div class="text-center">
+                  <p class="text-gray-500 text-sm">本月新增</p>
+                  <p class="text-xl font-bold text-secondary">16</p>
+                </div>
+                <div class="h-8 w-px bg-gray-300"></div>
+                <div class="text-center">
+                  <p class="text-gray-500 text-sm">VIP客户</p>
+                  <p class="text-xl font-bold text-vip">32</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 客户分类统计卡片 -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <!-- 活跃客户 -->
+              <div
+                class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-active">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-gray-500 text-sm">活跃客户</p>
+                    <h3 class="text-3xl font-bold mt-1">186</h3>
+                    <p class="text-green-500 text-sm mt-2 flex items-center">
+                      <i class="fa fa-arrow-up mr-1"></i> 12% 较上月
+                    </p>
+                  </div>
+                  <div
+                    class="w-12 h-12 rounded-full bg-active/10 flex items-center justify-center text-active">
+                    <i class="fa fa-heartbeat text-xl"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- VIP客户 -->
+              <div
+                class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-vip">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-gray-500 text-sm">VIP客户</p>
+                    <h3 class="text-3xl font-bold mt-1">32</h3>
+                    <p class="text-green-500 text-sm mt-2 flex items-center">
+                      <i class="fa fa-arrow-up mr-1"></i> 8% 较上月
+                    </p>
+                  </div>
+                  <div
+                    class="w-12 h-12 rounded-full bg-vip/10 flex items-center justify-center text-vip">
+                    <i class="fa fa-diamond text-xl"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 非活跃客户 -->
+              <div
+                class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-inactive">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-gray-500 text-sm">非活跃客户</p>
+                    <h3 class="text-3xl font-bold mt-1">30</h3>
+                    <p class="text-red-500 text-sm mt-2 flex items-center">
+                      <i class="fa fa-arrow-down mr-1"></i> 5% 较上月
+                    </p>
+                  </div>
+                  <div
+                    class="w-12 h-12 rounded-full bg-inactive/10 flex items-center justify-center text-inactive">
+                    <i class="fa fa-user-o text-xl"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 客户列表 -->
+          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <!-- 列表工具栏 -->
+            <div class="p-6 border-b border-gray-100">
+              <div
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <h3 class="font-bold text-lg mb-4 sm:mb-0">客户列表</h3>
+
+                <div class="flex flex-wrap items-center gap-3">
+                  <!-- 排序下拉 -->
+                  <div class="relative">
+                    <select
+                      class="appearance-none pl-3 pr-8 py-1.5 text-sm bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+                      <option>默认排序</option>
+                      <option>最近添加</option>
+                      <option>消费金额从高到低</option>
+                      <option>最近消费</option>
+                    </select>
+                    <div
+                      class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                      <i class="fa fa-chevron-down text-xs"></i>
+                    </div>
+                  </div>
+
+                  <!-- 每页显示数量 -->
+                  <div class="relative">
+                    <select
+                      class="appearance-none pl-3 pr-8 py-1.5 text-sm bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+                      <option>10条/页</option>
+                      <option>20条/页</option>
+                      <option>50条/页</option>
+                      <option>100条/页</option>
+                    </select>
+                    <div
+                      class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                      <i class="fa fa-chevron-down text-xs"></i>
+                    </div>
+                  </div>
+
+                  <!-- 批量操作 -->
+                  <div class="relative group">
+                    <button
+                      class="flex items-center px-3 py-1.5 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                      <i class="fa fa-cog mr-2"></i>
+                      <span>批量操作</span>
+                      <i class="fa fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div
+                      class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-20">
+                      <a
+                        href="#"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fa fa-download mr-1"></i> 导出选中
+                      </a>
+                      <a
+                        href="#"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fa fa-envelope-o mr-1"></i> 发送消息
+                      </a>
+                      <a
+                        href="#"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fa fa-tag mr-1"></i> 批量标签
+                      </a>
+                      <div class="border-t border-gray-100 my-1"></div>
+                      <a
+                        href="#"
+                        class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-100 transition-colors">
+                        <i class="fa fa-trash-o mr-1"></i> 删除选中
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 客户表格 -->
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr
+                    class="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="px-6 py-3 w-12">
+                      <input
+                        type="checkbox"
+                        class="rounded border-gray-300 text-primary focus:ring-primary" />
+                    </th>
+                    <th class="px-6 py-3">客户信息</th>
+                    <th class="px-6 py-3">会员等级</th>
+                    <th class="px-6 py-3">累计消费</th>
+                    <th class="px-6 py-3">最近消费</th>
+                    <th class="px-6 py-3">健康状况</th>
+                    <th class="px-6 py-3">状态</th>
+                    <th class="px-6 py-3 text-right">操作</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <!-- 客户1 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        class="rounded border-gray-300 text-primary focus:ring-primary" />
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <img
+                          class="h-10 w-10 rounded-full object-cover"
+                          src="https://picsum.photos/id/1027/40/40"
+                          alt="客户头像" />
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            王丽娜
+                          </div>
+                          <div class="text-sm text-gray-500">138****5678</div>
+                          <div class="text-sm text-gray-500">
+                            会员号: C20230567
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-vip/10 text-vip">
+                        <i class="fa fa-diamond mr-1"></i> 钻石会员
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium">¥12,580</div>
+                      <div class="text-xs text-gray-500">12次消费</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      2023-06-15<br />
+                      <span class="text-primary">肩颈理疗</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm">颈椎劳损</div>
+                      <div class="text-xs text-gray-500">已调理3个月</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-active/10 text-active">
+                        <i class="fa fa-check-circle mr-1"></i> 活跃
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div class="flex justify-end space-x-2">
+                        <button
+                          class="text-primary hover:text-primary/80 transition-colors"
+                          title="查看详情">
+                          <i class="fa fa-eye"></i>
+                        </button>
+                        <button
+                          class="text-secondary hover:text-secondary/80 transition-colors"
+                          title="编辑信息">
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="健康档案">
+                          <i class="fa fa-file-text-o"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="消费记录">
+                          <i class="fa fa-credit-card"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 客户2 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        class="rounded border-gray-300 text-primary focus:ring-primary" />
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <img
+                          class="h-10 w-10 rounded-full object-cover"
+                          src="https://picsum.photos/id/1012/40/40"
+                          alt="客户头像" />
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            李明远
+                          </div>
+                          <div class="text-sm text-gray-500">139****2345</div>
+                          <div class="text-sm text-gray-500">
+                            会员号: C20230421
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-vip/10 text-vip">
+                        <i class="fa fa-star mr-1"></i> 黄金会员
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium">¥8,350</div>
+                      <div class="text-xs text-gray-500">8次消费</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      2023-06-10<br />
+                      <span class="text-primary">推拿按摩</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm">腰肌劳损</div>
+                      <div class="text-xs text-gray-500">已调理1个月</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-active/10 text-active">
+                        <i class="fa fa-check-circle mr-1"></i> 活跃
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div class="flex justify-end space-x-2">
+                        <button
+                          class="text-primary hover:text-primary/80 transition-colors"
+                          title="查看详情">
+                          <i class="fa fa-eye"></i>
+                        </button>
+                        <button
+                          class="text-secondary hover:text-secondary/80 transition-colors"
+                          title="编辑信息">
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="健康档案">
+                          <i class="fa fa-file-text-o"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="消费记录">
+                          <i class="fa fa-credit-card"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 客户3 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        class="rounded border-gray-300 text-primary focus:ring-primary" />
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <img
+                          class="h-10 w-10 rounded-full object-cover"
+                          src="https://picsum.photos/id/1000/40/40"
+                          alt="客户头像" />
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            张美玲
+                          </div>
+                          <div class="text-sm text-gray-500">136****8901</div>
+                          <div class="text-sm text-gray-500">
+                            会员号: C20230156
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-gray-100 text-gray-800">
+                        <i class="fa fa-user mr-1"></i> 普通会员
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium">¥2,180</div>
+                      <div class="text-xs text-gray-500">3次消费</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      2023-05-28<br />
+                      <span class="text-primary">艾灸调理</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm">失眠</div>
+                      <div class="text-xs text-gray-500">初次调理</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-active/10 text-active">
+                        <i class="fa fa-check-circle mr-1"></i> 活跃
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div class="flex justify-end space-x-2">
+                        <button
+                          class="text-primary hover:text-primary/80 transition-colors"
+                          title="查看详情">
+                          <i class="fa fa-eye"></i>
+                        </button>
+                        <button
+                          class="text-secondary hover:text-secondary/80 transition-colors"
+                          title="编辑信息">
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="健康档案">
+                          <i class="fa fa-file-text-o"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="消费记录">
+                          <i class="fa fa-credit-card"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 客户4 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        class="rounded border-gray-300 text-primary focus:ring-primary" />
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <img
+                          class="h-10 w-10 rounded-full object-cover"
+                          src="https://picsum.photos/id/1074/40/40"
+                          alt="客户头像" />
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            赵建国
+                          </div>
+                          <div class="text-sm text-gray-500">135****3456</div>
+                          <div class="text-sm text-gray-500">
+                            会员号: C20221289
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-vip/10 text-vip">
+                        <i class="fa fa-diamond mr-1"></i> 钻石会员
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium">¥15,620</div>
+                      <div class="text-xs text-gray-500">18次消费</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      2023-04-12<br />
+                      <span class="text-primary">全身经络疏通</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm">高血压</div>
+                      <div class="text-xs text-gray-500">已调理6个月</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-inactive/10 text-inactive">
+                        <i class="fa fa-pause-circle mr-1"></i> 非活跃
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div class="flex justify-end space-x-2">
+                        <button
+                          class="text-primary hover:text-primary/80 transition-colors"
+                          title="查看详情">
+                          <i class="fa fa-eye"></i>
+                        </button>
+                        <button
+                          class="text-secondary hover:text-secondary/80 transition-colors"
+                          title="编辑信息">
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="健康档案">
+                          <i class="fa fa-file-text-o"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="消费记录">
+                          <i class="fa fa-credit-card"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 客户5 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        class="rounded border-gray-300 text-primary focus:ring-primary" />
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <img
+                          class="h-10 w-10 rounded-full object-cover"
+                          src="https://picsum.photos/id/1062/40/40"
+                          alt="客户头像" />
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            陈思思
+                          </div>
+                          <div class="text-sm text-gray-500">137****7890</div>
+                          <div class="text-sm text-gray-500">
+                            会员号: C20230342
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-vip/10 text-vip">
+                        <i class="fa fa-star mr-1"></i> 黄金会员
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium">¥6,850</div>
+                      <div class="text-xs text-gray-500">6次消费</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      2023-06-05<br />
+                      <span class="text-primary">足部理疗</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm">宫寒</div>
+                      <div class="text-xs text-gray-500">已调理2个月</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-active/10 text-active">
+                        <i class="fa fa-check-circle mr-1"></i> 活跃
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div class="flex justify-end space-x-2">
+                        <button
+                          class="text-primary hover:text-primary/80 transition-colors"
+                          title="查看详情">
+                          <i class="fa fa-eye"></i>
+                        </button>
+                        <button
+                          class="text-secondary hover:text-secondary/80 transition-colors"
+                          title="编辑信息">
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="健康档案">
+                          <i class="fa fa-file-text-o"></i>
+                        </button>
+                        <button
+                          class="text-gray-500 hover:text-gray-700 transition-colors"
+                          title="消费记录">
+                          <i class="fa fa-credit-card"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 分页 -->
+            <div
+              class="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between">
+              <div class="text-sm text-gray-500 mb-4 sm:mb-0">
+                显示 <span class="font-medium">1</span> 到
+                <span class="font-medium">5</span> 条，共
+                <span class="font-medium">248</span> 条记录
+              </div>
+
+              <div class="flex items-center space-x-1">
+                <button
+                  class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled>
+                  <i class="fa fa-chevron-left text-xs"></i>
+                </button>
+                <button
+                  class="px-3 py-1 rounded border border-primary bg-primary text-white">
+                  1
+                </button>
+                <button
+                  class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                  2
+                </button>
+                <button
+                  class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                  3
+                </button>
+                <button
+                  class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                  4
+                </button>
+                <button
+                  class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                  5
+                </button>
+                <button
+                  class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
+                  <i class="fa fa-chevron-right text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // 移动端菜单切换
+      document
+        .getElementById('mobileMenuBtn')
+        .addEventListener('click', function () {
+          const sidebar = document.querySelector('aside');
+          sidebar.classList.toggle('hidden');
+          sidebar.classList.toggle('fixed');
+          sidebar.classList.toggle('inset-0');
+          sidebar.classList.toggle('z-50');
+        });
+
+      // 表格行悬停效果增强
+      document.querySelectorAll('.table-hover').forEach((row) => {
+        row.addEventListener('mouseenter', function () {
+          this.classList.add('shadow-sm');
+        });
+        row.addEventListener('mouseleave', function () {
+          this.classList.remove('shadow-sm');
+        });
+      });
+
+      // 批量选择功能
+      const selectAllCheckbox = document.querySelector(
+        'thead input[type="checkbox"]',
+      );
+      const rowCheckboxes = document.querySelectorAll(
+        'tbody input[type="checkbox"]',
+      );
+
+      selectAllCheckbox.addEventListener('change', function () {
+        rowCheckboxes.forEach((checkbox) => {
+          checkbox.checked = this.checked;
+        });
+      });
+
+      // 模拟客户数据加载动画（实际项目中可替换为真实数据请求）
+      window.addEventListener('load', function () {
+        // 这里可以添加数据加载完成后的动画效果
+        document.querySelectorAll('tr').forEach((row, index) => {
+          if (index > 0) {
+            // 跳过表头
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(10px)';
+            row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+            setTimeout(
+              () => {
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+              },
+              100 * (index - 1),
+            );
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -80,12 +80,12 @@ export const useFetchSidebarData = () => {
     },
     {
       title: '推广',
-      url: '/promote',
+      url: '/promotion',
       icon: MessageSquareShare,
       items: [
         {
           title: '列表',
-          url: '/promote/list',
+          url: '/promotion/list',
         },
       ],
     },

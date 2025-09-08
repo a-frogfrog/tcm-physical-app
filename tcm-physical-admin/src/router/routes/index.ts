@@ -6,7 +6,7 @@ import productRoutes from './modules/product';
 import customerRoutes from './modules/customer';
 import orderRoutes from './modules/order';
 import orgRoutes from './modules/org';
-import promoteRoutes from './modules/promote';
+import promotionRoutes from './modules/promotion';
 import scheduleRoutes from './modules/schedule';
 
 const routes = [
@@ -19,7 +19,7 @@ const routes = [
       customerRoutes,
       orderRoutes,
       orgRoutes,
-      promoteRoutes,
+      promotionRoutes,
       scheduleRoutes,
     ],
   },

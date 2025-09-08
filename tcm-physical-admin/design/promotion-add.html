@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗管理系统 - 新增推广</title>
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+
+    <!-- Tailwind 配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 深棕色 - 主色调
+              secondary: '#4F7942', // 绿色 - 辅助色
+              accent: '#D2B48C', // 棕褐色 - 强调色
+              neutral: '#F5F5DC', // 米色 - 中性色
+              'neutral-dark': '#3E2723', // 深棕黑色 - 文字色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .sidebar-item {
+          @apply flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary rounded-lg transition-all duration-200;
+        }
+        .sidebar-item.active {
+          @apply bg-primary/20 text-primary font-medium;
+        }
+        .form-label {
+          @apply block text-sm font-medium text-gray-700 mb-1.5;
+        }
+        .form-input {
+          @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors;
+        }
+        .form-hint {
+          @apply text-xs text-gray-500 mt-1;
+        }
+        .form-error {
+          @apply text-xs text-red-500 mt-1;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-neutral-dark min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm z-10">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- 左侧Logo和标题 -->
+          <div class="flex items-center gap-3">
+            <button
+              id="sidebar-toggle"
+              class="lg:hidden text-gray-600 hover:text-primary">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2">
+              <i class="fa fa-leaf text-2xl text-secondary"></i>
+              <h1 class="text-xl font-semibold text-primary hidden sm:block">
+                中医理疗管理系统
+              </h1>
+            </div>
+          </div>
+
+          <!-- 右侧用户信息和操作 -->
+          <div class="flex items-center gap-5">
+            <button
+              class="relative text-gray-600 hover:text-primary transition-colors">
+              <i class="fa fa-bell text-xl"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+                >3</span
+              >
+            </button>
+            <div class="flex items-center gap-2 cursor-pointer group">
+              <img
+                src="https://picsum.photos/id/64/200/200"
+                alt="用户头像"
+                class="w-8 h-8 rounded-full object-cover border-2 border-primary/20" />
+              <div class="hidden md:block">
+                <p class="text-sm font-medium">王医生</p>
+                <p class="text-xs text-gray-500">管理员</p>
+              </div>
+              <i
+                class="fa fa-chevron-down text-xs text-gray-500 group-hover:text-primary transition-colors"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- 侧边栏导航 -->
+      <aside
+        id="sidebar"
+        class="bg-white w-64 shadow-sm transform -translate-x-full lg:translate-x-0 fixed lg:static h-[calc(100vh-4rem)] z-20 transition-transform duration-300 overflow-y-auto">
+        <div class="p-4">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="搜索功能..."
+              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
+            <i
+              class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
+        </div>
+
+        <nav class="p-2">
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            主菜单
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-tachometer w-5 text-center"></i> 仪表盘</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item active"
+                ><i class="fa fa-bullhorn w-5 text-center"></i> 推广管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-users w-5 text-center"></i> 客户管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-calendar w-5 text-center"></i> 预约管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-stethoscope w-5 text-center"></i> 理疗项目</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-credit-card w-5 text-center"></i> 财务管理</a
+              >
+            </li>
+          </ul>
+
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">
+            系统设置
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-cog w-5 text-center"></i> 系统设置</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-user-circle w-5 text-center"></i> 员工管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-file-text w-5 text-center"></i> 日志管理</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">
+        <!-- 面包屑导航 -->
+        <div class="flex items-center text-sm text-gray-500 mb-6">
+          <a href="#" class="hover:text-primary transition-colors">首页</a>
+          <i class="fa fa-angle-right mx-2 text-xs"></i>
+          <a href="#" class="hover:text-primary transition-colors">推广管理</a>
+          <i class="fa fa-angle-right mx-2 text-xs"></i>
+          <span class="text-primary">新增推广活动</span>
+        </div>
+
+        <!-- 页面标题 -->
+        <div class="mb-8">
+          <h2
+            class="text-[clamp(1.25rem,3vw,1.75rem)] font-bold text-neutral-dark">
+            创建新推广活动
+          </h2>
+          <p class="text-gray-500 mt-1">
+            填写以下信息，创建中医理疗服务的推广活动，吸引更多客户参与
+          </p>
+        </div>
+
+        <!-- 表单卡片 -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8 mb-6 max-w-4xl mx-auto">
+          <form id="promotion-form">
+            <!-- 基础信息区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-info-circle text-primary"></i>
+                基础信息
+              </h3>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 推广名称 -->
+                <div>
+                  <label class="form-label" for="promotion-name"
+                    >推广活动名称 <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="promotion-name"
+                    class="form-input"
+                    placeholder="例如：夏季三伏贴特惠活动"
+                    required />
+                  <p class="form-hint">
+                    填写清晰易懂的活动名称，便于客户识别和系统管理
+                  </p>
+                </div>
+
+                <!-- 推广类型 -->
+                <div>
+                  <label class="form-label" for="promotion-type"
+                    >推广类型 <span class="text-red-500">*</span></label
+                  >
+                  <select id="promotion-type" class="form-input" required>
+                    <option value="">请选择推广类型</option>
+                    <option value="discount">折扣优惠（如8折理疗）</option>
+                    <option value="package">套餐促销（如5次推拿套餐）</option>
+                    <option value="new">新项目推广（如中药熏蒸体验）</option>
+                    <option value="member">会员活动（如会员专享福利）</option>
+                  </select>
+                  <p class="form-hint">
+                    选择适合的推广类型，将影响后续表单选项
+                  </p>
+                </div>
+
+                <!-- 开始日期 -->
+                <div>
+                  <label class="form-label" for="start-date"
+                    >活动开始日期 <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="date"
+                    id="start-date"
+                    class="form-input"
+                    required />
+                  <p class="form-hint">设置活动开始的日期，最早为今日</p>
+                </div>
+
+                <!-- 结束日期 -->
+                <div>
+                  <label class="form-label" for="end-date"
+                    >活动结束日期 <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="date"
+                    id="end-date"
+                    class="form-input"
+                    required />
+                  <p class="form-hint">设置活动结束的日期，必须晚于开始日期</p>
+                </div>
+
+                <!-- 推广图片 -->
+                <div>
+                  <label class="form-label" for="promotion-image"
+                    >推广活动图片</label
+                  >
+                  <div
+                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="space-y-1 text-center">
+                      <i class="fa fa-cloud-upload text-3xl text-gray-400"></i>
+                      <div class="flex text-sm text-gray-600">
+                        <label
+                          for="file-upload"
+                          class="relative cursor-pointer bg-white rounded-lg font-medium text-primary hover:text-primary/80 focus-within:outline-none">
+                          <span>上传图片</span>
+                          <input
+                            id="file-upload"
+                            name="file-upload"
+                            type="file"
+                            class="sr-only"
+                            accept="image/*" />
+                        </label>
+                        <p class="pl-1">或拖放文件</p>
+                      </div>
+                      <p class="text-xs text-gray-500">
+                        支持 PNG, JPG, GIF 格式，建议尺寸 800×450px
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 活动状态 -->
+                <div>
+                  <label class="form-label" for="promotion-status"
+                    >活动状态 <span class="text-red-500">*</span></label
+                  >
+                  <select id="promotion-status" class="form-input" required>
+                    <option value="pending">未开始（保存后不立即生效）</option>
+                    <option value="active">
+                      立即生效（若在活动时间范围内）
+                    </option>
+                    <option value="paused">暂存（草稿状态）</option>
+                  </select>
+                  <p class="form-hint">
+                    设置活动的初始状态，可在活动列表中修改
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 推广内容区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-file-text-o text-primary"></i>
+                推广内容设置
+              </h3>
+
+              <!-- 推广描述 -->
+              <div class="mb-6">
+                <label class="form-label" for="promotion-description"
+                  >推广活动描述 <span class="text-red-500">*</span></label
+                >
+                <textarea
+                  id="promotion-description"
+                  rows="4"
+                  class="form-input"
+                  placeholder="详细描述推广活动内容，包括活动规则、参与方式、优惠详情等..."
+                  required></textarea>
+                <p class="form-hint">
+                  清晰描述活动内容，帮助客户了解活动详情，减少咨询成本
+                </p>
+              </div>
+
+              <!-- 参与条件 -->
+              <div class="mb-6">
+                <label class="form-label" for="participation-conditions"
+                  >参与条件</label
+                >
+                <textarea
+                  id="participation-conditions"
+                  rows="3"
+                  class="form-input"
+                  placeholder="例如：新客户首次体验、会员专享、需提前预约等..."></textarea>
+                <p class="form-hint">
+                  如有特殊参与条件，请在此说明，无特殊条件可留空
+                </p>
+              </div>
+
+              <!-- 适用项目 -->
+              <div>
+                <label class="form-label"
+                  >适用理疗项目 <span class="text-red-500">*</span></label
+                >
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="applicable-items"
+                      value="acupuncture" />
+                    <span class="ml-2">针灸理疗</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="applicable-items"
+                      value="tuina" />
+                    <span class="ml-2">中医推拿</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="applicable-items"
+                      value="cupping" />
+                    <span class="ml-2">拔罐疗法</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="applicable-items"
+                      value="moxibustion" />
+                    <span class="ml-2">艾灸疗法</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="applicable-items"
+                      value="herbal" />
+                    <span class="ml-2">中药熏蒸</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="applicable-items"
+                      value="all" />
+                    <span class="ml-2">全部项目</span>
+                  </label>
+                </div>
+                <p class="form-hint">至少选择一项适用的理疗项目</p>
+              </div>
+            </div>
+
+            <!-- 优惠设置区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-percent text-primary"></i>
+                优惠设置
+              </h3>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 优惠方式 -->
+                <div>
+                  <label class="form-label" for="discount-type"
+                    >优惠方式 <span class="text-red-500">*</span></label
+                  >
+                  <select id="discount-type" class="form-input" required>
+                    <option value="">请选择优惠方式</option>
+                    <option value="percentage">百分比折扣（如8折）</option>
+                    <option value="fixed">固定金额减免（如减50元）</option>
+                    <option value="package-price">
+                      套餐价格（如5次疗程价）
+                    </option>
+                    <option value="free">免费体验（限指定项目）</option>
+                  </select>
+                </div>
+
+                <!-- 优惠力度 -->
+                <div>
+                  <label class="form-label" for="discount-value"
+                    >优惠力度 <span class="text-red-500">*</span></label
+                  >
+                  <div class="relative">
+                    <input
+                      type="number"
+                      id="discount-value"
+                      class="form-input pl-8"
+                      placeholder="例如：80表示8折或80元"
+                      required />
+                    <span
+                      id="discount-unit"
+                      class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >%</span
+                    >
+                  </div>
+                  <p class="form-hint" id="discount-hint">
+                    输入折扣百分比，例如80表示8折优惠
+                  </p>
+                </div>
+
+                <!-- 每人限参与次数 -->
+                <div>
+                  <label class="form-label" for="max-participations"
+                    >每人限参与次数</label
+                  >
+                  <select id="max-participations" class="form-input">
+                    <option value="unlimited">不限次数</option>
+                    <option value="1" selected>1次</option>
+                    <option value="2">2次</option>
+                    <option value="3">3次</option>
+                    <option value="5">5次</option>
+                    <option value="custom">自定义</option>
+                  </select>
+                  <div id="custom-participations" class="hidden mt-3">
+                    <input
+                      type="number"
+                      min="1"
+                      class="form-input"
+                      placeholder="输入次数限制" />
+                  </div>
+                </div>
+
+                <!-- 总参与人数限制 -->
+                <div>
+                  <label class="form-label" for="max-participants"
+                    >总参与人数限制</label
+                  >
+                  <select id="max-participants" class="form-input">
+                    <option value="unlimited" selected>不限人数</option>
+                    <option value="50">50人</option>
+                    <option value="100">100人</option>
+                    <option value="200">200人</option>
+                    <option value="500">500人</option>
+                    <option value="custom">自定义</option>
+                  </select>
+                  <div id="custom-participants" class="hidden mt-3">
+                    <input
+                      type="number"
+                      min="1"
+                      class="form-input"
+                      placeholder="输入人数限制" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 推广渠道区域 -->
+            <div class="mb-8">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-share-alt text-primary"></i>
+                推广渠道设置
+              </h3>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <label
+                  class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                  <input
+                    type="checkbox"
+                    class="text-primary focus:ring-primary/30 rounded"
+                    name="channels"
+                    value="weixin"
+                    checked />
+                  <span class="ml-2 flex items-center gap-1.5">
+                    <i class="fa fa-weixin text-green-500"></i>
+                    微信公众号
+                  </span>
+                </label>
+                <label
+                  class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                  <input
+                    type="checkbox"
+                    class="text-primary focus:ring-primary/30 rounded"
+                    name="channels"
+                    value="app"
+                    checked />
+                  <span class="ml-2 flex items-center gap-1.5">
+                    <i class="fa fa-mobile text-gray-700 text-xl"></i>
+                    手机APP
+                  </span>
+                </label>
+                <label
+                  class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                  <input
+                    type="checkbox"
+                    class="text-primary focus:ring-primary/30 rounded"
+                    name="channels"
+                    value="website" />
+                  <span class="ml-2 flex items-center gap-1.5">
+                    <i class="fa fa-globe text-blue-500"></i>
+                    官方网站
+                  </span>
+                </label>
+                <label
+                  class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                  <input
+                    type="checkbox"
+                    class="text-primary focus:ring-primary/30 rounded"
+                    name="channels"
+                    value="poster" />
+                  <span class="ml-2 flex items-center gap-1.5">
+                    <i class="fa fa-image text-purple-500"></i>
+                    店内海报
+                  </span>
+                </label>
+                <label
+                  class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                  <input
+                    type="checkbox"
+                    class="text-primary focus:ring-primary/30 rounded"
+                    name="channels"
+                    value="member" />
+                  <span class="ml-2 flex items-center gap-1.5">
+                    <i class="fa fa-users text-orange-500"></i>
+                    会员推送
+                  </span>
+                </label>
+                <label
+                  class="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                  <input
+                    type="checkbox"
+                    class="text-primary focus:ring-primary/30 rounded"
+                    name="channels"
+                    value="other" />
+                  <span class="ml-2 flex items-center gap-1.5">
+                    <i class="fa fa-ellipsis-h text-gray-500"></i>
+                    其他渠道
+                  </span>
+                </label>
+              </div>
+
+              <div class="mt-5">
+                <label class="form-label" for="promotion-notes"
+                  >推广备注（内部使用）</label
+                >
+                <textarea
+                  id="promotion-notes"
+                  rows="3"
+                  class="form-input"
+                  placeholder="填写内部备注信息，如推广策略、预算等..."></textarea>
+                <p class="form-hint">此信息仅内部可见，不对外展示</p>
+              </div>
+            </div>
+
+            <!-- 表单操作按钮 -->
+            <div
+              class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-100">
+              <button
+                type="button"
+                class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                保存草稿
+              </button>
+              <button
+                type="button"
+                class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                预览效果
+              </button>
+              <button
+                type="submit"
+                class="px-6 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors shadow-sm hover:shadow">
+                确认创建
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- 遮罩层（移动端侧边栏打开时显示） -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"></div>
+
+    <script>
+      // 侧边栏切换功能
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+
+      // 优惠方式切换逻辑
+      const discountType = document.getElementById('discount-type');
+      const discountUnit = document.getElementById('discount-unit');
+      const discountHint = document.getElementById('discount-hint');
+
+      discountType.addEventListener('change', () => {
+        switch (discountType.value) {
+          case 'percentage':
+            discountUnit.textContent = '%';
+            discountHint.textContent = '输入折扣百分比，例如80表示8折优惠';
+            break;
+          case 'fixed':
+            discountUnit.textContent = '元';
+            discountHint.textContent = '输入固定减免金额，例如50表示减免50元';
+            break;
+          case 'package-price':
+            discountUnit.textContent = '元';
+            discountHint.textContent =
+              '输入套餐总价，例如680表示5次疗程总价680元';
+            break;
+          case 'free':
+            discountUnit.textContent = '';
+            discountHint.textContent = '选择免费体验，无需填写金额';
+            break;
+          default:
+            discountUnit.textContent = '%';
+            discountHint.textContent = '输入折扣百分比，例如80表示8折优惠';
+        }
+      });
+
+      // 参与次数限制逻辑
+      const maxParticipations = document.getElementById('max-participations');
+      const customParticipations = document.getElementById(
+        'custom-participations',
+      );
+
+      maxParticipations.addEventListener('change', () => {
+        customParticipations.classList.toggle(
+          'hidden',
+          maxParticipations.value !== 'custom',
+        );
+      });
+
+      // 参与人数限制逻辑
+      const maxParticipants = document.getElementById('max-participants');
+      const customParticipants = document.getElementById('custom-participants');
+
+      maxParticipants.addEventListener('change', () => {
+        customParticipants.classList.toggle(
+          'hidden',
+          maxParticipants.value !== 'custom',
+        );
+      });
+
+      // 表单提交处理
+      const promotionForm = document.getElementById('promotion-form');
+
+      promotionForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // 简单验证逻辑
+        const name = document.getElementById('promotion-name').value;
+        const type = document.getElementById('promotion-type').value;
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        const description = document.getElementById(
+          'promotion-description',
+        ).value;
+        const discountValue = document.getElementById('discount-value').value;
+
+        let isValid = true;
+
+        if (!name) {
+          isValid = false;
+          alert('请填写推广活动名称');
+        } else if (!type) {
+          isValid = false;
+          alert('请选择推广类型');
+        } else if (!startDate || !endDate) {
+          isValid = false;
+          alert('请选择活动开始和结束日期');
+        } else if (new Date(startDate) > new Date(endDate)) {
+          isValid = false;
+          alert('结束日期必须晚于开始日期');
+        } else if (!description) {
+          isValid = false;
+          alert('请填写推广活动描述');
+        } else if (!discountValue && discountType.value !== 'free') {
+          isValid = false;
+          alert('请填写优惠力度');
+        }
+
+        if (isValid) {
+          // 模拟表单提交成功
+          alert('推广活动创建成功！');
+          // 实际应用中这里会提交表单数据到服务器
+          // 然后跳转到推广列表页
+          // window.location.href = 'promotion-list.html';
+        }
+      });
+
+      // 按钮点击效果
+      document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((button) => {
+          button.addEventListener('click', function () {
+            this.classList.add('scale-95');
+            setTimeout(() => {
+              this.classList.remove('scale-95');
+            }, 150);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

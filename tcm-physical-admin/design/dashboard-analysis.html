@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗管理系统 - 数据分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <!-- 配置Tailwind自定义颜色 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 中医棕色主调
+              secondary: '#2F4F4F', // 深绿色辅助色
+              accent: '#4CAF50', // 绿色强调色
+              neutral: '#F5F5DC', // 米色背景
+              'chart-1': '#8B5A2B',
+              'chart-2': '#2F4F4F',
+              'chart-3': '#4CAF50',
+              'chart-4': '#2196F3',
+              'chart-5': '#FFC107',
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .card-shadow {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .sidebar-active {
+          @apply bg-primary/10 text-primary border-l-4 border-primary;
+        }
+        .filter-active {
+          @apply bg-primary text-white;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-gray-50 font-sans text-gray-800 min-h-screen flex overflow-hidden">
+    <!-- 侧边栏导航 -->
+    <aside
+      id="sidebar"
+      class="bg-white w-64 shadow-lg z-30 transition-all duration-300 ease-in-out hidden md:block">
+      <div class="p-4 border-b flex items-center space-x-3">
+        <div
+          class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+          <i class="fa fa-heartbeat text-primary text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-primary">中医理疗馆</h1>
+          <p class="text-xs text-gray-500">管理系统 v2.3.1</p>
+        </div>
+      </div>
+
+      <nav class="p-4">
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+              <i class="fa fa-tachometer w-5 text-center"></i>
+              <span class="ml-3">工作台</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+              <i class="fa fa-user-md w-5 text-center"></i>
+              <span class="ml-3">患者管理</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+              <i class="fa fa-calendar w-5 text-center"></i>
+              <span class="ml-3">预约管理</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+              <i class="fa fa-stethoscope w-5 text-center"></i>
+              <span class="ml-3">理疗项目</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+              <i class="fa fa-file-text w-5 text-center"></i>
+              <span class="ml-3">诊疗记录</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+              <i class="fa fa-credit-card w-5 text-center"></i>
+              <span class="ml-3">收费管理</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="sidebar-active flex items-center p-3 rounded-lg transition-all">
+              <i class="fa fa-bar-chart w-5 text-center"></i>
+              <span class="ml-3">数据分析</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-8 pt-6 border-t">
+          <ul class="space-y-1">
+            <li>
+              <a
+                href="#"
+                class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+                <i class="fa fa-cog w-5 text-center"></i>
+                <span class="ml-3">系统设置</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+                <i class="fa fa-question-circle w-5 text-center"></i>
+                <span class="ml-3">帮助中心</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- 顶部导航栏 -->
+      <header class="bg-white shadow-sm z-20">
+        <div class="flex items-center justify-between p-4">
+          <!-- 移动端菜单按钮 -->
+          <button
+            id="menu-toggle"
+            class="md:hidden text-gray-600 hover:text-primary focus:outline-none">
+            <i class="fa fa-bars text-xl"></i>
+          </button>
+
+          <!-- 搜索框 -->
+          <div class="hidden md:flex items-center flex-1 max-w-md mx-4">
+            <div class="relative w-full">
+              <input
+                type="text"
+                placeholder="搜索数据指标、患者或项目..."
+                class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+              <i
+                class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+          </div>
+
+          <!-- 右侧工具栏 -->
+          <div class="flex items-center space-x-4">
+            <!-- 通知按钮 -->
+            <button
+              class="relative p-2 text-gray-600 hover:text-primary hover:bg-gray-100 rounded-full transition-all">
+              <i class="fa fa-bell text-xl"></i>
+              <span
+                class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+
+            <!-- 用户信息 -->
+            <div class="flex items-center space-x-2">
+              <img
+                src="https://picsum.photos/id/64/200/200"
+                alt="管理员头像"
+                class="w-8 h-8 rounded-full object-cover border-2 border-primary/20" />
+              <div class="hidden md:block">
+                <p class="text-sm font-medium">王医生</p>
+                <p class="text-xs text-gray-500">管理员</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 分析页面内容 -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
+        <!-- 页面标题与筛选工具 -->
+        <div class="mb-6">
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-gray-800">
+                数据分析
+              </h2>
+              <p class="text-gray-500 mt-1">多维度业务洞察，辅助决策优化</p>
+            </div>
+
+            <!-- 数据筛选工具 -->
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- 时间范围选择 -->
+              <div class="relative">
+                <select
+                  class="appearance-none pl-4 pr-10 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all">
+                  <option>近7天</option>
+                  <option selected>近30天</option>
+                  <option>近90天</option>
+                  <option>本月</option>
+                  <option>上月</option>
+                  <option>自定义...</option>
+                </select>
+                <i
+                  class="fa fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+              </div>
+
+              <!-- 数据维度筛选 -->
+              <div class="flex flex-wrap gap-2">
+                <button
+                  class="px-3 py-1.5 rounded-lg filter-active text-sm transition-all">
+                  全部
+                </button>
+                <button
+                  class="px-3 py-1.5 rounded-lg bg-white text-gray-700 hover:bg-gray-100 text-sm transition-all">
+                  预约
+                </button>
+                <button
+                  class="px-3 py-1.5 rounded-lg bg-white text-gray-700 hover:bg-gray-100 text-sm transition-all">
+                  患者
+                </button>
+                <button
+                  class="px-3 py-1.5 rounded-lg bg-white text-gray-700 hover:bg-gray-100 text-sm transition-all">
+                  收入
+                </button>
+                <button
+                  class="px-3 py-1.5 rounded-lg bg-white text-gray-700 hover:bg-gray-100 text-sm transition-all">
+                  项目
+                </button>
+              </div>
+
+              <!-- 导出按钮 -->
+              <button
+                class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white text-primary border border-primary/30 hover:bg-primary/5 text-sm transition-all">
+                <i class="fa fa-download"></i> 导出数据
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 核心指标卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <!-- 总预约量 -->
+          <div
+            class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-all transform hover:-translate-y-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-gray-500 text-sm">总预约量</p>
+                <h3 class="text-3xl font-bold mt-1 text-primary">328</h3>
+                <p class="text-green-500 text-sm mt-2 flex items-center">
+                  <i class="fa fa-arrow-up mr-1"></i> 较上月 +12.5%
+                </p>
+              </div>
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <i class="fa fa-calendar-check-o text-primary text-xl"></i>
+              </div>
+            </div>
+            <!-- 微型趋势图 -->
+            <div class="mt-4 h-12">
+              <canvas id="appointmentTrend"></canvas>
+            </div>
+          </div>
+
+          <!-- 新增患者数 -->
+          <div
+            class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-all transform hover:-translate-y-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-gray-500 text-sm">新增患者数</p>
+                <h3 class="text-3xl font-bold mt-1 text-secondary">86</h3>
+                <p class="text-green-500 text-sm mt-2 flex items-center">
+                  <i class="fa fa-arrow-up mr-1"></i> 较上月 +8.2%
+                </p>
+              </div>
+              <div
+                class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center">
+                <i class="fa fa-user-plus text-secondary text-xl"></i>
+              </div>
+            </div>
+            <!-- 微型趋势图 -->
+            <div class="mt-4 h-12">
+              <canvas id="newPatientTrend"></canvas>
+            </div>
+          </div>
+
+          <!-- 总收入 -->
+          <div
+            class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-all transform hover:-translate-y-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-gray-500 text-sm">总收入</p>
+                <h3 class="text-3xl font-bold mt-1 text-accent">¥128,500</h3>
+                <p class="text-green-500 text-sm mt-2 flex items-center">
+                  <i class="fa fa-arrow-up mr-1"></i> 较上月 +15.3%
+                </p>
+              </div>
+              <div
+                class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                <i class="fa fa-money text-accent text-xl"></i>
+              </div>
+            </div>
+            <!-- 微型趋势图 -->
+            <div class="mt-4 h-12">
+              <canvas id="revenueTrend"></canvas>
+            </div>
+          </div>
+
+          <!-- 平均客单价 -->
+          <div
+            class="bg-white rounded-xl p-5 card-shadow hover:shadow-lg transition-all transform hover:-translate-y-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-gray-500 text-sm">平均客单价</p>
+                <h3 class="text-3xl font-bold mt-1 text-chart-4">¥392</h3>
+                <p class="text-red-500 text-sm mt-2 flex items-center">
+                  <i class="fa fa-arrow-down mr-1"></i> 较上月 -2.1%
+                </p>
+              </div>
+              <div
+                class="w-12 h-12 rounded-full bg-chart-4/10 flex items-center justify-center">
+                <i class="fa fa-shopping-cart text-chart-4 text-xl"></i>
+              </div>
+            </div>
+            <!-- 微型趋势图 -->
+            <div class="mt-4 h-12">
+              <canvas id="avgPriceTrend"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 趋势分析图表 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <!-- 预约与收入趋势 -->
+          <div class="lg:col-span-2 bg-white rounded-xl p-5 card-shadow">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-lg">预约与收入趋势</h3>
+              <div class="flex items-center space-x-3">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-1 mr-2"></span>
+                  <span class="text-sm text-gray-600">预约量</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-3 mr-2"></span>
+                  <span class="text-sm text-gray-600">收入(千元)</span>
+                </div>
+                <div class="relative">
+                  <select
+                    class="appearance-none pl-3 pr-8 py-1.5 text-sm rounded-lg border border-gray-200 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all">
+                    <option>按日</option>
+                    <option selected>按周</option>
+                    <option>按月</option>
+                  </select>
+                  <i
+                    class="fa fa-chevron-down absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
+                </div>
+              </div>
+            </div>
+            <div class="h-80">
+              <canvas id="appointmentRevenueChart"></canvas>
+            </div>
+          </div>
+
+          <!-- 患者来源分布 -->
+          <div class="bg-white rounded-xl p-5 card-shadow">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-lg">患者来源分布</h3>
+              <button class="text-gray-400 hover:text-primary transition-all">
+                <i class="fa fa-ellipsis-v"></i>
+              </button>
+            </div>
+            <div class="h-64 mb-6">
+              <canvas id="patientSourceChart"></canvas>
+            </div>
+            <!-- 来源明细 -->
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-1 mr-2"></span>
+                  <span class="text-sm">朋友推荐</span>
+                </div>
+                <span class="text-sm font-medium">38%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-2 mr-2"></span>
+                  <span class="text-sm">线上预约</span>
+                </div>
+                <span class="text-sm font-medium">25%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-3 mr-2"></span>
+                  <span class="text-sm">附近居民</span>
+                </div>
+                <span class="text-sm font-medium">18%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-4 mr-2"></span>
+                  <span class="text-sm">广告推广</span>
+                </div>
+                <span class="text-sm font-medium">12%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-5 mr-2"></span>
+                  <span class="text-sm">其他渠道</span>
+                </div>
+                <span class="text-sm font-medium">7%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 理疗项目分析 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <!-- 项目热度排名 -->
+          <div class="bg-white rounded-xl p-5 card-shadow">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-lg">理疗项目热度排名</h3>
+              <button
+                class="text-primary text-sm hover:underline transition-all">
+                查看全部
+              </button>
+            </div>
+
+            <div class="space-y-5">
+              <!-- 项目1 -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <div class="flex items-center">
+                    <span
+                      class="w-8 h-8 rounded-full bg-chart-1/10 flex items-center justify-center mr-3">
+                      <i class="fa fa-hand-paper-o text-chart-1"></i>
+                    </span>
+                    <span class="font-medium">推拿按摩</span>
+                  </div>
+                  <span class="text-sm font-medium">128 次</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div
+                    class="bg-chart-1 h-2 rounded-full"
+                    style="width: 85%"></div>
+                </div>
+              </div>
+
+              <!-- 项目2 -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <div class="flex items-center">
+                    <span
+                      class="w-8 h-8 rounded-full bg-chart-2/10 flex items-center justify-center mr-3">
+                      <i class="fa fa-stethoscope text-chart-2"></i>
+                    </span>
+                    <span class="font-medium">针灸治疗</span>
+                  </div>
+                  <span class="text-sm font-medium">96 次</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div
+                    class="bg-chart-2 h-2 rounded-full"
+                    style="width: 65%"></div>
+                </div>
+              </div>
+
+              <!-- 项目3 -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <div class="flex items-center">
+                    <span
+                      class="w-8 h-8 rounded-full bg-chart-3/10 flex items-center justify-center mr-3">
+                      <i class="fa fa-fire text-chart-3"></i>
+                    </span>
+                    <span class="font-medium">艾灸调理</span>
+                  </div>
+                  <span class="text-sm font-medium">78 次</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div
+                    class="bg-chart-3 h-2 rounded-full"
+                    style="width: 52%"></div>
+                </div>
+              </div>
+
+              <!-- 项目4 -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <div class="flex items-center">
+                    <span
+                      class="w-8 h-8 rounded-full bg-chart-4/10 flex items-center justify-center mr-3">
+                      <i class="fa fa-flask text-chart-4"></i>
+                    </span>
+                    <span class="font-medium">中药熏蒸</span>
+                  </div>
+                  <span class="text-sm font-medium">52 次</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div
+                    class="bg-chart-4 h-2 rounded-full"
+                    style="width: 35%"></div>
+                </div>
+              </div>
+
+              <!-- 项目5 -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <div class="flex items-center">
+                    <span
+                      class="w-8 h-8 rounded-full bg-chart-5/10 flex items-center justify-center mr-3">
+                      <i class="fa fa-spa text-chart-5"></i>
+                    </span>
+                    <span class="font-medium">拔罐疗法</span>
+                  </div>
+                  <span class="text-sm font-medium">42 次</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div
+                    class="bg-chart-5 h-2 rounded-full"
+                    style="width: 28%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 项目收入与利润分析 -->
+          <div class="lg:col-span-2 bg-white rounded-xl p-5 card-shadow">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-lg">项目收入与利润分析</h3>
+              <div class="relative">
+                <select
+                  class="appearance-none pl-3 pr-8 py-1.5 text-sm rounded-lg border border-gray-200 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all">
+                  <option selected>按收入</option>
+                  <option>按利润</option>
+                  <option>按利润率</option>
+                </select>
+                <i
+                  class="fa fa-chevron-down absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
+              </div>
+            </div>
+            <div class="h-80">
+              <canvas id="treatmentProfitChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 患者分析 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- 患者年龄与性别分布 -->
+          <div class="bg-white rounded-xl p-5 card-shadow">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-lg">患者年龄与性别分布</h3>
+              <div class="flex space-x-2">
+                <button
+                  class="px-3 py-1 text-sm bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all">
+                  年龄
+                </button>
+                <button
+                  class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all">
+                  性别
+                </button>
+              </div>
+            </div>
+            <div class="h-80">
+              <canvas id="patientAgeGenderChart"></canvas>
+            </div>
+          </div>
+
+          <!-- 患者复购率与留存分析 -->
+          <div class="bg-white rounded-xl p-5 card-shadow">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-lg">患者复购率与留存分析</h3>
+              <div class="flex items-center space-x-3">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-2 mr-2"></span>
+                  <span class="text-sm text-gray-600">复购率</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-chart-4 mr-2"></span>
+                  <span class="text-sm text-gray-600">30天留存</span>
+                </div>
+              </div>
+            </div>
+            <div class="h-80">
+              <canvas id="patientRetentionChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // 初始化页面
+      document.addEventListener('DOMContentLoaded', function () {
+        // 移动端菜单切换
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', function () {
+          sidebar.classList.toggle('hidden');
+          sidebar.classList.toggle('absolute');
+          sidebar.classList.toggle('h-full');
+        });
+
+        // 微型趋势图 - 预约量
+        const appointmentTrendCtx = document
+          .getElementById('appointmentTrend')
+          .getContext('2d');
+        new Chart(appointmentTrendCtx, {
+          type: 'line',
+          data: {
+            labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+            datasets: [
+              {
+                data: [18, 22, 19, 25, 23, 28, 25, 30, 28, 32, 30, 35, 32, 38],
+                borderColor: '#8B5A2B',
+                backgroundColor: 'rgba(139, 90, 43, 0.1)',
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { display: false },
+              y: { display: false },
+            },
+            elements: { line: { tension: 0.4 } },
+          },
+        });
+
+        // 微型趋势图 - 新增患者
+        const newPatientTrendCtx = document
+          .getElementById('newPatientTrend')
+          .getContext('2d');
+        new Chart(newPatientTrendCtx, {
+          type: 'line',
+          data: {
+            labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+            datasets: [
+              {
+                data: [5, 7, 6, 8, 7, 9, 8, 10, 9, 11, 10, 12, 11, 13],
+                borderColor: '#2F4F4F',
+                backgroundColor: 'rgba(47, 79, 79, 0.1)',
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { display: false },
+              y: { display: false },
+            },
+          },
+        });
+
+        // 微型趋势图 - 收入
+        const revenueTrendCtx = document
+          .getElementById('revenueTrend')
+          .getContext('2d');
+        new Chart(revenueTrendCtx, {
+          type: 'line',
+          data: {
+            labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+            datasets: [
+              {
+                data: [8, 10, 9, 12, 11, 14, 13, 15, 14, 17, 16, 19, 18, 20],
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { display: false },
+              y: { display: false },
+            },
+          },
+        });
+
+        // 微型趋势图 - 平均客单价
+        const avgPriceTrendCtx = document
+          .getElementById('avgPriceTrend')
+          .getContext('2d');
+        new Chart(avgPriceTrendCtx, {
+          type: 'line',
+          data: {
+            labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+            datasets: [
+              {
+                data: [
+                  410, 405, 412, 408, 402, 398, 400, 395, 398, 390, 392, 388,
+                  390, 392,
+                ],
+                borderColor: '#2196F3',
+                backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { display: false },
+              y: { display: false },
+            },
+          },
+        });
+
+        // 预约与收入趋势图
+        const appointmentRevenueCtx = document
+          .getElementById('appointmentRevenueChart')
+          .getContext('2d');
+        new Chart(appointmentRevenueCtx, {
+          type: 'line',
+          data: {
+            labels: [
+              '第1周',
+              '第2周',
+              '第3周',
+              '第4周',
+              '第5周',
+              '第6周',
+              '第7周',
+              '第8周',
+              '第9周',
+              '第10周',
+              '第11周',
+              '第12周',
+            ],
+            datasets: [
+              {
+                label: '预约量',
+                data: [28, 32, 35, 30, 38, 42, 45, 40, 48, 52, 50, 55],
+                borderColor: '#8B5A2B',
+                backgroundColor: 'rgba(139, 90, 43, 0.05)',
+                borderWidth: 2,
+                pointBackgroundColor: '#8B5A2B',
+                tension: 0.3,
+                yAxisID: 'y',
+              },
+              {
+                label: '收入(千元)',
+                data: [
+                  9.5, 10.8, 11.2, 10.5, 12.8, 14.2, 15.5, 14.8, 16.2, 17.5,
+                  16.8, 18.2,
+                ],
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                borderWidth: 2,
+                pointBackgroundColor: '#4CAF50',
+                tension: 0.3,
+                yAxisID: 'y1',
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false,
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                titleColor: '#333',
+                bodyColor: '#666',
+                borderColor: '#ddd',
+                borderWidth: 1,
+                padding: 10,
+                boxPadding: 5,
+                usePointStyle: true,
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || '';
+                    if (label) {
+                      label += ': ';
+                    }
+                    if (context.datasetIndex === 0) {
+                      label += context.raw + ' 次';
+                    } else {
+                      label += '¥' + context.raw + 'K';
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+            scales: {
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+              y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                  display: true,
+                  text: '预约量(次)',
+                },
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.05)',
+                },
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                  display: true,
+                  text: '收入(千元)',
+                },
+                grid: {
+                  drawOnChartArea: false,
+                },
+              },
+            },
+          },
+        });
+
+        // 患者来源分布图
+        const patientSourceCtx = document
+          .getElementById('patientSourceChart')
+          .getContext('2d');
+        new Chart(patientSourceCtx, {
+          type: 'doughnut',
+          data: {
+            labels: [
+              '朋友推荐',
+              '线上预约',
+              '附近居民',
+              '广告推广',
+              '其他渠道',
+            ],
+            datasets: [
+              {
+                data: [38, 25, 18, 12, 7],
+                backgroundColor: [
+                  '#8B5A2B',
+                  '#2F4F4F',
+                  '#4CAF50',
+                  '#2196F3',
+                  '#FFC107',
+                ],
+                borderWidth: 0,
+                hoverOffset: 5,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                titleColor: '#333',
+                bodyColor: '#666',
+                borderColor: '#ddd',
+                borderWidth: 1,
+                padding: 10,
+                usePointStyle: true,
+                callbacks: {
+                  label: function (context) {
+                    return `${context.label}: ${context.raw}%`;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // 项目收入与利润分析图
+        const treatmentProfitCtx = document
+          .getElementById('treatmentProfitChart')
+          .getContext('2d');
+        new Chart(treatmentProfitCtx, {
+          type: 'bar',
+          data: {
+            labels: [
+              '推拿按摩',
+              '针灸治疗',
+              '艾灸调理',
+              '中药熏蒸',
+              '拔罐疗法',
+              '刮痧',
+              '中药调理',
+            ],
+            datasets: [
+              {
+                label: '收入(千元)',
+                data: [42, 32, 26, 18, 15, 10, 8],
+                backgroundColor: '#8B5A2B',
+                borderRadius: 4,
+              },
+              {
+                label: '利润(千元)',
+                data: [28, 22, 18, 10, 9, 6, 4],
+                backgroundColor: '#4CAF50',
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  usePointStyle: true,
+                  boxWidth: 6,
+                },
+              },
+              tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                titleColor: '#333',
+                bodyColor: '#666',
+                borderColor: '#ddd',
+                borderWidth: 1,
+                padding: 10,
+                usePointStyle: true,
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || '';
+                    if (label) {
+                      label += ': ';
+                    }
+                    label += '¥' + context.raw + 'K';
+                    return label;
+                  },
+                },
+              },
+            },
+            scales: {
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.05)',
+                },
+                ticks: {
+                  callback: function (value) {
+                    return '¥' + value + 'K';
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // 患者年龄与性别分布图
+        const patientAgeGenderCtx = document
+          .getElementById('patientAgeGenderChart')
+          .getContext('2d');
+        new Chart(patientAgeGenderCtx, {
+          type: 'bar',
+          data: {
+            labels: [
+              '18-25岁',
+              '26-35岁',
+              '36-45岁',
+              '46-55岁',
+              '56-65岁',
+              '65岁以上',
+            ],
+            datasets: [
+              {
+                label: '男性',
+                data: [8, 15, 22, 30, 25, 18],
+                backgroundColor: '#2196F3',
+                borderRadius: 4,
+              },
+              {
+                label: '女性',
+                data: [12, 20, 28, 25, 20, 15],
+                backgroundColor: '#FF69B4',
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  usePointStyle: true,
+                  boxWidth: 6,
+                },
+              },
+              tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                titleColor: '#333',
+                bodyColor: '#666',
+                borderColor: '#ddd',
+                borderWidth: 1,
+                padding: 10,
+              },
+            },
+            scales: {
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.05)',
+                },
+                title: {
+                  display: true,
+                  text: '患者数量',
+                },
+              },
+            },
+          },
+        });
+
+        // 患者复购率与留存分析图
+        const patientRetentionCtx = document
+          .getElementById('patientRetentionChart')
+          .getContext('2d');
+        new Chart(patientRetentionCtx, {
+          type: 'line',
+          data: {
+            labels: ['第1月', '第2月', '第3月', '第4月', '第5月', '第6月'],
+            datasets: [
+              {
+                label: '复购率',
+                data: [35, 42, 48, 52, 55, 60],
+                borderColor: '#2F4F4F',
+                backgroundColor: 'rgba(47, 79, 79, 0.05)',
+                borderWidth: 2,
+                pointBackgroundColor: '#2F4F4F',
+                tension: 0.3,
+                fill: true,
+                yAxisID: 'y',
+              },
+              {
+                label: '30天留存',
+                data: [25, 30, 35, 40, 45, 50],
+                borderColor: '#2196F3',
+                backgroundColor: 'rgba(33, 150, 243, 0.05)',
+                borderWidth: 2,
+                pointBackgroundColor: '#2196F3',
+                tension: 0.3,
+                fill: true,
+                yAxisID: 'y1',
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false,
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                titleColor: '#333',
+                bodyColor: '#666',
+                borderColor: '#ddd',
+                borderWidth: 1,
+                padding: 10,
+                usePointStyle: true,
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || '';
+                    if (label) {
+                      label += ': ';
+                    }
+                    label += context.raw + '%';
+                    return label;
+                  },
+                },
+              },
+            },
+            scales: {
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+              y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                  display: true,
+                  text: '复购率(%)',
+                },
+                min: 0,
+                max: 100,
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.05)',
+                },
+                ticks: {
+                  callback: function (value) {
+                    return value + '%';
+                  },
+                },
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                  display: true,
+                  text: '30天留存(%)',
+                },
+                min: 0,
+                max: 100,
+                grid: {
+                  drawOnChartArea: false,
+                },
+                ticks: {
+                  callback: function (value) {
+                    return value + '%';
+                  },
+                },
+              },
+            },
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

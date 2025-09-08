@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中医理疗 - 产品套餐管理</title>
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- 引入Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  
+  <!-- 配置Tailwind自定义颜色和字体 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#8B5A2B', // 中医传统棕色作为主色调
+            secondary: '#4A6741', // 辅助色：自然绿色
+            accent: '#D2B48C', // 强调色：棕褐色
+            light: '#F5F5DC', // 浅色：米色
+            dark: '#3E2723', // 深色：深棕色
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <!-- 自定义工具类 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .card-shadow {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+      .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-dark">
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏导航 -->
+    <aside class="hidden md:flex flex-col w-64 bg-white shadow-lg">
+      <!-- 品牌标识 -->
+      <div class="flex items-center justify-center h-16 bg-primary text-white">
+        <i class="fa fa-leaf text-2xl mr-2"></i>
+        <h1 class="text-xl font-bold">中医理疗管理系统</h1>
+      </div>
+      
+      <!-- 导航菜单 -->
+      <nav class="flex-1 overflow-y-auto py-6 px-4">
+        <ul class="space-y-1">
+          <li>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+              <i class="fa fa-tachometer w-5 h-5 mr-3"></i>
+              <span>仪表盘</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-3 bg-primary/10 text-primary rounded-lg font-medium">
+              <i class="fa fa-list-alt w-5 h-5 mr-3"></i>
+              <span>产品套餐</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+              <i class="fa fa-calendar w-5 h-5 mr-3"></i>
+              <span>预约管理</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+              <i class="fa fa-users w-5 h-5 mr-3"></i>
+              <span>客户管理</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+              <i class="fa fa-user-md w-5 h-5 mr-3"></i>
+              <span>医师管理</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+              <i class="fa fa-bar-chart w-5 h-5 mr-3"></i>
+              <span>销售统计</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+              <i class="fa fa-cog w-5 h-5 mr-3"></i>
+              <span>系统设置</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- 用户信息 -->
+      <div class="p-4 border-t border-gray-200">
+        <div class="flex items-center">
+          <img src="https://picsum.photos/id/1005/40/40" alt="管理员头像" class="w-10 h-10 rounded-full object-cover">
+          <div class="ml-3">
+            <p class="text-sm font-medium">张医生</p>
+            <p class="text-xs text-gray-500">管理员</p>
+          </div>
+          <button class="ml-auto text-gray-400 hover:text-gray-600">
+            <i class="fa fa-sign-out"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- 主内容区域 -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- 顶部导航栏 -->
+      <header class="bg-white shadow-sm z-10">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- 移动端菜单按钮 -->
+          <button class="md:hidden text-gray-500 hover:text-gray-700">
+            <i class="fa fa-bars text-xl"></i>
+          </button>
+          
+          <!-- 搜索栏 -->
+          <div class="relative max-w-md w-full mx-4">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+              <i class="fa fa-search text-gray-400"></i>
+            </span>
+            <input type="text" placeholder="搜索套餐..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          
+          <!-- 右侧工具栏 -->
+          <div class="flex items-center space-x-4">
+            <button class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full">
+              <i class="fa fa-bell"></i>
+              <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <button class="hidden md:flex items-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
+              <i class="fa fa-plus mr-2"></i>
+              <span>添加套餐</span>
+            </button>
+            <button class="md:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full">
+              <i class="fa fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+      
+      <!-- 页面内容 -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- 页面标题和统计卡片 -->
+        <div class="mb-8">
+          <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-gray-800 mb-2">产品套餐管理</h2>
+          <p class="text-gray-600 mb-6">管理所有中医理疗套餐，包括新增、编辑和停用套餐</p>
+          
+          <!-- 统计卡片 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm hover-lift">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-500 text-sm">总套餐数</p>
+                  <h3 class="text-3xl font-bold mt-1">24</h3>
+                  <p class="text-green-500 text-sm mt-2 flex items-center">
+                    <i class="fa fa-arrow-up mr-1"></i> 8% 较上月
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <i class="fa fa-th-large text-xl"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm hover-lift">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-500 text-sm">本月销量</p>
+                  <h3 class="text-3xl font-bold mt-1">156</h3>
+                  <p class="text-green-500 text-sm mt-2 flex items-center">
+                    <i class="fa fa-arrow-up mr-1"></i> 12% 较上月
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                  <i class="fa fa-shopping-cart text-xl"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm hover-lift">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-500 text-sm">热门套餐</p>
+                  <h3 class="text-3xl font-bold mt-1">6</h3>
+                  <p class="text-red-500 text-sm mt-2 flex items-center">
+                    <i class="fa fa-arrow-down mr-1"></i> 2% 较上月
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                  <i class="fa fa-star text-xl"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm hover-lift">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-500 text-sm">待更新套餐</p>
+                  <h3 class="text-3xl font-bold mt-1">3</h3>
+                  <p class="text-yellow-500 text-sm mt-2 flex items-center">
+                    <i class="fa fa-exclamation-circle mr-1"></i> 需要更新
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
+                  <i class="fa fa-refresh text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 套餐销售趋势图表 -->
+        <div class="bg-white rounded-xl p-6 shadow-sm mb-8">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-bold text-lg">套餐销售趋势</h3>
+            <div class="flex space-x-2">
+              <button class="px-3 py-1 text-sm bg-primary/10 text-primary rounded-md">月度</button>
+              <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-md">季度</button>
+              <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-md">年度</button>
+            </div>
+          </div>
+          <div class="h-64">
+            <canvas id="salesChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- 套餐管理区域 -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <!-- 筛选和操作栏 -->
+          <div class="p-6 border-b border-gray-100">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <h3 class="font-bold text-lg">套餐列表</h3>
+              
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="relative">
+                  <select class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                    <option>所有分类</option>
+                    <option>推拿按摩</option>
+                    <option>针灸理疗</option>
+                    <option>中药调理</option>
+                    <option>艾灸养生</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <i class="fa fa-chevron-down text-xs"></i>
+                  </div>
+                </div>
+                
+                <div class="relative">
+                  <select class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                    <option>所有状态</option>
+                    <option>启用</option>
+                    <option>停用</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <i class="fa fa-chevron-down text-xs"></i>
+                  </div>
+                </div>
+                
+                <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
+                  <i class="fa fa-filter mr-2"></i>筛选
+                </button>
+                
+                <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                  <i class="fa fa-download mr-2"></i>导出
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 套餐表格 -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">套餐名称</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">分类</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">价格</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时长</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">包含项目</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">销量</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                  <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <!-- 套餐1 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="h-10 w-10 flex-shrink-0">
+                        <img class="h-10 w-10 rounded-md object-cover" src="https://picsum.photos/id/237/40/40" alt="全身推拿套餐">
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">全身推拿套餐</div>
+                        <div class="text-xs text-gray-500">ID: TC001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">推拿按摩</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">¥298</div>
+                    <div class="text-xs text-gray-500">原价 ¥368</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">90分钟</div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="text-sm text-gray-900">
+                      <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">肩颈推拿</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">背部推拿</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">腿部放松</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">128</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      启用
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary/80 mr-3">编辑</button>
+                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
+                    <button class="text-red-500 hover:text-red-700">停用</button>
+                  </td>
+                </tr>
+                
+                <!-- 套餐2 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="h-10 w-10 flex-shrink-0">
+                        <img class="h-10 w-10 rounded-md object-cover" src="https://picsum.photos/id/239/40/40" alt="针灸理疗套餐">
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">针灸理疗套餐</div>
+                        <div class="text-xs text-gray-500">ID: TC002</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">针灸理疗</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">¥368</div>
+                    <div class="text-xs text-gray-500">原价 ¥428</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">60分钟</div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="text-sm text-gray-900">
+                      <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">体针</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">艾灸</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">拔罐</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">95</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      启用
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary/80 mr-3">编辑</button>
+                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
+                    <button class="text-red-500 hover:text-red-700">停用</button>
+                  </td>
+                </tr>
+                
+                <!-- 套餐3 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="h-10 w-10 flex-shrink-0">
+                        <img class="h-10 w-10 rounded-md object-cover" src="https://picsum.photos/id/240/40/40" alt="中药熏蒸套餐">
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">中药熏蒸套餐</div>
+                        <div class="text-xs text-gray-500">ID: TC003</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">中药调理</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">¥268</div>
+                    <div class="text-xs text-gray-500">原价 ¥328</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">45分钟</div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="text-sm text-gray-900">
+                      <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">中药熏蒸</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">经络疏通</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">76</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      启用
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary/80 mr-3">编辑</button>
+                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
+                    <button class="text-red-500 hover:text-red-700">停用</button>
+                  </td>
+                </tr>
+                
+                <!-- 套餐4 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="h-10 w-10 flex-shrink-0">
+                        <img class="h-10 w-10 rounded-md object-cover" src="https://picsum.photos/id/241/40/40" alt="艾灸养生套餐">
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">艾灸养生套餐</div>
+                        <div class="text-xs text-gray-500">ID: TC004</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">艾灸养生</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">¥198</div>
+                    <div class="text-xs text-gray-500">原价 ¥258</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">30分钟</div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="text-sm text-gray-900">
+                      <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">艾灸</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">穴位按摩</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">112</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      启用
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary/80 mr-3">编辑</button>
+                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
+                    <button class="text-red-500 hover:text-red-700">停用</button>
+                  </td>
+                </tr>
+                
+                <!-- 套餐5 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="h-10 w-10 flex-shrink-0">
+                        <img class="h-10 w-10 rounded-md object-cover opacity-50" src="https://picsum.photos/id/242/40/40" alt="四季养生套餐">
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">四季养生套餐</div>
+                        <div class="text-xs text-gray-500">ID: TC005</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">综合调理</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">¥598</div>
+                    <div class="text-xs text-gray-500">原价 ¥698</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">120分钟</div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="text-sm text-gray-900">
+                      <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">推拿</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">艾灸</span>
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">中药茶饮</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">32</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                      停用
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary/80 mr-3">编辑</button>
+                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
+                    <button class="text-green-500 hover:text-green-700">启用</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- 分页 -->
+          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+            <div class="flex-1 flex justify-between sm:hidden">
+              <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                上一页
+              </button>
+              <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                下一页
+              </button>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-gray-700">
+                  显示第 <span class="font-medium">1</span> 到 <span class="font-medium">5</span> 条，共 <span class="font-medium">24</span> 条结果
+                </p>
+              </div>
+              <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                  <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <span class="sr-only">上一页</span>
+                    <i class="fa fa-chevron-left text-xs"></i>
+                  </button>
+                  <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
+                    1
+                  </button>
+                  <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    2
+                  </button>
+                  <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    3
+                  </button>
+                  <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                    ...
+                  </span>
+                  <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    5
+                  </button>
+                  <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <span class="sr-only">下一页</span>
+                    <i class="fa fa-chevron-right text-xs"></i>
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <!-- 添加/编辑套餐模态框 (默认隐藏) -->
+  <div id="packageModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
+        <h3 class="text-lg font-bold">添加新套餐</h3>
+        <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="p-6">
+        <form>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">套餐名称 <span class="text-red-500">*</span></label>
+              <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入套餐名称">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">套餐分类 <span class="text-red-500">*</span></label>
+              <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                <option value="">请选择分类</option>
+                <option value="tuina">推拿按摩</option>
+                <option value="zhenjiu">针灸理疗</option>
+                <option value="zhongyao">中药调理</option>
+                <option value="aijiu">艾灸养生</option>
+                <option value="zonghe">综合调理</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">套餐图片 <span class="text-red-500">*</span></label>
+              <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+                <div class="space-y-1 text-center">
+                  <i class="fa fa-cloud-upload text-gray-400 text-3xl mb-2"></i>
+                  <div class="flex text-sm text-gray-600">
+                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary/80">
+                      <span>上传图片</span>
+                      <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                    </label>
+                    <p class="pl-1">或拖放文件</p>
+                  </div>
+                  <p class="text-xs text-gray-500">支持 PNG, JPG, GIF 格式，最大 5MB</p>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">原价 (元) <span class="text-red-500">*</span></label>
+              <input type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入原价">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">售价 (元) <span class="text-red-500">*</span></label>
+              <input type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入售价">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">套餐时长 (分钟) <span class="text-red-500">*</span></label>
+              <input type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入时长">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">包含项目 <span class="text-red-500">*</span></label>
+              <div class="flex flex-wrap gap-2 mt-1">
+                <label class="inline-flex items-center">
+                  <input type="checkbox" class="form-checkbox text-primary h-4 w-4">
+                  <span class="ml-2 text-sm text-gray-700">肩颈推拿</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="checkbox" class="form-checkbox text-primary h-4 w-4">
+                  <span class="ml-2 text-sm text-gray-700">背部推拿</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="checkbox" class="form-checkbox text-primary h-4 w-4">
+                  <span class="ml-2 text-sm text-gray-700">腿部放松</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="checkbox" class="form-checkbox text-primary h-4 w-4">
+                  <span class="ml-2 text-sm text-gray-700">体针</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="checkbox" class="form-checkbox text-primary h-4 w-4">
+                  <span class="ml-2 text-sm text-gray-700">艾灸</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="checkbox" class="form-checkbox text-primary h-4 w-4">
+                  <span class="ml-2 text-sm text-gray-700">拔罐</span>
+                </label>
+              </div>
+              <button type="button" class="mt-2 text-sm text-primary">+ 添加自定义项目</button>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">适用人群</label>
+              <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                <option value="">请选择适用人群</option>
+                <option value="all">所有人群</option>
+                <option value="office">办公室人群</option>
+                <option value="elderly">中老年人群</option>
+                <option value="female">女性人群</option>
+                <option value="athlete">运动人群</option>
+              </select>
+            </div>
+            
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">套餐描述</label>
+              <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入套餐详细描述，包括功效、特色等"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">状态 <span class="text-red-500">*</span></label>
+              <div class="flex items-center space-x-4 mt-1">
+                <label class="inline-flex items-center">
+                  <input type="radio" name="status" value="active" class="form-radio text-primary h-4 w-4" checked>
+                  <span class="ml-2 text-sm text-gray-700">启用</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="radio" name="status" value="inactive" class="form-radio text-primary h-4 w-4">
+                  <span class="ml-2 text-sm text-gray-700">停用</span>
+                </label>
+              </div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">是否热门推荐</label>
+              <div class="flex items-center space-x-4 mt-1">
+                <label class="inline-flex items-center">
+                  <input type="radio" name="hot" value="yes" class="form-radio text-primary h-4 w-4">
+                  <span class="ml-2 text-sm text-gray-700">是</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="radio" name="hot" value="no" class="form-radio text-primary h-4 w-4" checked>
+                  <span class="ml-2 text-sm text-gray-700">否</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <div class="p-6 border-t border-gray-200 flex justify-end space-x-3 sticky bottom-0 bg-white z-10">
+        <button id="cancelModal" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">取消</button>
+        <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">保存套餐</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- JavaScript -->
+  <script>
+    // 初始化销售趋势图表
+    document.addEventListener('DOMContentLoaded', function() {
+      // 销售趋势图表
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      const salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+          datasets: [
+            {
+              label: '推拿按摩',
+              data: [65, 78, 52, 91, 85, 105],
+              borderColor: '#8B5A2B',
+              backgroundColor: 'rgba(139, 90, 43, 0.1)',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: '针灸理疗',
+              data: [45, 52, 68, 71, 65, 82],
+              borderColor: '#4A6741',
+              backgroundColor: 'rgba(74, 103, 65, 0.1)',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: '综合套餐',
+              data: [30, 45, 40, 55, 60, 75],
+              borderColor: '#D2B48C',
+              backgroundColor: 'rgba(210, 180, 140, 0.1)',
+              tension: 0.3,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                drawBorder: false
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+      
+      // 模态框控制
+      const modal = document.getElementById('packageModal');
+      const addButtons = document.querySelectorAll('button:has(.fa-plus)');
+      const closeModal = document.getElementById('closeModal');
+      const cancelModal = document.getElementById('cancelModal');
+      
+      addButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      
+      function hideModal() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      }
+      
+      closeModal.addEventListener('click', hideModal);
+      cancelModal.addEventListener('click', hideModal);
+      
+      // 点击模态框外部关闭
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          hideModal();
+        }
+      });
+      
+      // 编辑按钮点击事件
+      const editButtons = document.querySelectorAll('button:contains("编辑")');
+      editButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // 在实际应用中，这里会加载该套餐的数据到表单中
+          document.querySelector('#packageModal h3').textContent = '编辑套餐';
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

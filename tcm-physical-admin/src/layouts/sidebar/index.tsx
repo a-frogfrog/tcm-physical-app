@@ -9,7 +9,7 @@ import { NavUser } from './NavUser';
 import { NavMain } from './NavMain';
 import { NavLogo } from './NavLogo';
 
-import { useFetchSidebarData } from './useSidebar';
+import { useFetchSidebarData } from './constants';
 
 export default function AppSidebar({
   ...props

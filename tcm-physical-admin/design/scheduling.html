@@ -1,0 +1,1668 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗 - 医师排班</title>
+    <!-- 外部资源引入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+
+    <!-- Tailwind自定义配置（延续中医风格配色） -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 主色：中医传统棕色
+              secondary: '#4A6741', // 辅助色：自然绿色
+              accent: '#D2B48C', // 强调色：棕褐色
+              light: '#F5F5DC', // 浅色：米色
+              dark: '#3E2723', // 深色：深棕色
+              available: '#22C55E', // 可排班：绿色
+              occupied: '#EF4444', // 已排班：红色
+              rest: '#9CA3AF', // 休息：灰色
+              leave: '#EAB308', // 请假：黄色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .card-shadow {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .hover-lift {
+          transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .schedule-cell {
+          @apply border border-gray-200 rounded-md p-2 min-h-[80px] cursor-pointer transition-all;
+        }
+        .schedule-cell:hover {
+          @apply bg-light/30;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 font-sans text-dark">
+    <div class="flex h-screen overflow-hidden">
+      <!-- 侧边栏导航（与系统保持一致） -->
+      <aside
+        class="hidden md:flex flex-col w-64 bg-white shadow-lg fixed h-full z-20">
+        <!-- 品牌标识 -->
+        <div
+          class="flex items-center justify-center h-16 bg-primary text-white">
+          <i class="fa fa-leaf text-2xl mr-2"></i>
+          <h1 class="text-xl font-bold">中医理疗管理系统</h1>
+        </div>
+
+        <!-- 导航菜单 -->
+        <nav class="flex-1 overflow-y-auto py-6 px-4">
+          <ul class="space-y-1">
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-tachometer w-5 h-5 mr-3"></i>
+                <span>仪表盘</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-list-alt w-5 h-5 mr-3"></i>
+                <span>产品套餐</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-calendar w-5 h-5 mr-3"></i>
+                <span>订单管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-users w-5 h-5 mr-3"></i>
+                <span>客户管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 bg-primary/10 text-primary rounded-lg font-medium transition-colors">
+                <i class="fa fa-user-md w-5 h-5 mr-3"></i>
+                <span>医师管理</span>
+              </a>
+              <ul class="pl-6 mt-1 space-y-1">
+                <li>
+                  <a
+                    href="#"
+                    class="flex items-center px-2 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fa fa-id-card-o w-4 h-4 mr-2"></i>
+                    <span>医师列表</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="flex items-center px-2 py-2 text-sm primary bg-primary/10 rounded-lg transition-colors">
+                    <i class="fa fa-calendar-check-o w-4 h-4 mr-2"></i>
+                    <span>排班管理</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="flex items-center px-2 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fa fa-certificate w-4 h-4 mr-2"></i>
+                    <span>资质管理</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-bar-chart w-5 h-5 mr-3"></i>
+                <span>销售统计</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-cog w-5 h-5 mr-3"></i>
+                <span>系统设置</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 用户信息 -->
+        <div class="p-4 border-t border-gray-200">
+          <div class="flex items-center">
+            <img
+              src="https://picsum.photos/id/1005/40/40"
+              alt="管理员头像"
+              class="w-10 h-10 rounded-full object-cover border-2 border-primary/20" />
+            <div class="ml-3">
+              <p class="text-sm font-medium">张医生</p>
+              <p class="text-xs text-gray-500">系统管理员</p>
+            </div>
+            <button
+              class="ml-auto text-gray-400 hover:text-gray-600 transition-colors">
+              <i class="fa fa-sign-out"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <div class="flex-1 flex flex-col overflow-hidden md:ml-64">
+        <!-- 顶部导航栏 -->
+        <header class="bg-white shadow-sm z-10 sticky top-0">
+          <div class="flex items-center justify-between h-16 px-6">
+            <!-- 移动端菜单按钮 -->
+            <button
+              id="mobileMenuBtn"
+              class="md:hidden text-gray-500 hover:text-gray-700 transition-colors">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+
+            <!-- 页面标题（仅移动端显示） -->
+            <h2 class="md:hidden text-lg font-bold">医师排班</h2>
+
+            <!-- 搜索栏 -->
+            <div class="relative max-w-md w-full mx-4 hidden md:block">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                <i class="fa fa-search"></i>
+              </span>
+              <input
+                type="text"
+                placeholder="搜索医师姓名..."
+                class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" />
+            </div>
+
+            <!-- 右侧工具栏 -->
+            <div class="flex items-center space-x-4">
+              <!-- 视图切换 -->
+              <div class="hidden md:flex border rounded-lg overflow-hidden">
+                <button class="px-3 py-1.5 text-sm bg-primary text-white">
+                  <i class="fa fa-calendar mr-1"></i> 日历视图
+                </button>
+                <button
+                  class="px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                  <i class="fa fa-list mr-1"></i> 列表视图
+                </button>
+              </div>
+
+              <!-- 批量操作下拉 -->
+              <div class="relative group">
+                <button
+                  class="flex items-center px-3 py-1.5 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                  <i class="fa fa-cog mr-2"></i>
+                  <span>批量操作</span>
+                  <i class="fa fa-chevron-down ml-1 text-xs"></i>
+                </button>
+                <div
+                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-20">
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-download mr-1"></i> 导出排班表
+                  </a>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-print mr-1"></i> 打印排班表
+                  </a>
+                  <div class="border-t border-gray-100 my-1"></div>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-copy mr-1"></i> 复制上周排班
+                  </a>
+                </div>
+              </div>
+
+              <!-- 添加排班按钮 -->
+              <button
+                class="flex items-center px-3 py-1.5 text-sm font-medium text-white bg-secondary rounded-lg hover:bg-secondary/90 transition-colors">
+                <i class="fa fa-plus mr-2"></i>
+                <span>新增排班</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- 页面内容 -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+          <!-- 页面标题与月份导航 -->
+          <div class="mb-8">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+              <div>
+                <h2
+                  class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-gray-800 mb-2">
+                  医师排班管理
+                </h2>
+                <p class="text-gray-600">
+                  管理所有医师的排班计划，合理安排工作时间与休息
+                </p>
+              </div>
+
+              <!-- 月份导航 -->
+              <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+                <button
+                  class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                  <i class="fa fa-chevron-left"></i>
+                </button>
+                <h3 class="text-lg font-semibold">2023年6月</h3>
+                <button
+                  class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                  <i class="fa fa-chevron-right"></i>
+                </button>
+                <button
+                  class="ml-2 px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                  <i class="fa fa-today mr-1"></i> 今天
+                </button>
+              </div>
+            </div>
+
+            <!-- 排班状态统计 -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="bg-white rounded-lg p-4 shadow-sm">
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 rounded-full bg-available/10 flex items-center justify-center text-available mr-3">
+                    <i class="fa fa-user-md"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">在职医师</p>
+                    <p class="text-xl font-bold">8</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white rounded-lg p-4 shadow-sm">
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 rounded-full bg-occupied/10 flex items-center justify-center text-occupied mr-3">
+                    <i class="fa fa-calendar-check-o"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">本月排班</p>
+                    <p class="text-xl font-bold">192</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white rounded-lg p-4 shadow-sm">
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 rounded-full bg-leave/10 flex items-center justify-center text-leave mr-3">
+                    <i class="fa fa-calendar-times-o"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">请假申请</p>
+                    <p class="text-xl font-bold">3</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white rounded-lg p-4 shadow-sm">
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                    <i class="fa fa-clock-o"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">待安排</p>
+                    <p class="text-xl font-bold">12</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 日历视图筛选器 -->
+          <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="text-sm font-medium text-gray-700">显示：</span>
+
+              <!-- 科室筛选 -->
+              <div class="relative">
+                <select
+                  class="appearance-none pl-3 pr-10 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                  <option>所有科室</option>
+                  <option>推拿科</option>
+                  <option>针灸科</option>
+                  <option>艾灸科</option>
+                  <option>中药科</option>
+                </select>
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <i class="fa fa-chevron-down text-xs"></i>
+                </div>
+              </div>
+
+              <!-- 医师筛选 -->
+              <div class="relative">
+                <select
+                  class="appearance-none pl-3 pr-10 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                  <option>所有医师</option>
+                  <option>刘医师 (推拿科)</option>
+                  <option>王医师 (针灸科)</option>
+                  <option>张医师 (艾灸科)</option>
+                  <option>陈医师 (中药科)</option>
+                  <option>赵医师 (推拿科)</option>
+                </select>
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <i class="fa fa-chevron-down text-xs"></i>
+                </div>
+              </div>
+
+              <!-- 状态筛选 -->
+              <div class="flex flex-wrap items-center gap-2">
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    checked
+                    class="form-checkbox text-primary rounded" />
+                  <span class="ml-2 text-sm text-gray-700">可排班</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    checked
+                    class="form-checkbox text-primary rounded" />
+                  <span class="ml-2 text-sm text-gray-700">已排班</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    checked
+                    class="form-checkbox text-primary rounded" />
+                  <span class="ml-2 text-sm text-gray-700">休息</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    checked
+                    class="form-checkbox text-primary rounded" />
+                  <span class="ml-2 text-sm text-gray-700">请假</span>
+                </label>
+              </div>
+
+              <button
+                class="ml-auto px-3 py-1.5 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                <i class="fa fa-refresh mr-1"></i> 重置
+              </button>
+            </div>
+          </div>
+
+          <!-- 排班日历视图 -->
+          <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
+            <!-- 星期标题 -->
+            <div class="grid grid-cols-7 border-b border-gray-200">
+              <div
+                class="px-2 py-3 text-center text-sm font-medium text-gray-500 border-r border-gray-200">
+                周日
+              </div>
+              <div
+                class="px-2 py-3 text-center text-sm font-medium text-gray-500 border-r border-gray-200">
+                周一
+              </div>
+              <div
+                class="px-2 py-3 text-center text-sm font-medium text-gray-500 border-r border-gray-200">
+                周二
+              </div>
+              <div
+                class="px-2 py-3 text-center text-sm font-medium text-gray-500 border-r border-gray-200">
+                周三
+              </div>
+              <div
+                class="px-2 py-3 text-center text-sm font-medium text-gray-500 border-r border-gray-200">
+                周四
+              </div>
+              <div
+                class="px-2 py-3 text-center text-sm font-medium text-gray-500 border-r border-gray-200">
+                周五
+              </div>
+              <div
+                class="px-2 py-3 text-center text-sm font-medium text-gray-500">
+                周六
+              </div>
+            </div>
+
+            <!-- 日期网格 - 第一周 -->
+            <div class="grid grid-cols-7">
+              <!-- 上月日期 -->
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm text-gray-400 mb-1">28</div>
+                <div class="text-xs text-gray-300">上月</div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm text-gray-400 mb-1">29</div>
+                <div class="text-xs text-gray-300">上月</div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm text-gray-400 mb-1">30</div>
+                <div class="text-xs text-gray-300">上月</div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm text-gray-400 mb-1">31</div>
+                <div class="text-xs text-gray-300">上月</div>
+              </div>
+
+              <!-- 本月日期 -->
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">1</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 刘医师, 王医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 张医师, 陈医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">2</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 赵医师, 刘医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 王医师, 张医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">3</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 陈医师, 赵医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 刘医师, 王医师
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 日期网格 - 第二周 -->
+            <div class="grid grid-cols-7">
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">4</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    上午: 休息日
+                  </div>
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    下午: 休息日
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">5</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 张医师, 陈医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 赵医师, 刘医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">6</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 王医师, 张医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 陈医师, 赵医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">7</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 刘医师, 王医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 张医师, 陈医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">8</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 赵医师, 刘医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 王医师, 张医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">9</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 陈医师, 赵医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 刘医师, 王医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">10</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    上午: 休息日
+                  </div>
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    下午: 休息日
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 日期网格 - 第三周（包含今天） -->
+            <div class="grid grid-cols-7">
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">11</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    上午: 休息日
+                  </div>
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    下午: 休息日
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">12</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    上午: 张医师, 陈医师
+                  </div>
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    下午: 赵医师, 刘医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">13</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    上午: 王医师, 张医师
+                  </div>
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    下午: 陈医师, 赵医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">14</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    上午: 刘医师, 王医师
+                  </div>
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    下午: 张医师, 陈医师
+                  </div>
+                </div>
+              </div>
+              <div
+                class="border-r border-b border-gray-100 p-1 min-h-[120px] bg-primary/5">
+                <div
+                  class="text-sm font-medium mb-1 bg-primary text-white inline-block px-2 py-0.5 rounded">
+                  15
+                </div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    上午: 赵医师, 刘医师
+                  </div>
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    下午: 王医师, 张医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">16</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    上午: 陈医师, 赵医师
+                  </div>
+                  <div class="text-xs bg-occupied/10 text-occupied p-1 rounded">
+                    下午: 刘医师, 王医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">17</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    上午: 休息日
+                  </div>
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    下午: 休息日
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 日期网格 - 第四周 -->
+            <div class="grid grid-cols-7">
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">18</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    上午: 休息日
+                  </div>
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    下午: 休息日
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">19</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 张医师, 陈医师
+                  </div>
+                  <div class="text-xs bg-leave/10 text-leave p-1 rounded">
+                    下午: 赵医师请假
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">20</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 王医师, 张医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 陈医师, 赵医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">21</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 刘医师, 王医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 张医师, 陈医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">22</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 赵医师, 刘医师
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 王医师, 张医师
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">23</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 陈医师, 赵医师
+                  </div>
+                  <div class="text-xs bg-leave/10 text-leave p-1 rounded">
+                    下午: 刘医师请假
+                  </div>
+                </div>
+              </div>
+              <div class="border-b border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">24</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    上午: 休息日
+                  </div>
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    下午: 休息日
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 日期网格 - 剩余日期 -->
+            <div class="grid grid-cols-7">
+              <div class="border-r border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">25</div>
+                <div class="space-y-1">
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    上午: 休息日
+                  </div>
+                  <div class="text-xs bg-rest/10 text-rest p-1 rounded">
+                    下午: 休息日
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">26</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 待安排
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 待安排
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">27</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 待安排
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 待安排
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">28</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 待安排
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 待安排
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">29</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 待安排
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 待安排
+                  </div>
+                </div>
+              </div>
+              <div class="border-r border-gray-100 p-1 min-h-[120px]">
+                <div class="text-sm font-medium mb-1">30</div>
+                <div class="space-y-1">
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    上午: 待安排
+                  </div>
+                  <div
+                    class="text-xs bg-available/10 text-available p-1 rounded">
+                    下午: 待安排
+                  </div>
+                </div>
+              </div>
+              <div class="p-1 min-h-[120px]">
+                <div class="text-sm text-gray-400 mb-1">1</div>
+                <div class="text-xs text-gray-300">下月</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 医师排班详情列表 -->
+          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-gray-100">
+              <div
+                class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <h3 class="font-bold text-lg">本周排班详情</h3>
+
+                <div class="flex flex-wrap items-center gap-3">
+                  <!-- 日期筛选 -->
+                  <div class="relative">
+                    <select
+                      class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                      <option>本周</option>
+                      <option>上周</option>
+                      <option>下周</option>
+                      <option>自定义日期</option>
+                    </select>
+                    <div
+                      class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <i class="fa fa-chevron-down text-xs"></i>
+                    </div>
+                  </div>
+
+                  <!-- 导出按钮 -->
+                  <button
+                    class="px-4 py-2 text-sm font-medium text-white bg-secondary rounded-lg hover:bg-secondary/90 transition-colors">
+                    <i class="fa fa-download mr-2"></i>导出详情
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 排班详情表格 -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      医师信息
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      科室
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      周一
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      周二
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      周三
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      周四
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      周五
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      操作
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <!-- 医师1 -->
+                  <tr class="hover:bg-light/30 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-10 w-10 flex-shrink-0">
+                          <img
+                            class="h-10 w-10 rounded-full object-cover"
+                            src="https://picsum.photos/id/1012/50/50"
+                            alt="刘医师头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            刘医师
+                          </div>
+                          <div class="text-xs text-gray-500">主治医师</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">推拿科</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-primary hover:text-primary/80 mr-3">
+                        编辑
+                      </button>
+                      <button class="text-gray-500 hover:text-gray-700">
+                        详情
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 医师2 -->
+                  <tr class="hover:bg-light/30 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-10 w-10 flex-shrink-0">
+                          <img
+                            class="h-10 w-10 rounded-full object-cover"
+                            src="https://picsum.photos/id/1025/50/50"
+                            alt="王医师头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            王医师
+                          </div>
+                          <div class="text-xs text-gray-500">副主任医师</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">针灸科</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-primary hover:text-primary/80 mr-3">
+                        编辑
+                      </button>
+                      <button class="text-gray-500 hover:text-gray-700">
+                        详情
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 医师3 -->
+                  <tr class="hover:bg-light/30 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-10 w-10 flex-shrink-0">
+                          <img
+                            class="h-10 w-10 rounded-full object-cover"
+                            src="https://picsum.photos/id/1027/50/50"
+                            alt="张医师头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            张医师
+                          </div>
+                          <div class="text-xs text-gray-500">主治医师</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">艾灸科</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-rest/10 text-rest px-2 py-1 rounded">
+                          休息
+                        </div>
+                        <div
+                          class="text-xs bg-rest/10 text-rest px-2 py-1 rounded">
+                          休息
+                        </div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-primary hover:text-primary/80 mr-3">
+                        编辑
+                      </button>
+                      <button class="text-gray-500 hover:text-gray-700">
+                        详情
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 医师4 -->
+                  <tr class="hover:bg-light/30 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-10 w-10 flex-shrink-0">
+                          <img
+                            class="h-10 w-10 rounded-full object-cover"
+                            src="https://picsum.photos/id/1062/50/50"
+                            alt="陈医师头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            陈医师
+                          </div>
+                          <div class="text-xs text-gray-500">医师</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">中药科</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-leave/10 text-leave px-2 py-1 rounded">
+                          请假
+                        </div>
+                        <div
+                          class="text-xs bg-leave/10 text-leave px-2 py-1 rounded">
+                          请假
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="space-y-1">
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          上午
+                        </div>
+                        <div
+                          class="text-xs bg-occupied/10 text-occupied px-2 py-1 rounded">
+                          下午
+                        </div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-primary hover:text-primary/80 mr-3">
+                        编辑
+                      </button>
+                      <button class="text-gray-500 hover:text-gray-700">
+                        详情
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 分页 -->
+            <div
+              class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+              <div class="flex-1 flex justify-between sm:hidden">
+                <button
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                  上一页
+                </button>
+                <button
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                  下一页
+                </button>
+              </div>
+              <div
+                class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <p class="text-sm text-gray-700">
+                    显示第 <span class="font-medium">1</span> 到
+                    <span class="font-medium">4</span> 条，共
+                    <span class="font-medium">8</span> 条结果
+                  </p>
+                </div>
+                <div>
+                  <nav
+                    class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                    aria-label="Pagination">
+                    <button
+                      class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                      <span class="sr-only">上一页</span>
+                      <i class="fa fa-chevron-left text-xs"></i>
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
+                      1
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                      2
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                      <span class="sr-only">下一页</span>
+                      <i class="fa fa-chevron-right text-xs"></i>
+                    </button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- 新增/编辑排班模态框 (默认隐藏) -->
+    <div
+      id="schedulingModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div
+        class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div
+          class="p-6 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
+          <h3 class="text-lg font-bold">新增排班</h3>
+          <button
+            id="closeSchedulingModal"
+            class="text-gray-500 hover:text-gray-700">
+            <i class="fa fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <form>
+            <div class="space-y-6">
+              <!-- 医师选择 -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >选择医师</label
+                >
+                <div class="relative">
+                  <select
+                    class="appearance-none w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                    <option value="">请选择医师</option>
+                    <option value="1">刘医师 (推拿科)</option>
+                    <option value="2">王医师 (针灸科)</option>
+                    <option value="3">张医师 (艾灸科)</option>
+                    <option value="4">陈医师 (中药科)</option>
+                    <option value="5">赵医师 (推拿科)</option>
+                  </select>
+                  <div
+                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <i class="fa fa-chevron-down text-xs"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 日期选择 -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >选择日期</label
+                >
+                <input
+                  type="date"
+                  class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
+              </div>
+
+              <!-- 时间段选择 -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >选择时间段</label
+                >
+                <div class="grid grid-cols-2 gap-4">
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="checkbox"
+                      class="form-checkbox text-primary rounded" />
+                    <span class="ml-3 text-sm text-gray-700"
+                      >上午 (08:00-12:00)</span
+                    >
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="checkbox"
+                      class="form-checkbox text-primary rounded" />
+                    <span class="ml-3 text-sm text-gray-700"
+                      >下午 (13:30-17:30)</span
+                    >
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="checkbox"
+                      class="form-checkbox text-primary rounded" />
+                    <span class="ml-3 text-sm text-gray-700"
+                      >晚上 (18:00-21:00)</span
+                    >
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="checkbox"
+                      class="form-checkbox text-primary rounded" />
+                    <span class="ml-3 text-sm text-gray-700"
+                      >全天 (08:00-21:00)</span
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <!-- 排班类型 -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >排班类型</label
+                >
+                <div class="grid grid-cols-2 gap-4">
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="radio"
+                      name="scheduleType"
+                      class="form-radio text-primary"
+                      checked />
+                    <span class="ml-3 text-sm text-gray-700">正常排班</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="radio"
+                      name="scheduleType"
+                      class="form-radio text-primary" />
+                    <span class="ml-3 text-sm text-gray-700">休息</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="radio"
+                      name="scheduleType"
+                      class="form-radio text-primary" />
+                    <span class="ml-3 text-sm text-gray-700">请假</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="radio"
+                      name="scheduleType"
+                      class="form-radio text-primary" />
+                    <span class="ml-3 text-sm text-gray-700">调休</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 备注信息 -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >备注信息 (可选)</label
+                >
+                <textarea
+                  rows="3"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  placeholder="请输入备注信息，如请假原因等..."></textarea>
+              </div>
+
+              <!-- 重复设置 -->
+              <div class="border-t border-gray-200 pt-4">
+                <label class="flex items-center">
+                  <input
+                    type="checkbox"
+                    class="form-checkbox text-primary rounded" />
+                  <span class="ml-3 text-sm text-gray-700">重复此排班</span>
+                </label>
+
+                <div class="mt-3 ml-6 grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs text-gray-500 mb-1"
+                      >重复频率</label
+                    >
+                    <div class="relative">
+                      <select
+                        class="appearance-none w-full pl-3 pr-10 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                        <option>不重复</option>
+                        <option>每天</option>
+                        <option>每周</option>
+                        <option>每月</option>
+                      </select>
+                      <div
+                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <i class="fa fa-chevron-down text-xs"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs text-gray-500 mb-1"
+                      >结束日期</label
+                    >
+                    <input
+                      type="date"
+                      class="w-full pl-3 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div
+          class="p-6 border-t border-gray-200 flex justify-end space-x-3 sticky bottom-0 bg-white z-10">
+          <button
+            id="cancelSchedulingModal"
+            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+            取消
+          </button>
+          <button
+            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            保存排班
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // 页面加载完成后初始化
+      document.addEventListener('DOMContentLoaded', function () {
+        // 模态框控制
+        const modal = document.getElementById('schedulingModal');
+        const addButtons = document.querySelectorAll(
+          'button:contains("新增排班")',
+        );
+        const closeModal = document.getElementById('closeSchedulingModal');
+        const cancelModal = document.getElementById('cancelSchedulingModal');
+        const editButtons = document.querySelectorAll(
+          'button:contains("编辑")',
+        );
+
+        // 打开模态框函数
+        function openModal() {
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭模态框函数
+        function hideModal() {
+          modal.classList.add('hidden');
+          document.body.style.overflow = 'auto';
+        }
+
+        // 为所有新增排班按钮添加点击事件
+        addButtons.forEach((button) => {
+          button.addEventListener('click', openModal);
+        });
+
+        // 为所有编辑按钮添加点击事件
+        editButtons.forEach((button) => {
+          button.addEventListener('click', function () {
+            // 修改模态框标题为编辑排班
+            document.querySelector('#schedulingModal h3').textContent =
+              '编辑排班';
+            openModal();
+          });
+        });
+
+        // 关闭模态框
+        closeModal.addEventListener('click', hideModal);
+        cancelModal.addEventListener('click', hideModal);
+
+        // 点击模态框外部关闭
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            hideModal();
+          }
+        });
+
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.querySelector('aside');
+
+        if (mobileMenuBtn && sidebar) {
+          mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('z-50');
+          });
+        }
+
+        // 日历单元格点击事件
+        const calendarCells = document.querySelectorAll(
+          '.schedule-cell, [class*="border-r border-b border-gray-100 p-1 min-h-[120px]"]',
+        );
+        calendarCells.forEach((cell) => {
+          if (!cell.querySelector('.text-gray-300')) {
+            // 排除上月和下月日期
+            cell.addEventListener('click', function () {
+              // 获取点击的日期
+              const dateText = this.querySelector('.text-sm').textContent;
+              // 修改模态框标题，包含选中的日期
+              document.querySelector('#schedulingModal h3').textContent =
+                `新增排班 - 6月${dateText}日`;
+              openModal();
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

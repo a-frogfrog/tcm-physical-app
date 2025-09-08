@@ -36,11 +36,9 @@ const Layout = ({ className, children }: React.ComponentProps<'div'>) => {
   const handleScroll = (scrollTop: number) => {
     if (scrollTop > appHeaderHeight && !headerShadow) {
       // add shadow
-      console.log('add shadow');
       setHeaderShadow(true);
     } else if (scrollTop <= 10) {
       // remove shadow
-      console.log('remove shadow');
       setHeaderShadow(false);
     }
   };
