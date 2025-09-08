@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗管理系统 - 新增客户</title>
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+
+    <!-- Tailwind 配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 深棕色 - 主色调
+              secondary: '#4F7942', // 绿色 - 辅助色
+              accent: '#D2B48C', // 棕褐色 - 强调色
+              neutral: '#F5F5DC', // 米色 - 中性色
+              'neutral-dark': '#3E2723', // 深棕黑色 - 文字色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .sidebar-item {
+          @apply flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary rounded-lg transition-all duration-200;
+        }
+        .sidebar-item.active {
+          @apply bg-primary/20 text-primary font-medium;
+        }
+        .form-label {
+          @apply block text-sm font-medium text-gray-700 mb-1.5;
+        }
+        .form-input {
+          @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors;
+        }
+        .form-hint {
+          @apply text-xs text-gray-500 mt-1;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-neutral-dark min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm z-10">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- 左侧Logo和标题 -->
+          <div class="flex items-center gap-3">
+            <button
+              id="sidebar-toggle"
+              class="lg:hidden text-gray-600 hover:text-primary">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2">
+              <i class="fa fa-leaf text-2xl text-secondary"></i>
+              <h1 class="text-xl font-semibold text-primary hidden sm:block">
+                中医理疗管理系统
+              </h1>
+            </div>
+          </div>
+
+          <!-- 右侧用户信息和操作 -->
+          <div class="flex items-center gap-5">
+            <button
+              class="relative text-gray-600 hover:text-primary transition-colors">
+              <i class="fa fa-bell text-xl"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+                >3</span
+              >
+            </button>
+            <div class="flex items-center gap-2 cursor-pointer group">
+              <img
+                src="https://picsum.photos/id/64/200/200"
+                alt="用户头像"
+                class="w-8 h-8 rounded-full object-cover border-2 border-primary/20" />
+              <div class="hidden md:block">
+                <p class="text-sm font-medium">王医生</p>
+                <p class="text-xs text-gray-500">管理员</p>
+              </div>
+              <i
+                class="fa fa-chevron-down text-xs text-gray-500 group-hover:text-primary transition-colors"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- 侧边栏导航 -->
+      <aside
+        id="sidebar"
+        class="bg-white w-64 shadow-sm transform -translate-x-full lg:translate-x-0 fixed lg:static h-[calc(100vh-4rem)] z-20 transition-transform duration-300 overflow-y-auto">
+        <div class="p-4">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="搜索功能..."
+              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
+            <i
+              class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
+        </div>
+
+        <nav class="p-2">
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            主菜单
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-tachometer w-5 text-center"></i> 仪表盘</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-bullhorn w-5 text-center"></i> 推广管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item active"
+                ><i class="fa fa-users w-5 text-center"></i> 客户管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-calendar w-5 text-center"></i> 预约管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-stethoscope w-5 text-center"></i> 理疗项目</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-credit-card w-5 text-center"></i> 财务管理</a
+              >
+            </li>
+          </ul>
+
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">
+            系统设置
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-cog w-5 text-center"></i> 系统设置</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-user-circle w-5 text-center"></i> 员工管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-file-text w-5 text-center"></i> 日志管理</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">
+        <!-- 面包屑导航 -->
+        <div class="flex items-center text-sm text-gray-500 mb-6">
+          <a href="#" class="hover:text-primary transition-colors">首页</a>
+          <i class="fa fa-angle-right mx-2 text-xs"></i>
+          <a href="#" class="hover:text-primary transition-colors">客户管理</a>
+          <i class="fa fa-angle-right mx-2 text-xs"></i>
+          <span class="text-primary">新增客户</span>
+        </div>
+
+        <!-- 页面标题 -->
+        <div class="mb-8">
+          <h2
+            class="text-[clamp(1.25rem,3vw,1.75rem)] font-bold text-neutral-dark">
+            新增客户信息
+          </h2>
+          <p class="text-gray-500 mt-1">
+            添加新客户资料，建立客户档案以便提供个性化中医理疗服务
+          </p>
+        </div>
+
+        <!-- 表单卡片 -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8 mb-6 max-w-4xl mx-auto">
+          <form id="customer-form">
+            <!-- 基本信息区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-user text-primary"></i>
+                基本信息
+              </h3>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 客户姓名 -->
+                <div>
+                  <label class="form-label" for="customer-name"
+                    >客户姓名 <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="customer-name"
+                    class="form-input"
+                    placeholder="请输入客户姓名"
+                    required />
+                </div>
+
+                <!-- 性别 -->
+                <div>
+                  <label class="form-label">性别</label>
+                  <div class="flex items-center gap-4 mt-2">
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="male"
+                        class="text-primary focus:ring-primary/30"
+                        checked />
+                      <span class="ml-2">男</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="female"
+                        class="text-primary focus:ring-primary/30" />
+                      <span class="ml-2">女</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="unknown"
+                        class="text-primary focus:ring-primary/30" />
+                      <span class="ml-2">保密</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- 手机号码 -->
+                <div>
+                  <label class="form-label" for="customer-phone"
+                    >手机号码 <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="tel"
+                    id="customer-phone"
+                    class="form-input"
+                    placeholder="请输入手机号码"
+                    required />
+                  <p class="form-hint">用于登录、预约提醒和服务通知</p>
+                </div>
+
+                <!-- 出生日期 -->
+                <div>
+                  <label class="form-label" for="birthdate">出生日期</label>
+                  <input type="date" id="birthdate" class="form-input" />
+                  <p class="form-hint">用于计算年龄和提供适合的理疗方案</p>
+                </div>
+
+                <!-- 身份证号 -->
+                <div>
+                  <label class="form-label" for="id-card">身份证号</label>
+                  <input
+                    type="text"
+                    id="id-card"
+                    class="form-input"
+                    placeholder="请输入18位身份证号" />
+                  <p class="form-hint">用于实名认证和特定项目的资格验证</p>
+                </div>
+
+                <!-- 客户来源 -->
+                <div>
+                  <label class="form-label" for="customer-source"
+                    >客户来源</label
+                  >
+                  <select id="customer-source" class="form-input">
+                    <option value="">请选择</option>
+                    <option value="wechat">微信推广</option>
+                    <option value="friend">朋友介绍</option>
+                    <option value="advertisement">广告宣传</option>
+                    <option value="search">搜索引擎</option>
+                    <option value="nearby">周边居民</option>
+                    <option value="other">其他渠道</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 会员信息区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-id-card-o text-primary"></i>
+                会员信息
+              </h3>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 是否会员 -->
+                <div>
+                  <label class="form-label">是否会员</label>
+                  <div class="flex items-center gap-4 mt-2">
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="is-member"
+                        value="no"
+                        class="text-primary focus:ring-primary/30"
+                        checked />
+                      <span class="ml-2">否</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="is-member"
+                        value="yes"
+                        class="text-primary focus:ring-primary/30" />
+                      <span class="ml-2">是</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- 会员等级 -->
+                <div id="member-level-container" class="hidden">
+                  <label class="form-label" for="member-level">会员等级</label>
+                  <select id="member-level" class="form-input">
+                    <option value="ordinary">普通会员</option>
+                    <option value="silver">白银会员</option>
+                    <option value="gold">黄金会员</option>
+                    <option value="platinum">铂金会员</option>
+                    <option value="diamond">钻石会员</option>
+                  </select>
+                </div>
+
+                <!-- 会员卡号 -->
+                <div id="member-card-container" class="hidden">
+                  <label class="form-label" for="member-card">会员卡号</label>
+                  <input
+                    type="text"
+                    id="member-card"
+                    class="form-input"
+                    placeholder="自动生成或手动输入" />
+                </div>
+
+                <!-- 入会日期 -->
+                <div id="member-date-container" class="hidden">
+                  <label class="form-label" for="member-date">入会日期</label>
+                  <input type="date" id="member-date" class="form-input" />
+                </div>
+              </div>
+            </div>
+
+            <!-- 健康信息区域 -->
+            <div class="mb-8 pb-6 border-b border-gray-100">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-heartbeat text-primary"></i>
+                健康状况
+              </h3>
+
+              <!-- 主要健康问题 -->
+              <div class="mb-6">
+                <label class="form-label" for="health-issues"
+                  >主要健康问题</label
+                >
+                <textarea
+                  id="health-issues"
+                  rows="3"
+                  class="form-input"
+                  placeholder="请描述客户主要的健康问题或不适症状..."></textarea>
+                <p class="form-hint">
+                  例如：颈椎疼痛、失眠、湿气重等，帮助医生制定理疗方案
+                </p>
+              </div>
+
+              <!-- 既往病史 -->
+              <div class="mb-6">
+                <label class="form-label" for="medical-history">既往病史</label>
+                <textarea
+                  id="medical-history"
+                  rows="3"
+                  class="form-input"
+                  placeholder="请记录客户的既往重大病史..."></textarea>
+                <p class="form-hint">
+                  例如：高血压、糖尿病、心脏病等，用于评估理疗禁忌
+                </p>
+              </div>
+
+              <!-- 理疗禁忌 -->
+              <div>
+                <label class="form-label">理疗禁忌</label>
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="taboo"
+                      value="pregnancy" />
+                    <span class="ml-2">孕妇</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="taboo"
+                      value="hypertension" />
+                    <span class="ml-2">高血压</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="taboo"
+                      value="heart-disease" />
+                    <span class="ml-2">心脏病</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="taboo"
+                      value="skin-disease" />
+                    <span class="ml-2">皮肤病</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="taboo"
+                      value="bleeding" />
+                    <span class="ml-2">出血倾向</span>
+                  </label>
+                  <label
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      class="text-primary focus:ring-primary/30 rounded"
+                      name="taboo"
+                      value="other" />
+                    <span class="ml-2">其他</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 联系信息区域 -->
+            <div class="mb-8">
+              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa fa-map-marker text-primary"></i>
+                联系信息
+              </h3>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 电子邮箱 -->
+                <div>
+                  <label class="form-label" for="email">电子邮箱</label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-input"
+                    placeholder="请输入电子邮箱" />
+                </div>
+
+                <!-- 居住地址 -->
+                <div class="lg:col-span-2">
+                  <label class="form-label" for="address">居住地址</label>
+                  <input
+                    type="text"
+                    id="address"
+                    class="form-input"
+                    placeholder="请输入详细居住地址" />
+                  <p class="form-hint">便于了解客户分布和提供上门服务参考</p>
+                </div>
+
+                <!-- 紧急联系人 -->
+                <div>
+                  <label class="form-label" for="emergency-contact"
+                    >紧急联系人</label
+                  >
+                  <input
+                    type="text"
+                    id="emergency-contact"
+                    class="form-input"
+                    placeholder="请输入紧急联系人姓名" />
+                </div>
+
+                <!-- 紧急联系电话 -->
+                <div>
+                  <label class="form-label" for="emergency-phone"
+                    >紧急联系电话</label
+                  >
+                  <input
+                    type="tel"
+                    id="emergency-phone"
+                    class="form-input"
+                    placeholder="请输入紧急联系人电话" />
+                  <p class="form-hint">紧急情况下使用，请确保准确有效</p>
+                </div>
+
+                <!-- 客户备注 -->
+                <div class="lg:col-span-2">
+                  <label class="form-label" for="customer-notes"
+                    >客户备注</label
+                  >
+                  <textarea
+                    id="customer-notes"
+                    rows="3"
+                    class="form-input"
+                    placeholder="记录客户偏好、特殊需求等信息..."></textarea>
+                  <p class="form-hint">例如：偏好女性技师、对某种精油过敏等</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 表单操作按钮 -->
+            <div
+              class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-100">
+              <button
+                type="button"
+                class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                保存草稿
+              </button>
+              <button
+                type="button"
+                class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                导入信息
+              </button>
+              <button
+                type="submit"
+                class="px-6 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors shadow-sm hover:shadow">
+                确认添加
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- 遮罩层（移动端侧边栏打开时显示） -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"></div>
+
+    <script>
+      // 侧边栏切换功能
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+
+      // 会员信息显示控制
+      const isMemberRadios = document.querySelectorAll(
+        'input[name="is-member"]',
+      );
+      const memberLevelContainer = document.getElementById(
+        'member-level-container',
+      );
+      const memberCardContainer = document.getElementById(
+        'member-card-container',
+      );
+      const memberDateContainer = document.getElementById(
+        'member-date-container',
+      );
+
+      isMemberRadios.forEach((radio) => {
+        radio.addEventListener('change', () => {
+          const isMember = radio.value === 'yes';
+
+          if (isMember) {
+            memberLevelContainer.classList.remove('hidden');
+            memberCardContainer.classList.remove('hidden');
+            memberDateContainer.classList.remove('hidden');
+          } else {
+            memberLevelContainer.classList.add('hidden');
+            memberCardContainer.classList.add('hidden');
+            memberDateContainer.classList.add('hidden');
+          }
+        });
+      });
+
+      // 表单提交处理
+      const customerForm = document.getElementById('customer-form');
+
+      customerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // 简单验证逻辑
+        const name = document.getElementById('customer-name').value;
+        const phone = document.getElementById('customer-phone').value;
+
+        let isValid = true;
+
+        if (!name) {
+          isValid = false;
+          alert('请填写客户姓名');
+        } else if (!phone || phone.length !== 11) {
+          isValid = false;
+          alert('请填写有效的手机号码');
+        }
+
+        if (isValid) {
+          // 模拟表单提交成功
+          alert('客户信息添加成功！');
+          // 实际应用中这里会提交表单数据到服务器
+          // 然后跳转到客户列表页
+          // window.location.href = 'customer-list.html';
+        }
+      });
+
+      // 按钮点击效果
+      document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((button) => {
+          button.addEventListener('click', function () {
+            this.classList.add('scale-95');
+            setTimeout(() => {
+              this.classList.remove('scale-95');
+            }, 150);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

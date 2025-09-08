@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗管理系统 - 员工资料详情</title>
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+
+    <!-- Tailwind 配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 深棕色 - 主色调
+              secondary: '#4F7942', // 绿色 - 辅助色
+              accent: '#D2B48C', // 棕褐色 - 强调色
+              neutral: '#F5F5DC', // 米色 - 中性色
+              'neutral-dark': '#3E2723', // 深棕黑色 - 文字色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .sidebar-item {
+          @apply flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary rounded-lg transition-all duration-200;
+        }
+        .sidebar-item.active {
+          @apply bg-primary/20 text-primary font-medium;
+        }
+        .info-label {
+          @apply text-sm font-medium text-gray-500;
+        }
+        .info-value {
+          @apply text-base text-gray-800 mt-0.5;
+        }
+        .badge {
+          @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-neutral-dark min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm z-10">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- 左侧Logo和标题 -->
+          <div class="flex items-center gap-3">
+            <button
+              id="sidebar-toggle"
+              class="lg:hidden text-gray-600 hover:text-primary">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2">
+              <i class="fa fa-leaf text-2xl text-secondary"></i>
+              <h1 class="text-xl font-semibold text-primary hidden sm:block">
+                中医理疗管理系统
+              </h1>
+            </div>
+          </div>
+
+          <!-- 右侧用户信息和操作 -->
+          <div class="flex items-center gap-5">
+            <button
+              class="relative text-gray-600 hover:text-primary transition-colors">
+              <i class="fa fa-bell text-xl"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+                >3</span
+              >
+            </button>
+            <div class="flex items-center gap-2 cursor-pointer group">
+              <img
+                src="https://picsum.photos/id/64/200/200"
+                alt="当前登录用户头像"
+                class="w-8 h-8 rounded-full object-cover border-2 border-primary/20" />
+              <div class="hidden md:block">
+                <p class="text-sm font-medium">王医生</p>
+                <p class="text-xs text-gray-500">管理员</p>
+              </div>
+              <i
+                class="fa fa-chevron-down text-xs text-gray-500 group-hover:text-primary transition-colors"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- 侧边栏导航 -->
+      <aside
+        id="sidebar"
+        class="bg-white w-64 shadow-sm transform -translate-x-full lg:translate-x-0 fixed lg:static h-[calc(100vh-4rem)] z-20 transition-transform duration-300 overflow-y-auto">
+        <div class="p-4">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="搜索功能..."
+              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
+            <i
+              class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
+        </div>
+
+        <nav class="p-2">
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            主菜单
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-tachometer w-5 text-center"></i> 仪表盘</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-bullhorn w-5 text-center"></i> 推广管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-users w-5 text-center"></i> 客户管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-calendar w-5 text-center"></i> 预约管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-stethoscope w-5 text-center"></i> 理疗项目</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-credit-card w-5 text-center"></i> 财务管理</a
+              >
+            </li>
+          </ul>
+
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">
+            系统设置
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-cog w-5 text-center"></i> 系统设置</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item active"
+                ><i class="fa fa-user-circle w-5 text-center"></i> 员工管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-file-text w-5 text-center"></i> 日志管理</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">
+        <!-- 面包屑导航 -->
+        <div class="flex items-center text-sm text-gray-500 mb-6">
+          <a href="#" class="hover:text-primary transition-colors">首页</a>
+          <i class="fa fa-angle-right mx-2 text-xs"></i>
+          <a href="#" class="hover:text-primary transition-colors">员工管理</a>
+          <i class="fa fa-angle-right mx-2 text-xs"></i>
+          <span class="text-primary">员工资料详情</span>
+        </div>
+
+        <!-- 页面标题和操作按钮 -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <div>
+            <h2
+              class="text-[clamp(1.25rem,3vw,1.75rem)] font-bold text-neutral-dark">
+              员工资料详情
+            </h2>
+            <p class="text-gray-500 mt-1">查看和管理员工的详细信息</p>
+          </div>
+          <div class="flex gap-3">
+            <button
+              class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
+              <i class="fa fa-print"></i>
+              <span>打印资料</span>
+            </button>
+            <button
+              class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors flex items-center gap-2">
+              <i class="fa fa-pencil"></i>
+              <span>编辑资料</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 员工资料卡片 -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 max-w-5xl mx-auto overflow-hidden">
+          <!-- 员工基本信息头部 -->
+          <div
+            class="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 lg:p-8">
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+              <!-- 员工照片 -->
+              <div
+                class="w-32 h-32 rounded-lg overflow-hidden border-4 border-white shadow-md">
+                <img
+                  src="https://picsum.photos/id/237/300/300"
+                  alt="张医生照片"
+                  class="w-full h-full object-cover" />
+              </div>
+
+              <!-- 员工基本信息 -->
+              <div class="flex-1 text-center md:text-left">
+                <div
+                  class="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 flex-wrap justify-center md:justify-start">
+                  <h3 class="text-2xl font-bold text-neutral-dark">张医生</h3>
+                  <span class="badge bg-secondary/20 text-secondary"
+                    >中医师</span
+                  >
+                  <span class="badge bg-green-100 text-green-800">在职</span>
+                  <span class="badge bg-blue-100 text-blue-800">管理员</span>
+                </div>
+
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2 mt-4 text-sm">
+                  <div>
+                    <span class="text-gray-500">工号：</span>
+                    <span class="font-medium">TCM-DOC-001</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">入职日期：</span>
+                    <span>2022-03-15</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">工龄：</span>
+                    <span>3年6个月</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">联系电话：</span>
+                    <span>138****5678</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">电子邮箱：</span>
+                    <span>zhang@example.com</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">专业资质：</span>
+                    <span>中医执业医师</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 详细信息标签页 -->
+          <div class="border-b border-gray-200">
+            <div class="flex overflow-x-auto scrollbar-hide">
+              <button
+                class="tab-button active px-6 py-3 border-b-2 border-primary text-primary font-medium flex-shrink-0">
+                基本资料
+              </button>
+              <button
+                class="tab-button px-6 py-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex-shrink-0">
+                工作信息
+              </button>
+              <button
+                class="tab-button px-6 py-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex-shrink-0">
+                服务记录
+              </button>
+              <button
+                class="tab-button px-6 py-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex-shrink-0">
+                账号权限
+              </button>
+            </div>
+          </div>
+
+          <!-- 基本资料内容 -->
+          <div class="tab-content active p-6 lg:p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <!-- 左侧个人信息 -->
+              <div>
+                <h4
+                  class="text-lg font-semibold mb-5 pb-2 border-b border-gray-100">
+                  个人信息
+                </h4>
+
+                <div class="space-y-4">
+                  <div>
+                    <p class="info-label">姓名</p>
+                    <p class="info-value">张医生</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">性别</p>
+                    <p class="info-value">男</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">出生日期</p>
+                    <p class="info-value">1985-06-12（38岁）</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">联系电话</p>
+                    <p class="info-value">13812345678</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">电子邮箱</p>
+                    <p class="info-value">zhang@example.com</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">联系地址</p>
+                    <p class="info-value">
+                      北京市朝阳区健康路88号幸福小区3号楼5单元102
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">紧急联系人</p>
+                    <p class="info-value">李女士（配偶）</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">紧急联系电话</p>
+                    <p class="info-value">13987654321</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 右侧职业信息 -->
+              <div>
+                <h4
+                  class="text-lg font-semibold mb-5 pb-2 border-b border-gray-100">
+                  职业信息
+                </h4>
+
+                <div class="space-y-4">
+                  <div>
+                    <p class="info-label">职位类型</p>
+                    <p class="info-value">中医师</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">入职日期</p>
+                    <p class="info-value">2022-03-15</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">专业资质</p>
+                    <p class="info-value">中医执业医师、高级推拿师</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">毕业院校</p>
+                    <p class="info-value">北京中医药大学 中医学专业</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">从业年限</p>
+                    <p class="info-value">15年</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">擅长项目</p>
+                    <div class="flex flex-wrap gap-2 mt-1.5">
+                      <span
+                        class="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full"
+                        >针灸</span
+                      >
+                      <span
+                        class="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full"
+                        >推拿</span
+                      >
+                      <span
+                        class="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full"
+                        >艾灸</span
+                      >
+                      <span
+                        class="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full"
+                        >拔罐</span
+                      >
+                    </div>
+                  </div>
+
+                  <div>
+                    <p class="info-label">个人简介</p>
+                    <p class="info-value mt-1.5 text-sm leading-relaxed">
+                      毕业于北京中医药大学，拥有15年中医临床经验，擅长运用针灸、推拿、艾灸等传统中医疗法治疗颈肩腰腿痛、失眠、消化不良等常见病症。曾在多家知名中医院工作，积累了丰富的临床经验和客户服务经验。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 其他标签页内容（默认隐藏） -->
+          <div class="tab-content hidden p-6 lg:p-8">
+            <!-- 工作信息内容 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h4
+                  class="text-lg font-semibold mb-5 pb-2 border-b border-gray-100">
+                  工作安排
+                </h4>
+
+                <div class="space-y-4">
+                  <div>
+                    <p class="info-label">工作状态</p>
+                    <p class="info-value">全职</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">工作时间</p>
+                    <p class="info-value">
+                      周一至周五 9:00-18:00<br />周六 9:00-15:00（隔周轮休）
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">服务价格</p>
+                    <p class="info-value">
+                      专家诊疗：300元/次<br />针灸治疗：200元/次<br />推拿调理：180元/次
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">本月服务次数</p>
+                    <p class="info-value">28次</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">客户满意度</p>
+                    <p class="info-value">4.9/5.0（基于126条评价）</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4
+                  class="text-lg font-semibold mb-5 pb-2 border-b border-gray-100">
+                  奖惩记录
+                </h4>
+
+                <div class="space-y-4">
+                  <div
+                    class="p-3 bg-green-50 border border-green-100 rounded-lg">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <p class="font-medium text-green-800">优秀员工奖励</p>
+                        <p class="text-sm text-green-700 mt-1">
+                          2023年度第一季度服务之星
+                        </p>
+                      </div>
+                      <span class="text-xs text-green-600">2023-04-05</span>
+                    </div>
+                  </div>
+
+                  <div
+                    class="p-3 bg-green-50 border border-green-100 rounded-lg">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <p class="font-medium text-green-800">客户表扬</p>
+                        <p class="text-sm text-green-700 mt-1">
+                          收到客户锦旗，表彰专业服务
+                        </p>
+                      </div>
+                      <span class="text-xs text-green-600">2023-01-20</span>
+                    </div>
+                  </div>
+
+                  <div
+                    class="p-3 bg-yellow-50 border border-yellow-100 rounded-lg">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <p class="font-medium text-yellow-800">迟到提醒</p>
+                        <p class="text-sm text-yellow-700 mt-1">
+                          上午迟到15分钟，已口头提醒
+                        </p>
+                      </div>
+                      <span class="text-xs text-yellow-600">2022-11-08</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content hidden p-6 lg:p-8">
+            <!-- 服务记录内容 -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="text-lg font-semibold">近期服务记录</h4>
+                <div class="relative">
+                  <input
+                    type="text"
+                    placeholder="搜索客户或项目..."
+                    class="pl-8 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm w-64" />
+                  <i
+                    class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr>
+                      <th
+                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg">
+                        日期
+                      </th>
+                      <th
+                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        客户
+                      </th>
+                      <th
+                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        服务项目
+                      </th>
+                      <th
+                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        时长
+                      </th>
+                      <th
+                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        费用
+                      </th>
+                      <th
+                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">
+                        评价
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        2023-10-15
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        李先生（ID:10086）
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        针灸治疗
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        45分钟
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">¥200</td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        <div class="flex items-center">
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <span class="ml-1">5.0</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        2023-10-12
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        王女士（ID:10078）
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        推拿调理
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        60分钟
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">¥180</td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        <div class="flex items-center">
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star-o text-yellow-400"></i>
+                          <span class="ml-1">4.0</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        2023-10-10
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        张先生（ID:10065）
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        艾灸疗法
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        30分钟
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">¥150</td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        <div class="flex items-center">
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star-half-o text-yellow-400"></i>
+                          <span class="ml-1">4.5</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        2023-10-08
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        赵女士（ID:10052）
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        专家诊疗+针灸
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        90分钟
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">¥450</td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm">
+                        <div class="flex items-center">
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <i class="fa fa-star text-yellow-400"></i>
+                          <span class="ml-1">5.0</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="flex justify-between items-center mt-4 text-sm">
+                <p class="text-gray-500">显示 1 至 4 条，共 28 条记录</p>
+                <div class="flex gap-1">
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                    disabled>
+                    上一页
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-primary bg-primary text-white rounded">
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                    4
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                    5
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                    下一页
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content hidden p-6 lg:p-8">
+            <!-- 账号权限内容 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h4
+                  class="text-lg font-semibold mb-5 pb-2 border-b border-gray-100">
+                  账号信息
+                </h4>
+
+                <div class="space-y-4">
+                  <div>
+                    <p class="info-label">登录账号</p>
+                    <p class="info-value">zhangdoctor</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">账号状态</p>
+                    <p class="info-value">
+                      <span class="badge bg-green-100 text-green-800"
+                        >已启用</span
+                      >
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">最后登录时间</p>
+                    <p class="info-value">2023-10-15 08:45:32</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">最后登录IP</p>
+                    <p class="info-value">192.168.1.105</p>
+                  </div>
+
+                  <div>
+                    <p class="info-label">密码修改时间</p>
+                    <p class="info-value">2023-09-20</p>
+                  </div>
+
+                  <div class="pt-2">
+                    <button
+                      class="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm">
+                      <i class="fa fa-refresh mr-1"></i> 重置密码
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4
+                  class="text-lg font-semibold mb-5 pb-2 border-b border-gray-100">
+                  权限设置
+                </h4>
+
+                <div>
+                  <p class="info-label">角色类型</p>
+                  <p class="info-value">管理员</p>
+                </div>
+
+                <div class="mt-5">
+                  <p class="info-label mb-3">权限范围</p>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div class="flex items-center">
+                      <i class="fa fa-check text-green-500 mr-2"></i>
+                      <span>客户管理</span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fa fa-check text-green-500 mr-2"></i>
+                      <span>预约管理</span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fa fa-check text-green-500 mr-2"></i>
+                      <span>产品管理</span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fa fa-check text-green-500 mr-2"></i>
+                      <span>推广管理</span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fa fa-check text-green-500 mr-2"></i>
+                      <span>财务管理</span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fa fa-check text-green-500 mr-2"></i>
+                      <span>报表查看</span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fa fa-check text-green-500 mr-2"></i>
+                      <span>员工管理</span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fa fa-check text-green-500 mr-2"></i>
+                      <span>系统设置</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                  <button
+                    class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors text-sm">
+                    <i class="fa fa-shield mr-1"></i> 调整权限
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 遮罩层（移动端侧边栏打开时显示） -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"></div>
+
+    <script>
+      // 侧边栏切换功能
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+
+      // 标签页切换功能
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+          // 移除所有标签页的active类
+          tabButtons.forEach((btn) =>
+            btn.classList.remove('active', 'border-primary', 'text-primary'),
+          );
+          tabButtons.forEach((btn) =>
+            btn.classList.add('border-transparent', 'text-gray-500'),
+          );
+
+          // 给当前点击的标签页添加active类
+          button.classList.add('active', 'border-primary', 'text-primary');
+          button.classList.remove('border-transparent', 'text-gray-500');
+
+          // 隐藏所有内容
+          tabContents.forEach((content) => content.classList.add('hidden'));
+          tabContents.forEach((content) => content.classList.remove('active'));
+
+          // 显示对应内容
+          tabContents[index].classList.remove('hidden');
+          tabContents[index].classList.add('active');
+        });
+      });
+
+      // 按钮点击效果
+      document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((button) => {
+          button.addEventListener('click', function () {
+            this.classList.add('scale-95');
+            setTimeout(() => {
+              this.classList.remove('scale-95');
+            }, 150);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
