@@ -108,7 +108,7 @@ export default function ProductTable({ data }: { data: Product[] }) {
                 <Badge variant='secondary'>{item.status}</Badge>
               </TableCell>
               <TableCell className='text-right'>
-                <Button>编辑</Button>
+                <Button size='sm'>编辑</Button>
               </TableCell>
             </TableRow>
           ))}

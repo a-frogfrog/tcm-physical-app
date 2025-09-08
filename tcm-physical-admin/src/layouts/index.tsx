@@ -9,6 +9,7 @@ import {
   LayoutProvider,
   Layout,
 } from './Layout';
+import { FOOTER } from '#/constants';
 
 const AppMain = () => {
   return (
@@ -19,7 +20,7 @@ const AppMain = () => {
 };
 
 const AppFooter = () => {
-  return <>© 2025 Made With ❤️ by Your Company</>;
+  return <>{FOOTER.copyright}</>;
 };
 
 export default function AppLayout() {

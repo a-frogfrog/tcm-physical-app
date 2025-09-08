@@ -1,3 +1,13 @@
+import { Separator } from '#/components/ui/separator';
+import { SidebarTrigger } from '#/components/ui/sidebar';
+import { Switch } from '#/components/ui/switch';
+import { LIKE } from '#/constants';
+import { Bell, Github, Maximize } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '#/components/ui/tooltip';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,10 +16,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '#/components/ui/breadcrumb';
-import { Separator } from '#/components/ui/separator';
-import { SidebarTrigger } from '#/components/ui/sidebar';
-import { Switch } from '#/components/ui/switch';
-import { Bell, Github, Maximize } from 'lucide-react';
 
 const BreadcrumbUI = () => {
   return (
@@ -31,27 +37,51 @@ const TopActionBar = () => {
   return (
     <nav className='flex items-center gap-4'>
       <Switch />
+
       <button>
-        <Bell
-          aria-label='Notifications'
-          strokeWidth={1.75}
-          className='cursor-pointer'
-        />
+        <Tooltip>
+          <TooltipTrigger>
+            <Bell
+              aria-label='Notifications'
+              strokeWidth={1.75}
+              className='cursor-pointer'
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>通知</p>
+          </TooltipContent>
+        </Tooltip>
       </button>
+
       <button>
-        <Maximize
-          aria-label='Expand'
-          strokeWidth={1.75}
-          className='cursor-pointer'
-        />
+        <Tooltip>
+          <TooltipTrigger>
+            <Maximize
+              aria-label='Expand'
+              strokeWidth={1.75}
+              className='cursor-pointer'
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>最大化</p>
+          </TooltipContent>
+        </Tooltip>
       </button>
-      <button>
-        <Github
-          aria-label='GitHub'
-          strokeWidth={1.75}
-          className='cursor-pointer'
-        />
-      </button>
+
+      <a href={LIKE.github} target='_blank'>
+        <Tooltip>
+          <TooltipTrigger>
+            <Github
+              aria-label='GitHub'
+              strokeWidth={1.75}
+              className='cursor-pointer'
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>GitHub 仓库</p>
+          </TooltipContent>
+        </Tooltip>
+      </a>
     </nav>
   );
 };

@@ -1,30 +1,10 @@
-export const layoutMenu = [
-  {
-    title: 'Dashboard',
-    path: '/dashboard',
-  },
-  {
-    title: 'Products',
-    path: '/products',
-  },
-  {
-    title: 'Customers',
-    path: '/customers',
-  },
-  {
-    title: 'Orders',
-    path: '/orders',
-  },
-  {
-    title: 'Organizations',
-    path: '/organizations',
-  },
-  {
-    title: 'Promotions',
-    path: '/promotions',
-  },
-  {
-    title: 'Schedules',
-    path: '/schedules',
-  },
-];
+const LIKE = {
+  github: 'https://github.com/a-frogfrog/tcm-physical-app',
+  gitee: 'https://gitee.com/frogfrogdepot/tcm-physical-app.git',
+};
+
+const FOOTER = {
+  copyright: `© 2025 Made With 🥳 by ${import.meta.env.VITE_APP_NAME}`,
+};
+
+export { LIKE, FOOTER };
