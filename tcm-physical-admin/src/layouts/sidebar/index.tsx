@@ -17,7 +17,6 @@ export default function AppSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   const { logoItem, navMain, user } = useFetchSidebarData();
 
-  throw new Error('test error');
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
