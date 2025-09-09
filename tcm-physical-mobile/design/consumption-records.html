@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>消费记录 - 仁心堂</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#8B4513", // 棕色作为主色调
+              secondary: "#D2B48C", // 棕褐色作为辅助色
+              accent: "#2E8B57", // 绿色作为强调色
+              success: "#10B981", // 成功色
+              danger: "#EF4444", // 消费支出色
+              tab4: "#3182CE", // 个人中心相关页面颜色
+            },
+            fontFamily: {
+              sans: ["Noto Sans SC", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .card-shadow {
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+      }
+    </style>
+    <!-- 引入Google字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .page-container {
+        flex: 1;
+        overflow-y: auto;
+        background-color: #f9fafb;
+      }
+      /* 滚动条美化 */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #bbb;
+      }
+    </style>
+  </head>
+  <body class="font-sans text-gray-800">
+    <!-- 页面容器 -->
+    <div class="page-container">
+      <!-- 顶部导航 -->
+      <header class="bg-tab4 text-white p-4 shadow-sm">
+        <div class="flex justify-between items-center">
+          <button class="text-white" id="backButton">
+            <i class="fa fa-angle-left text-xl"></i>
+          </button>
+          <h1 class="text-lg font-medium">消费记录</h1>
+          <div class="w-6"></div>
+          <!-- 占位元素，使标题居中 -->
+        </div>
+      </header>
+
+      <!-- 搜索和筛选 -->
+      <div class="bg-white p-3 border-b border-gray-100">
+        <div class="relative mb-3">
+          <input
+            type="text"
+            placeholder="搜索消费记录..."
+            class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-tab4 text-sm"
+          />
+          <i
+            class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          ></i>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div class="flex space-x-2 overflow-x-auto pb-1">
+            <button
+              class="whitespace-nowrap px-3 py-1 bg-tab4 text-white text-xs rounded-full"
+            >
+              全部
+            </button>
+            <button
+              class="whitespace-nowrap px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+            >
+              理疗服务
+            </button>
+            <button
+              class="whitespace-nowrap px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+            >
+              产品购买
+            </button>
+            <button
+              class="whitespace-nowrap px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+            >
+              会员充值
+            </button>
+            <button
+              class="whitespace-nowrap px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+            >
+              积分兑换
+            </button>
+          </div>
+
+          <button class="text-gray-600 text-sm flex items-center">
+            <i class="fa fa-calendar-o mr-1"></i> 筛选
+          </button>
+        </div>
+      </div>
+
+      <!-- 消费统计 -->
+      <div class="bg-white p-4 mt-3 mb-3 card-shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-medium">消费统计</h2>
+          <button class="text-tab4 text-sm">
+            本月 <i class="fa fa-angle-down ml-1"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="p-3 bg-gray-50 rounded-lg">
+            <p class="text-xs text-gray-500 mb-1">总消费</p>
+            <p class="text-lg font-semibold text-danger">¥2,568</p>
+          </div>
+          <div class="p-3 bg-gray-50 rounded-lg">
+            <p class="text-xs text-gray-500 mb-1">理疗服务</p>
+            <p class="text-lg font-semibold text-danger">¥1,890</p>
+          </div>
+          <div class="p-3 bg-gray-50 rounded-lg">
+            <p class="text-xs text-gray-500 mb-1">产品购买</p>
+            <p class="text-lg font-semibold text-danger">¥678</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 消费记录列表 -->
+      <div class="bg-white mt-3">
+        <!-- 6月记录 -->
+        <div class="px-4 py-2 bg-gray-50 text-gray-500 text-sm">2023年6月</div>
+
+        <!-- 记录1 -->
+        <div class="border-b border-gray-100 px-4 py-3">
+          <div class="flex justify-between">
+            <div class="flex items-start">
+              <div
+                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 flex-shrink-0"
+              >
+                <i class="fa fa-stethoscope"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">推拿按摩服务</h3>
+                <p class="text-xs text-gray-500 mt-0.5">2023-06-15 10:30</p>
+                <p class="text-xs text-gray-500">订单号: RXT202306150086</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-medium text-danger">-¥168</p>
+              <span
+                class="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded mt-1 inline-block"
+                >已完成</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 记录2 -->
+        <div class="border-b border-gray-100 px-4 py-3">
+          <div class="flex justify-between">
+            <div class="flex items-start">
+              <div
+                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 flex-shrink-0"
+              >
+                <i class="fa fa-medkit"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">中药养生茶礼盒</h3>
+                <p class="text-xs text-gray-500 mt-0.5">2023-06-10 16:45</p>
+                <p class="text-xs text-gray-500">订单号: RXT202306100072</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-medium text-danger">-¥298</p>
+              <span
+                class="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded mt-1 inline-block"
+                >已完成</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 记录3 -->
+        <div class="border-b border-gray-100 px-4 py-3">
+          <div class="flex justify-between">
+            <div class="flex items-start">
+              <div
+                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 flex-shrink-0"
+              >
+                <i class="fa fa-stethoscope"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">针灸疗法</h3>
+                <p class="text-xs text-gray-500 mt-0.5">2023-06-08 16:00</p>
+                <p class="text-xs text-gray-500">订单号: RXT202306080065</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-medium text-danger">-¥218</p>
+              <span
+                class="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded mt-1 inline-block"
+                >已完成</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 5月记录 -->
+        <div class="px-4 py-2 bg-gray-50 text-gray-500 text-sm">2023年5月</div>
+
+        <!-- 记录4 -->
+        <div class="border-b border-gray-100 px-4 py-3">
+          <div class="flex justify-between">
+            <div class="flex items-start">
+              <div
+                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 flex-shrink-0"
+              >
+                <i class="fa fa-trophy"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">会员充值 - 白银会员</h3>
+                <p class="text-xs text-gray-500 mt-0.5">2023-05-28 09:15</p>
+                <p class="text-xs text-gray-500">订单号: RXT202305280058</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-medium text-danger">-¥1,000</p>
+              <span
+                class="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded mt-1 inline-block"
+                >已完成</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 记录5 -->
+        <div class="border-b border-gray-100 px-4 py-3">
+          <div class="flex justify-between">
+            <div class="flex items-start">
+              <div
+                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 flex-shrink-0"
+              >
+                <i class="fa fa-fire"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">艾灸养生服务</h3>
+                <p class="text-xs text-gray-500 mt-0.5">2023-05-20 15:30</p>
+                <p class="text-xs text-gray-500">订单号: RXT202305200042</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-medium text-danger">-¥188</p>
+              <span
+                class="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded mt-1 inline-block"
+                >已完成</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 记录6 -->
+        <div class="border-b border-gray-100 px-4 py-3">
+          <div class="flex justify-between">
+            <div class="flex items-start">
+              <div
+                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3 flex-shrink-0"
+              >
+                <i class="fa fa-medkit"></i>
+              </div>
+              <div>
+                <h3 class="font-medium">艾草精油</h3>
+                <p class="text-xs text-gray-500 mt-0.5">2023-05-15 11:20</p>
+                <p class="text-xs text-gray-500">订单号: RXT202305150036</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-medium text-danger">-¥184</p>
+              <span
+                class="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded mt-1 inline-block"
+                >已完成</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 加载更多 -->
+        <div class="py-4 text-center">
+          <button class="text-tab4 text-sm flex items-center justify-center">
+            <i class="fa fa-refresh mr-1"></i> 加载更多
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部TabBar -->
+    <div
+      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10"
+    >
+      <div class="flex justify-around">
+        <!-- 首页 -->
+        <button
+          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
+          data-tab="home"
+        >
+          <i class="fa fa-home text-xl mb-1"></i>
+          <span class="text-xs">首页</span>
+        </button>
+        <!-- 看诊记录 -->
+        <button
+          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
+          data-tab="records"
+        >
+          <i class="fa fa-file-text-o text-xl mb-1"></i>
+          <span class="text-xs">看诊记录</span>
+        </button>
+        <!-- 推广 -->
+        <button
+          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
+          data-tab="promotion"
+        >
+          <i class="fa fa-bullhorn text-xl mb-1"></i>
+          <span class="text-xs">推广</span>
+        </button>
+        <!-- 个人中心 -->
+        <button
+          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-tab4"
+          data-tab="profile"
+        >
+          <i class="fa fa-user-o text-xl mb-1"></i>
+          <span class="text-xs">我的</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // 返回按钮功能
+      document
+        .getElementById("backButton")
+        .addEventListener("click", function () {
+          // 在实际应用中，这里会返回上一页
+          alert("返回上一页");
+        });
+
+      // Tab切换功能
+      const tabButtons = document.querySelectorAll(".tab-button");
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          // 移除所有激活状态
+          tabButtons.forEach((btn) => {
+            btn.classList.remove(
+              "text-tab1",
+              "text-tab2",
+              "text-tab3",
+              "text-tab4"
+            );
+            btn.classList.add("text-gray-500");
+          });
+
+          // 设置当前激活状态
+          const tabId = button.getAttribute("data-tab");
+          button.classList.remove("text-gray-500");
+
+          // 根据不同的tab设置不同的颜色
+          if (tabId === "home") {
+            button.classList.add("text-tab1");
+          } else if (tabId === "records") {
+            button.classList.add("text-tab2");
+          } else if (tabId === "promotion") {
+            button.classList.add("text-tab3");
+          } else if (tabId === "profile") {
+            button.classList.add("text-tab4");
+          }
+
+          // 在实际应用中，这里会跳转到对应页面
+          console.log(`切换到${tabId}页面`);
+        });
+      });
+
+      // 筛选按钮功能
+      document
+        .querySelector("button:has(.fa-calendar-o)")
+        .addEventListener("click", function () {
+          alert("打开日期筛选");
+        });
+
+      // 加载更多功能
+      document
+        .querySelector("button:has(.fa-refresh)")
+        .addEventListener("click", function () {
+          const button = this;
+          button.innerHTML =
+            '<i class="fa fa-spinner fa-spin mr-1"></i> 加载中...';
+
+          // 模拟加载延迟
+          setTimeout(() => {
+            button.innerHTML = '<i class="fa fa-refresh mr-1"></i> 加载更多';
+            alert("已加载全部记录");
+          }, 1500);
+        });
+    </script>
+  </body>
+</html>

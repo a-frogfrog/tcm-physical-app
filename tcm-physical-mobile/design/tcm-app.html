@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>仁心堂 - 中医理疗App</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#8B4513", // 棕色作为主色调，体现中医传统感
+              secondary: "#D2B48C", // 棕褐色作为辅助色
+              accent: "#2E8B57", // 绿色作为强调色，代表健康
+              light: "#F5F5DC", // 米色作为浅色背景
+              dark: "#3E2723", // 深棕色作为深色文本
+              tab1: "#E53E3E", // 首页标签颜色-红色
+              tab2: "#ED8936", // 看诊记录标签颜色-橙色
+              tab3: "#38A169", // 推广标签颜色-绿色
+              tab4: "#3182CE", // 个人中心标签颜色-蓝色
+            },
+            fontFamily: {
+              sans: ["Noto Sans SC", "sans-serif"],
+              serif: ["Noto Serif SC", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .tab-active {
+          @apply text-white;
+        }
+        .tab-inactive {
+          @apply text-gray-500;
+        }
+        .card-shadow {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+      }
+    </style>
+    <!-- 引入Google字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .page-container {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .tab-page {
+        display: none;
+      }
+      .tab-page.active {
+        display: block;
+      }
+      /* 滚动条美化 */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #bbb;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-sans text-dark">
+    <!-- 页面容器 -->
+    <div class="page-container">
+      <!-- 首页 -->
+      <div id="home-page" class="tab-page active">
+        <!-- 顶部导航 -->
+        <header class="bg-primary text-white p-4 shadow-md">
+          <div class="flex justify-between items-center">
+            <h1 class="text-xl font-serif font-bold">仁心堂</h1>
+            <div class="flex space-x-4">
+              <button class="text-white hover:text-secondary transition-colors">
+                <i class="fa fa-bell-o text-lg"></i>
+              </button>
+              <button class="text-white hover:text-secondary transition-colors">
+                <i class="fa fa-search text-lg"></i>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- 轮播图 -->
+        <div class="relative h-48 overflow-hidden">
+          <div
+            class="flex transition-transform duration-500"
+            style="transform: translateX(0)"
+          >
+            <div class="min-w-full h-full">
+              <img
+                src="https://picsum.photos/id/177/800/400"
+                alt="中医理疗优惠活动"
+                class="w-full h-full object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-4 text-white">
+                  <h3 class="font-semibold text-lg">
+                    新用户专享：首次理疗8折优惠
+                  </h3>
+                  <p class="text-sm text-gray-100">
+                    即日起至本月底，新用户可享首次理疗8折
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="min-w-full h-full">
+              <img
+                src="https://picsum.photos/id/116/800/400"
+                alt="夏季养生套餐"
+                class="w-full h-full object-cover"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
+              >
+                <div class="p-4 text-white">
+                  <h3 class="font-semibold text-lg">夏季养生套餐：祛湿排毒</h3>
+                  <p class="text-sm text-gray-100">
+                    专为夏季设计的中医养生套餐
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 轮播指示器 -->
+          <div class="absolute bottom-2 right-2 flex space-x-1">
+            <span class="w-2 h-2 rounded-full bg-white"></span>
+            <span class="w-2 h-2 rounded-full bg-white/50"></span>
+          </div>
+        </div>
+
+        <!-- 快捷服务 -->
+        <div class="bg-white p-4">
+          <div class="grid grid-cols-4 gap-2">
+            <div class="flex flex-col items-center p-2">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
+              >
+                <i class="fa fa-calendar-plus-o"></i>
+              </div>
+              <span class="text-xs">在线预约</span>
+            </div>
+            <div class="flex flex-col items-center p-2">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
+              >
+                <i class="fa fa-user-md"></i>
+              </div>
+              <span class="text-xs">找医师</span>
+            </div>
+            <div class="flex flex-col items-center p-2">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
+              >
+                <i class="fa fa-stethoscope"></i>
+              </div>
+              <span class="text-xs">理疗项目</span>
+            </div>
+            <div class="flex flex-col items-center p-2">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
+              >
+                <i class="fa fa-book"></i>
+              </div>
+              <span class="text-xs">养生知识</span>
+            </div>
+            <div class="flex flex-col items-center p-2">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
+              >
+                <i class="fa fa-map-marker"></i>
+              </div>
+              <span class="text-xs">门店地址</span>
+            </div>
+            <div class="flex flex-col items-center p-2">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
+              >
+                <i class="fa fa-comments-o"></i>
+              </div>
+              <span class="text-xs">在线咨询</span>
+            </div>
+            <div class="flex flex-col items-center p-2">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
+              >
+                <i class="fa fa-trophy"></i>
+              </div>
+              <span class="text-xs">会员福利</span>
+            </div>
+            <div class="flex flex-col items-center p-2">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
+              >
+                <i class="fa fa-ellipsis-h"></i>
+              </div>
+              <span class="text-xs">更多</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 推荐服务 -->
+        <div class="bg-white mt-4 p-4">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">推荐服务</h2>
+            <a href="#" class="text-primary text-sm">查看全部</a>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-lg overflow-hidden card-shadow">
+              <img
+                src="https://picsum.photos/id/237/400/300"
+                alt="推拿按摩"
+                class="w-full h-32 object-cover"
+              />
+              <div class="p-3">
+                <h3 class="font-medium">推拿按摩</h3>
+                <p class="text-xs text-gray-500 mt-1">
+                  缓解肌肉疲劳，改善血液循环
+                </p>
+                <div class="flex justify-between items-center mt-2">
+                  <span class="text-primary font-semibold">¥168</span>
+                  <button
+                    class="text-xs bg-primary/10 text-primary px-2 py-1 rounded"
+                  >
+                    预约
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="rounded-lg overflow-hidden card-shadow">
+              <img
+                src="https://picsum.photos/id/238/400/300"
+                alt="针灸疗法"
+                class="w-full h-32 object-cover"
+              />
+              <div class="p-3">
+                <h3 class="font-medium">针灸疗法</h3>
+                <p class="text-xs text-gray-500 mt-1">调节气血，平衡阴阳</p>
+                <div class="flex justify-between items-center mt-2">
+                  <span class="text-primary font-semibold">¥218</span>
+                  <button
+                    class="text-xs bg-primary/10 text-primary px-2 py-1 rounded"
+                  >
+                    预约
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 推荐专家 -->
+        <div class="bg-white mt-4 p-4">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">推荐专家</h2>
+            <a href="#" class="text-primary text-sm">查看全部</a>
+          </div>
+          <div class="flex space-x-4 overflow-x-auto pb-2">
+            <div class="flex-shrink-0 w-32 text-center">
+              <img
+                src="https://picsum.photos/id/1005/200/200"
+                alt="张医师"
+                class="w-20 h-20 rounded-full object-cover mx-auto"
+              />
+              <h3 class="font-medium mt-2">张医师</h3>
+              <p class="text-xs text-gray-500">推拿按摩专家</p>
+              <button
+                class="text-xs bg-primary/10 text-primary px-3 py-1 rounded mt-2"
+              >
+                预约
+              </button>
+            </div>
+            <div class="flex-shrink-0 w-32 text-center">
+              <img
+                src="https://picsum.photos/id/1006/200/200"
+                alt="李医师"
+                class="w-20 h-20 rounded-full object-cover mx-auto"
+              />
+              <h3 class="font-medium mt-2">李医师</h3>
+              <p class="text-xs text-gray-500">针灸专家</p>
+              <button
+                class="text-xs bg-primary/10 text-primary px-3 py-1 rounded mt-2"
+              >
+                预约
+              </button>
+            </div>
+            <div class="flex-shrink-0 w-32 text-center">
+              <img
+                src="https://picsum.photos/id/1012/200/200"
+                alt="王医师"
+                class="w-20 h-20 rounded-full object-cover mx-auto"
+              />
+              <h3 class="font-medium mt-2">王医师</h3>
+              <p class="text-xs text-gray-500">艾灸理疗师</p>
+              <button
+                class="text-xs bg-primary/10 text-primary px-3 py-1 rounded mt-2"
+              >
+                预约
+              </button>
+            </div>
+            <div class="flex-shrink-0 w-32 text-center">
+              <img
+                src="https://picsum.photos/id/1027/200/200"
+                alt="刘医师"
+                class="w-20 h-20 rounded-full object-cover mx-auto"
+              />
+              <h3 class="font-medium mt-2">刘医师</h3>
+              <p class="text-xs text-gray-500">体质调理专家</p>
+              <button
+                class="text-xs bg-primary/10 text-primary px-3 py-1 rounded mt-2"
+              >
+                预约
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 养生知识 -->
+        <div class="bg-white mt-4 p-4 mb-20">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">养生知识</h2>
+            <a href="#" class="text-primary text-sm">查看全部</a>
+          </div>
+          <div class="space-y-3">
+            <div
+              class="flex gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <img
+                src="https://picsum.photos/id/292/120/120"
+                alt="四季养生"
+                class="w-20 h-20 rounded object-cover flex-shrink-0"
+              />
+              <div>
+                <h3 class="font-medium line-clamp-2">
+                  中医四季养生要点，顺应自然保健康
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">
+                  中医认为，人与自然是一个统一的整体，四季气候变化直接影响人体健康...
+                </p>
+                <div class="flex items-center text-xs text-gray-400 mt-1">
+                  <span><i class="fa fa-calendar-o mr-1"></i> 2023-06-15</span>
+                  <span class="mx-2">|</span>
+                  <span><i class="fa fa-eye mr-1"></i> 1248</span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <img
+                src="https://picsum.photos/id/293/120/120"
+                alt="穴位按摩"
+                class="w-20 h-20 rounded object-cover flex-shrink-0"
+              />
+              <div>
+                <h3 class="font-medium line-clamp-2">
+                  日常穴位按摩，缓解常见不适
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">
+                  身体上的许多穴位对应着不同的脏腑和功能，掌握简单的穴位按摩方法...
+                </p>
+                <div class="flex items-center text-xs text-gray-400 mt-1">
+                  <span><i class="fa fa-calendar-o mr-1"></i> 2023-06-08</span>
+                  <span class="mx-2">|</span>
+                  <span><i class="fa fa-eye mr-1"></i> 986</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 看诊记录 -->
+      <div id="records-page" class="tab-page">
+        <header class="bg-tab2 text-white p-4 shadow-md">
+          <h1 class="text-xl font-serif font-bold">看诊记录</h1>
+        </header>
+
+        <div class="p-4">
+          <!-- 搜索栏 -->
+          <div class="relative mb-4">
+            <input
+              type="text"
+              placeholder="搜索看诊记录..."
+              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-tab2"
+            />
+            <i
+              class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            ></i>
+          </div>
+
+          <!-- 记录筛选 -->
+          <div class="flex border-b border-gray-200 mb-4">
+            <button
+              class="py-2 px-4 text-tab2 border-b-2 border-tab2 font-medium"
+            >
+              全部
+            </button>
+            <button class="py-2 px-4 text-gray-500">推拿</button>
+            <button class="py-2 px-4 text-gray-500">针灸</button>
+            <button class="py-2 px-4 text-gray-500">艾灸</button>
+          </div>
+
+          <!-- 看诊记录列表 -->
+          <div class="space-y-4">
+            <!-- 记录1 -->
+            <div class="bg-white rounded-lg p-4 card-shadow">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <h3 class="font-semibold">推拿按摩</h3>
+                  <p class="text-xs text-gray-500">张医师</p>
+                </div>
+                <span
+                  class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"
+                  >已完成</span
+                >
+              </div>
+              <div class="flex justify-between text-sm">
+                <div>
+                  <span class="text-gray-500">日期：</span>
+                  <span>2023-06-15</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">时间：</span>
+                  <span>10:00-11:30</span>
+                </div>
+              </div>
+              <div class="mt-3 pt-3 border-t border-gray-100">
+                <p class="text-sm mb-2">诊疗结果：</p>
+                <p class="text-sm text-gray-600 text-sm">
+                  患者主诉颈肩酸痛，给予推拿按摩治疗，重点放松肩颈肌肉，疏通经络。建议避免长时间低头，适当运动。
+                </p>
+                <button class="mt-3 text-tab2 text-sm hover:underline">
+                  查看详情
+                </button>
+              </div>
+            </div>
+
+            <!-- 记录2 -->
+            <div class="bg-white rounded-lg p-4 card-shadow">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <h3 class="font-semibold">针灸疗法</h3>
+                  <p class="text-xs text-gray-500">李医师</p>
+                </div>
+                <span
+                  class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"
+                  >已完成</span
+                >
+              </div>
+              <div class="flex justify-between text-sm">
+                <div>
+                  <span class="text-gray-500">日期：</span>
+                  <span>2023-06-08</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">时间：</span>
+                  <span>15:00-16:00</span>
+                </div>
+              </div>
+              <div class="mt-3 pt-3 border-t border-gray-100">
+                <p class="text-sm mb-2">诊疗结果：</p>
+                <p class="text-sm text-gray-600 text-sm">
+                  患者失眠多梦，给予针灸治疗，选取百会、神门、三阴交等穴位。建议规律作息，睡前避免使用电子产品。
+                </p>
+                <button class="mt-3 text-tab2 text-sm hover:underline">
+                  查看详情
+                </button>
+              </div>
+            </div>
+
+            <!-- 记录3 -->
+            <div class="bg-white rounded-lg p-4 card-shadow">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <h3 class="font-semibold">艾灸养生</h3>
+                  <p class="text-xs text-gray-500">王医师</p>
+                </div>
+                <span
+                  class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"
+                  >待复诊</span
+                >
+              </div>
+              <div class="flex justify-between text-sm">
+                <div>
+                  <span class="text-gray-500">日期：</span>
+                  <span>2023-06-01</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">时间：</span>
+                  <span>14:00-15:30</span>
+                </div>
+              </div>
+              <div class="mt-3 pt-3 border-t border-gray-100">
+                <p class="text-sm mb-2">诊疗结果：</p>
+                <p class="text-sm text-gray-600 text-sm">
+                  患者体寒，给予艾灸治疗，选取关元、气海、足三里等穴位。建议注意保暖，避免生冷食物。
+                </p>
+                <button class="mt-3 text-tab2 text-sm hover:underline">
+                  查看详情
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 推广 -->
+      <div id="promotion-page" class="tab-page">
+        <header class="bg-tab3 text-white p-4 shadow-md">
+          <h1 class="text-xl font-serif font-bold">推广活动</h1>
+        </header>
+
+        <div class="p-4">
+          <!-- 平台活动 -->
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold mb-4">平台活动</h2>
+            <div class="space-y-4">
+              <!-- 活动1 -->
+              <div class="bg-white rounded-lg overflow-hidden card-shadow">
+                <div class="relative h-40">
+                  <img
+                    src="https://picsum.photos/id/239/800/400"
+                    alt="夏季养生套餐"
+                    class="w-full h-full object-cover"
+                  />
+                  <div
+                    class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full"
+                  >
+                    限时优惠
+                  </div>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-lg mb-2">夏季祛湿排毒套餐</h3>
+                  <p class="text-gray-600 text-sm mb-3">
+                    包含三次艾灸+两次中药熏蒸，专为夏季祛湿排毒设计，改善体湿、疲劳等症状。
+                  </p>
+                  <div class="flex items-center mb-3">
+                    <span class="text-red-500 font-bold text-xl">¥598</span>
+                    <span class="text-gray-400 line-through text-sm ml-2"
+                      >¥798</span
+                    >
+                    <span
+                      class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded"
+                      >立减200元</span
+                    >
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500"
+                      ><i class="fa fa-clock-o mr-1"></i>
+                      活动截止：2023-07-31</span
+                    >
+                    <button
+                      class="bg-tab3 text-white text-sm px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
+                    >
+                      立即购买
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 活动2 -->
+              <div class="bg-white rounded-lg overflow-hidden card-shadow">
+                <div class="relative h-40">
+                  <img
+                    src="https://picsum.photos/id/240/800/400"
+                    alt="新用户福利"
+                    class="w-full h-full object-cover"
+                  />
+                  <div
+                    class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full"
+                  >
+                    新用户专享
+                  </div>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-lg mb-2">新用户首次体验</h3>
+                  <p class="text-gray-600 text-sm mb-3">
+                    新用户首次到店体验任意理疗项目，均可享受8折优惠，另赠送养生茶一杯。
+                  </p>
+                  <div class="flex justify-between items-center mt-3">
+                    <span class="text-xs text-gray-500"
+                      ><i class="fa fa-clock-o mr-1"></i>
+                      活动截止：2023-12-31</span
+                    >
+                    <button
+                      class="bg-tab3 text-white text-sm px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
+                    >
+                      领取优惠
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 分享赚积分 -->
+          <div>
+            <h2 class="text-lg font-semibold mb-4">分享赚积分</h2>
+            <div class="bg-white rounded-lg p-4 card-shadow">
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-12 h-12 rounded-full bg-tab3/10 flex items-center justify-center text-tab3 mr-3"
+                >
+                  <i class="fa fa-share-alt text-xl"></i>
+                </div>
+                <div>
+                  <h3 class="font-semibold">邀请好友，双方得积分</h3>
+                  <p class="text-xs text-gray-500">
+                    邀请好友注册并消费，您和好友都能获得积分奖励
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-gray-50 p-3 rounded-lg text-center">
+                  <p class="text-xs text-gray-500 mb-1">您将获得</p>
+                  <p class="text-tab3 font-bold">200积分</p>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg text-center">
+                  <p class="text-xs text-gray-500 mb-1">好友将获得</p>
+                  <p class="text-tab3 font-bold">100积分 + 8折券</p>
+                </div>
+              </div>
+
+              <div
+                class="bg-gray-50 p-3 rounded-lg mb-4 flex items-center justify-between"
+              >
+                <span class="text-sm">您的邀请码</span>
+                <div class="flex items-center">
+                  <span class="font-mono font-semibold mr-2">RX887766</span>
+                  <button class="text-tab3 text-sm hover:underline">
+                    复制
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex space-x-3">
+                <button
+                  class="flex-1 bg-tab3 text-white text-sm py-2 rounded-lg hover:bg-opacity-90 transition-colors flex items-center justify-center"
+                >
+                  <i class="fa fa-weixin mr-1"></i> 微信分享
+                </button>
+                <button
+                  class="flex-1 bg-gray-200 text-gray-700 text-sm py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center"
+                >
+                  <i class="fa fa-qrcode mr-1"></i> 生成海报
+                </button>
+              </div>
+
+              <div class="mt-4 pt-4 border-t border-gray-100">
+                <h4 class="font-medium mb-2 text-sm">我的邀请记录</h4>
+                <div class="space-y-2">
+                  <div class="flex justify-between text-sm">
+                    <span>已邀请好友：3人</span>
+                    <span>获得积分：600分</span>
+                  </div>
+                  <button
+                    class="text-tab3 text-sm hover:underline w-full text-center"
+                  >
+                    查看详情
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 个人中心 -->
+      <div id="profile-page" class="tab-page">
+        <header class="bg-tab4 text-white p-4 shadow-md">
+          <h1 class="text-xl font-serif font-bold">个人中心</h1>
+        </header>
+
+        <!-- 用户信息 -->
+        <div class="bg-white p-4 mb-4">
+          <div class="flex items-center">
+            <img
+              src="https://picsum.photos/id/1001/100/100"
+              alt="用户头像"
+              class="w-16 h-16 rounded-full object-cover mr-4"
+            />
+            <div class="flex-1">
+              <div class="flex items-center">
+                <h2 class="font-semibold text-lg">陈健康</h2>
+                <span
+                  class="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full"
+                  >白银会员</span
+                >
+              </div>
+              <p class="text-sm text-gray-500">健康卡号：JK12345678</p>
+              <div class="flex mt-2">
+                <div class="mr-4">
+                  <p class="text-sm font-medium">1200</p>
+                  <p class="text-xs text-gray-500">我的积分</p>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">3</p>
+                  <p class="text-xs text-gray-500">待使用券</p>
+                </div>
+              </div>
+            </div>
+            <button class="text-tab4">
+              <i class="fa fa-angle-right text-xl"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 功能菜单 -->
+        <div class="bg-white mb-4">
+          <div class="p-3 border-b border-gray-100">
+            <h3 class="text-sm font-medium text-gray-500">我的服务</h3>
+          </div>
+          <div class="grid grid-cols-3">
+            <div
+              class="flex flex-col items-center p-4 border-b border-r border-gray-100"
+            >
+              <i class="fa fa-calendar text-tab4 text-xl mb-2"></i>
+              <span class="text-sm">我的预约</span>
+            </div>
+            <div
+              class="flex flex-col items-center p-4 border-b border-r border-gray-100"
+            >
+              <i class="fa fa-ticket text-tab4 text-xl mb-2"></i>
+              <span class="text-sm">我的优惠券</span>
+            </div>
+            <div
+              class="flex flex-col items-center p-4 border-b border-gray-100"
+            >
+              <i class="fa fa-credit-card text-tab4 text-xl mb-2"></i>
+              <span class="text-sm">我的订单</span>
+            </div>
+            <div
+              class="flex flex-col items-center p-4 border-b border-r border-gray-100"
+            >
+              <i class="fa fa-star text-tab4 text-xl mb-2"></i>
+              <span class="text-sm">我的收藏</span>
+            </div>
+            <div
+              class="flex flex-col items-center p-4 border-b border-r border-gray-100"
+            >
+              <i class="fa fa-gift text-tab4 text-xl mb-2"></i>
+              <span class="text-sm">会员福利</span>
+            </div>
+            <div
+              class="flex flex-col items-center p-4 border-b border-gray-100"
+            >
+              <i class="fa fa-heartbeat text-tab4 text-xl mb-2"></i>
+              <span class="text-sm">健康档案</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 其他功能 -->
+        <div class="bg-white mb-20">
+          <div class="p-3 border-b border-gray-100">
+            <h3 class="text-sm font-medium text-gray-500">其他功能</h3>
+          </div>
+          <div class="divide-y divide-gray-100">
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center">
+                <i class="fa fa-cog text-tab4 mr-3"></i>
+                <span>设置</span>
+              </div>
+              <i class="fa fa-angle-right text-gray-400"></i>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center">
+                <i class="fa fa-question-circle text-tab4 mr-3"></i>
+                <span>帮助中心</span>
+              </div>
+              <i class="fa fa-angle-right text-gray-400"></i>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center">
+                <i class="fa fa-phone text-tab4 mr-3"></i>
+                <span>联系客服</span>
+              </div>
+              <i class="fa fa-angle-right text-gray-400"></i>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center">
+                <i class="fa fa-info-circle text-tab4 mr-3"></i>
+                <span>关于我们</span>
+              </div>
+              <i class="fa fa-angle-right text-gray-400"></i>
+            </div>
+          </div>
+          <div class="p-4 mt-4">
+            <button
+              class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors"
+            >
+              退出登录
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部TabBar -->
+    <div
+      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10"
+    >
+      <div class="flex justify-around">
+        <!-- 首页 -->
+        <button
+          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-tab1"
+          data-tab="home-page"
+        >
+          <i class="fa fa-home text-xl mb-1"></i>
+          <span class="text-xs">首页</span>
+        </button>
+        <!-- 看诊记录 -->
+        <button
+          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
+          data-tab="records-page"
+        >
+          <i class="fa fa-file-text-o text-xl mb-1"></i>
+          <span class="text-xs">看诊记录</span>
+        </button>
+        <!-- 推广 -->
+        <button
+          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
+          data-tab="promotion-page"
+        >
+          <i class="fa fa-bullhorn text-xl mb-1"></i>
+          <span class="text-xs">推广</span>
+        </button>
+        <!-- 个人中心 -->
+        <button
+          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
+          data-tab="profile-page"
+        >
+          <i class="fa fa-user-o text-xl mb-1"></i>
+          <span class="text-xs">我的</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Tab切换功能
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const tabPages = document.querySelectorAll(".tab-page");
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          // 移除所有激活状态
+          tabButtons.forEach((btn) => {
+            btn.classList.remove(
+              "text-tab1",
+              "text-tab2",
+              "text-tab3",
+              "text-tab4"
+            );
+            btn.classList.add("text-gray-500");
+          });
+
+          tabPages.forEach((page) => {
+            page.classList.remove("active");
+          });
+
+          // 设置当前激活状态
+          const tabId = button.getAttribute("data-tab");
+          button.classList.remove("text-gray-500");
+
+          // 根据不同的tab设置不同的颜色
+          if (tabId === "home-page") {
+            button.classList.add("text-tab1");
+          } else if (tabId === "records-page") {
+            button.classList.add("text-tab2");
+          } else if (tabId === "promotion-page") {
+            button.classList.add("text-tab3");
+          } else if (tabId === "profile-page") {
+            button.classList.add("text-tab4");
+          }
+
+          document.getElementById(tabId).classList.add("active");
+        });
+      });
+
+      // 轮播图功能
+      let currentSlide = 0;
+      const slidesContainer = document.querySelector(
+        ".flex.transition-transform"
+      );
+      const slides = document.querySelectorAll(".min-w-full.h-full");
+      const indicators = document.querySelectorAll(
+        ".absolute.bottom-2.right-2 span"
+      );
+
+      function showSlide(index) {
+        if (index >= slides.length) currentSlide = 0;
+        if (index < 0) currentSlide = slides.length - 1;
+
+        slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+        // 更新指示器
+        indicators.forEach((indicator, i) => {
+          if (i === currentSlide) {
+            indicator.classList.add("bg-white");
+            indicator.classList.remove("bg-white/50");
+          } else {
+            indicator.classList.remove("bg-white");
+            indicator.classList.add("bg-white/50");
+          }
+        });
+      }
+
+      // 自动轮播
+      setInterval(() => {
+        currentSlide++;
+        showSlide(currentSlide);
+      }, 5000);
+    </script>
+  </body>
+</html>
