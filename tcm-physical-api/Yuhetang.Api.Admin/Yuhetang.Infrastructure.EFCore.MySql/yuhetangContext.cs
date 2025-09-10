@@ -1,0 +1,1250 @@
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+
+namespace Yuhetang.Infrastructure.EFCore.MySql
+{
+    public partial class yuhetangContext : DbContext
+    {
+        public yuhetangContext()
+        {
+        }
+
+        public yuhetangContext(DbContextOptions<yuhetangContext> options)
+            : base(options)
+        {
+        }
+
+        public virtual DbSet<AdminLoginLog> AdminLoginLogs { get; set; } = null!;
+        public virtual DbSet<AdminUser> AdminUsers { get; set; } = null!;
+        public virtual DbSet<Custom> Customs { get; set; } = null!;
+        public virtual DbSet<CustomFollow> CustomFollows { get; set; } = null!;
+        public virtual DbSet<CustomerVipCpsCommission> CustomerVipCpsCommissions { get; set; } = null!;
+        public virtual DbSet<CustomerVipRecord> CustomerVipRecords { get; set; } = null!;
+        public virtual DbSet<CustomsVip> CustomsVips { get; set; } = null!;
+        public virtual DbSet<CustomsVipCp> CustomsVipCps { get; set; } = null!;
+        public virtual DbSet<Order> Orders { get; set; } = null!;
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
+        public virtual DbSet<OrderPayment> OrderPayments { get; set; } = null!;
+        public virtual DbSet<Product> Products { get; set; } = null!;
+        public virtual DbSet<ProductInventory> ProductInventories { get; set; } = null!;
+        public virtual DbSet<ProductPackage> ProductPackages { get; set; } = null!;
+        public virtual DbSet<ProductPackageDetail> ProductPackageDetails { get; set; } = null!;
+        public virtual DbSet<ProductSpec> ProductSpecs { get; set; } = null!;
+        public virtual DbSet<SysDepartment> SysDepartments { get; set; } = null!;
+        public virtual DbSet<SysDictionary> SysDictionaries { get; set; } = null!;
+        public virtual DbSet<SysDuty> SysDuties { get; set; } = null!;
+        public virtual DbSet<SysEmployee> SysEmployees { get; set; } = null!;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseMySql("server=localhost;database=yuhetang;uid=root;pwd=123456", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.41-mysql"));
+            }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.UseCollation("utf8mb4_0900_ai_ci")
+                .HasCharSet("utf8mb4");
+
+            modelBuilder.Entity<AdminLoginLog>(entity =>
+            {
+                entity.HasKey(e => e.Allid)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("admin_login_logs");
+
+                entity.HasComment("管理员登录日志表")
+                    .UseCollation("utf8mb4_unicode_ci");
+
+                entity.HasIndex(e => e.Auid, "AUId");
+
+                entity.Property(e => e.Allid)
+                    .HasMaxLength(32)
+                    .HasColumnName("ALLId")
+                    .HasComment("日志ID");
+
+                entity.Property(e => e.Allbrowser)
+                    .HasMaxLength(50)
+                    .HasColumnName("ALLBrowser")
+                    .HasComment("浏览器");
+
+                entity.Property(e => e.Allcode)
+                    .HasMaxLength(32)
+                    .HasColumnName("ALLCode")
+                    .HasComment("登录凭据");
+
+                entity.Property(e => e.AllcreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("ALLCreate_Time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.AlldeviceType)
+                    .HasMaxLength(20)
+                    .HasColumnName("ALLDevice_Type")
+                    .HasComment("设备类型: pc, mobile,tablet");
+
+                entity.Property(e => e.AllfailureReason)
+                    .HasMaxLength(200)
+                    .HasColumnName("ALLFailure_Reason")
+                    .HasComment("失败原因");
+
+                entity.Property(e => e.Alllocation)
+                    .HasMaxLength(100)
+                    .HasColumnName("ALLLocation")
+                    .HasComment("登录地点");
+
+                entity.Property(e => e.AllloginIp)
+                    .HasMaxLength(45)
+                    .HasColumnName("ALLLogin_Ip")
+                    .HasComment("登录IP");
+
+                entity.Property(e => e.AllloginResult)
+                    .HasColumnName("ALLLogin_Result")
+                    .HasComment("登录结果: 1-成功, 0-失败");
+
+                entity.Property(e => e.AllloginTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("ALLLogin_Time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("登录时间");
+
+                entity.Property(e => e.Auid)
+                    .HasMaxLength(32)
+                    .HasColumnName("AUId")
+                    .HasComment("管理员ID");
+
+                entity.Property(e => e.Auname)
+                    .HasMaxLength(50)
+                    .HasColumnName("AUName")
+                    .HasComment("用户名");
+
+                entity.HasOne(d => d.Au)
+                    .WithMany(p => p.AdminLoginLogs)
+                    .HasForeignKey(d => d.Auid)
+                    .HasConstraintName("admin_login_logs_ibfk_1");
+            });
+
+            modelBuilder.Entity<AdminUser>(entity =>
+            {
+                entity.HasKey(e => e.Auid)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("admin_users");
+
+                entity.HasComment("管理员用户表")
+                    .UseCollation("utf8mb4_unicode_ci");
+
+                entity.HasIndex(e => e.Auaccount, "AUAccount")
+                    .IsUnique();
+
+                entity.Property(e => e.Auid)
+                    .HasMaxLength(32)
+                    .HasColumnName("AUId")
+                    .HasComment("管理员ID");
+
+                entity.Property(e => e.Auaccount)
+                    .HasMaxLength(32)
+                    .HasColumnName("AUAccount")
+                    .HasComment("用户名");
+
+                entity.Property(e => e.Auavatar)
+                    .HasMaxLength(255)
+                    .HasColumnName("AUAvatar")
+                    .HasComment("头像URL");
+
+                entity.Property(e => e.AucreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("AUCreate_Time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.Auemail)
+                    .HasMaxLength(100)
+                    .HasColumnName("AUEmail")
+                    .HasComment("邮箱");
+
+                entity.Property(e => e.AuisBan)
+                    .HasColumnName("AUIsBan")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态: 1-正常, 0-禁用");
+
+                entity.Property(e => e.Aupassword)
+                    .HasMaxLength(255)
+                    .HasColumnName("AUPassword")
+                    .HasComment("密码");
+
+                entity.Property(e => e.Auphone)
+                    .HasMaxLength(20)
+                    .HasColumnName("AUPhone")
+                    .HasComment("手机号");
+
+                entity.Property(e => e.AurealName)
+                    .HasMaxLength(50)
+                    .HasColumnName("AUReal_Name")
+                    .HasComment("真实姓名");
+
+                entity.Property(e => e.Auremark)
+                    .HasMaxLength(500)
+                    .HasColumnName("AURemark")
+                    .HasComment("备注");
+
+                entity.Property(e => e.Aurole)
+                    .HasMaxLength(20)
+                    .HasColumnName("AURole")
+                    .HasDefaultValueSql("'admin'")
+                    .HasComment("角色: super_admin-超级管理员, admin-普通管理员");
+
+                entity.Property(e => e.Ausalt)
+                    .HasMaxLength(50)
+                    .HasColumnName("AUSalt")
+                    .HasComment("盐");
+            });
+
+            modelBuilder.Entity<Custom>(entity =>
+            {
+                entity.HasKey(e => e.CId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("customs");
+
+                entity.HasComment("客户信息表");
+
+                entity.HasIndex(e => e.CPhone, "C_Phone")
+                    .IsUnique();
+
+                entity.Property(e => e.CId)
+                    .HasMaxLength(32)
+                    .HasColumnName("C_ID")
+                    .HasComment("客户ID");
+
+                entity.Property(e => e.CAccount)
+                    .HasMaxLength(50)
+                    .HasColumnName("C_Account")
+                    .HasComment("邮箱账号");
+
+                entity.Property(e => e.CAddress)
+                    .HasMaxLength(200)
+                    .HasColumnName("C_Address")
+                    .HasComment("地址");
+
+                entity.Property(e => e.CAge)
+                    .HasColumnName("C_Age")
+                    .HasComment("年龄");
+
+                entity.Property(e => e.CCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("C_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.CGender)
+                    .HasColumnName("C_Gender")
+                    .HasComment("性别：0-女，1-男");
+
+                entity.Property(e => e.CName)
+                    .HasMaxLength(50)
+                    .HasColumnName("C_Name")
+                    .HasComment("客户姓名");
+
+                entity.Property(e => e.CPhone)
+                    .HasMaxLength(20)
+                    .HasColumnName("C_Phone")
+                    .HasComment("手机号码");
+
+                entity.Property(e => e.CResource)
+                    .HasColumnName("C_Resource")
+                    .HasComment("客户来源：1-广告，2-介绍，3-自行上门");
+
+                entity.Property(e => e.CStatus)
+                    .HasColumnName("C_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-无效，1-有效");
+
+                entity.Property(e => e.IsConvert)
+                    .HasColumnName("Is_Convert")
+                    .HasComment("是否转换：0-未转换，1-已转换");
+            });
+
+            modelBuilder.Entity<CustomFollow>(entity =>
+            {
+                entity.HasKey(e => e.CfId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("custom_follow");
+
+                entity.HasComment("客户跟进记录表");
+
+                entity.HasIndex(e => e.CfCustomerId, "CF_CustomerID");
+
+                entity.Property(e => e.CfId)
+                    .HasMaxLength(32)
+                    .HasColumnName("CF_ID")
+                    .HasComment("跟进记录ID");
+
+                entity.Property(e => e.CfContent)
+                    .HasColumnType("text")
+                    .HasColumnName("CF_Content")
+                    .HasComment("跟进内容");
+
+                entity.Property(e => e.CfCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CF_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.CfCustomerId)
+                    .HasMaxLength(32)
+                    .HasColumnName("CF_CustomerID")
+                    .HasComment("客户ID");
+
+                entity.Property(e => e.CfNextTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CF_NextTime")
+                    .HasComment("下次跟进时间");
+
+                entity.Property(e => e.CfOperator)
+                    .HasMaxLength(32)
+                    .HasColumnName("CF_Operator")
+                    .HasComment("跟进人");
+
+                entity.Property(e => e.CfType)
+                    .HasColumnName("CF_Type")
+                    .HasComment("跟进类型：1-电话，2-微信，3-面谈");
+
+                entity.HasOne(d => d.CfCustomer)
+                    .WithMany(p => p.CustomFollows)
+                    .HasForeignKey(d => d.CfCustomerId)
+                    .HasConstraintName("custom_follow_ibfk_1");
+            });
+
+            modelBuilder.Entity<CustomerVipCpsCommission>(entity =>
+            {
+                entity.HasKey(e => e.CvccId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("customer_vip_cps_commission");
+
+                entity.HasComment("推广佣金记录表");
+
+                entity.HasIndex(e => e.CvccCpsid, "CVCC_CPSID");
+
+                entity.HasIndex(e => e.CvccNewVipid, "CVCC_NewVIPID");
+
+                entity.Property(e => e.CvccId)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVCC_ID")
+                    .HasComment("佣金记录ID");
+
+                entity.Property(e => e.CvccAmount)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("CVCC_Amount")
+                    .HasComment("佣金金额");
+
+                entity.Property(e => e.CvccCpsid)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVCC_CPSID")
+                    .HasComment("推广链接ID");
+
+                entity.Property(e => e.CvccCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVCC_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.CvccNewVipid)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVCC_NewVIPID")
+                    .HasComment("新注册VIP ID");
+
+                entity.Property(e => e.CvccSettleTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVCC_SettleTime")
+                    .HasComment("结算时间");
+
+                entity.Property(e => e.CvccStatus)
+                    .HasColumnName("CVCC_Status")
+                    .HasDefaultValueSql("'0'")
+                    .HasComment("状态：0-未结算，1-已结算");
+
+                entity.HasOne(d => d.CvccCps)
+                    .WithMany(p => p.CustomerVipCpsCommissions)
+                    .HasForeignKey(d => d.CvccCpsid)
+                    .HasConstraintName("customer_vip_cps_commission_ibfk_1");
+
+                entity.HasOne(d => d.CvccNewVip)
+                    .WithMany(p => p.CustomerVipCpsCommissions)
+                    .HasForeignKey(d => d.CvccNewVipid)
+                    .HasConstraintName("customer_vip_cps_commission_ibfk_2");
+            });
+
+            modelBuilder.Entity<CustomerVipRecord>(entity =>
+            {
+                entity.HasKey(e => e.CvrId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("customer_vip_record");
+
+                entity.HasComment("VIP行为记录表");
+
+                entity.HasIndex(e => e.CvrVipid, "CVR_VIPID");
+
+                entity.Property(e => e.CvrId)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVR_ID")
+                    .HasComment("行为记录ID");
+
+                entity.Property(e => e.CvrAfterBalance)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("CVR_AfterBalance")
+                    .HasComment("操作后余额");
+
+                entity.Property(e => e.CvrAmount)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("CVR_Amount")
+                    .HasComment("金额");
+
+                entity.Property(e => e.CvrBeforeBalance)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("CVR_BeforeBalance")
+                    .HasComment("操作前余额");
+
+                entity.Property(e => e.CvrCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVR_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.CvrDescription)
+                    .HasMaxLength(200)
+                    .HasColumnName("CVR_Description")
+                    .HasComment("描述");
+
+                entity.Property(e => e.CvrOperator)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVR_Operator")
+                    .HasComment("操作人");
+
+                entity.Property(e => e.CvrOrderId)
+                    .HasMaxLength(100)
+                    .HasColumnName("CVR_OrderID")
+                    .HasComment("关联订单ID");
+
+                entity.Property(e => e.CvrType)
+                    .HasColumnName("CVR_Type")
+                    .HasComment("行为类型：1-充值，2-消费，3-退款");
+
+                entity.Property(e => e.CvrVipid)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVR_VIPID")
+                    .HasComment("VIP ID");
+
+                entity.HasOne(d => d.CvrVip)
+                    .WithMany(p => p.CustomerVipRecords)
+                    .HasForeignKey(d => d.CvrVipid)
+                    .HasConstraintName("customer_vip_record_ibfk_1");
+            });
+
+            modelBuilder.Entity<CustomsVip>(entity =>
+            {
+                entity.HasKey(e => e.CvId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("customs_vip");
+
+                entity.HasComment("VIP会员信息表");
+
+                entity.HasIndex(e => e.CvCustomerId, "CV_CustomerID")
+                    .IsUnique();
+
+                entity.Property(e => e.CvId)
+                    .HasMaxLength(32)
+                    .HasColumnName("CV_ID")
+                    .HasComment("VIPID");
+
+                entity.Property(e => e.CvBalance)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("CV_Balance")
+                    .HasDefaultValueSql("'0.00'")
+                    .HasComment("账户余额");
+
+                entity.Property(e => e.CvCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CV_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.CvCustomerId)
+                    .HasMaxLength(32)
+                    .HasColumnName("CV_CustomerID")
+                    .HasComment("客户ID");
+
+                entity.Property(e => e.CvLevel)
+                    .HasColumnName("CV_Level")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("VIP等级");
+
+                entity.Property(e => e.CvStatus)
+                    .HasColumnName("CV_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-冻结，1-正常");
+
+                entity.Property(e => e.CvTotalConsume)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("CV_TotalConsume")
+                    .HasDefaultValueSql("'0.00'")
+                    .HasComment("累计消费金额");
+
+                entity.Property(e => e.CvTotalRecharge)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("CV_TotalRecharge")
+                    .HasDefaultValueSql("'0.00'")
+                    .HasComment("累计充值金额");
+
+                entity.Property(e => e.CvUpdateTime)
+                    .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasColumnName("CV_UpdateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("最后更新时间");
+
+                entity.HasOne(d => d.CvCustomer)
+                    .WithOne(p => p.CustomsVip)
+                    .HasForeignKey<CustomsVip>(d => d.CvCustomerId)
+                    .HasConstraintName("customs_vip_ibfk_1");
+            });
+
+            modelBuilder.Entity<CustomsVipCp>(entity =>
+            {
+                entity.HasKey(e => e.CvcId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("customs_vip_cps");
+
+                entity.HasComment("VIP推广链接表");
+
+                entity.HasIndex(e => e.CvcVipid, "CVC_VIPID");
+
+                entity.Property(e => e.CvcId)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVC_ID")
+                    .HasComment("推广链接ID");
+
+                entity.Property(e => e.CvcCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVC_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.CvcStatus)
+                    .HasColumnName("CVC_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-停用，1-启用");
+
+                entity.Property(e => e.CvcUrl)
+                    .HasMaxLength(200)
+                    .HasColumnName("CVC_Url")
+                    .HasComment("推广链接URL");
+
+                entity.Property(e => e.CvcVipid)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVC_VIPID")
+                    .HasComment("VIP ID");
+
+                entity.HasOne(d => d.CvcVip)
+                    .WithMany(p => p.CustomsVipCps)
+                    .HasForeignKey(d => d.CvcVipid)
+                    .HasConstraintName("customs_vip_cps_ibfk_1");
+            });
+
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.HasKey(e => e.OId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("orders");
+
+                entity.HasComment("订单表");
+
+                entity.HasIndex(e => e.OVip, "O_VIP");
+
+                entity.Property(e => e.OId)
+                    .HasMaxLength(100)
+                    .HasColumnName("O_ID")
+                    .HasComment("订单ID");
+
+                entity.Property(e => e.OAmount)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("O_Amount")
+                    .HasComment("订单金额");
+
+                entity.Property(e => e.OCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("O_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.ODiscount)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("O_Discount")
+                    .HasDefaultValueSql("'0.00'")
+                    .HasComment("折扣金额");
+
+                entity.Property(e => e.OPayAmount)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("O_PayAmount")
+                    .HasComment("实际支付金额");
+
+                entity.Property(e => e.ORemark)
+                    .HasMaxLength(200)
+                    .HasColumnName("O_Remark")
+                    .HasComment("备注");
+
+                entity.Property(e => e.OStatus)
+                    .HasColumnName("O_Status")
+                    .HasComment("状态：1-待支付，2-已支付，3-已完成，4-已取消");
+
+                entity.Property(e => e.OType)
+                    .HasColumnName("O_Type")
+                    .HasComment("订单类型：1-商品订单，2-服务订单");
+
+                entity.Property(e => e.OUpdateTime)
+                    .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasColumnName("O_UpdateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("最后更新时间");
+
+                entity.Property(e => e.OVip)
+                    .HasMaxLength(32)
+                    .HasColumnName("O_VIP")
+                    .HasComment("VIP ID");
+
+                entity.HasOne(d => d.OVipNavigation)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.OVip)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("orders_ibfk_1");
+            });
+
+            modelBuilder.Entity<OrderDetail>(entity =>
+            {
+                entity.HasKey(e => e.OdId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("order_details");
+
+                entity.HasComment("订单详情表");
+
+                entity.HasIndex(e => e.OdOrderId, "OD_OrderID");
+
+                entity.HasIndex(e => e.OdProductId, "OD_ProductID");
+
+                entity.HasIndex(e => e.OdSpecsId, "OD_SpecsID");
+
+                entity.Property(e => e.OdId)
+                    .HasMaxLength(32)
+                    .HasColumnName("OD_ID")
+                    .HasComment("订单明细ID");
+
+                entity.Property(e => e.OdCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("OD_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.OdOrderId)
+                    .HasMaxLength(100)
+                    .HasColumnName("OD_OrderID")
+                    .HasComment("订单ID");
+
+                entity.Property(e => e.OdPrice)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("OD_Price")
+                    .HasComment("单价");
+
+                entity.Property(e => e.OdProductId)
+                    .HasMaxLength(32)
+                    .HasColumnName("OD_ProductID")
+                    .HasComment("产品ID");
+
+                entity.Property(e => e.OdQuantity)
+                    .HasColumnName("OD_Quantity")
+                    .HasComment("数量");
+
+                entity.Property(e => e.OdSpecsId)
+                    .HasMaxLength(32)
+                    .HasColumnName("OD_SpecsID")
+                    .HasComment("规格ID");
+
+                entity.Property(e => e.OdTotalAmount)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("OD_TotalAmount")
+                    .HasComment("总金额");
+
+                entity.HasOne(d => d.OdOrder)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.OdOrderId)
+                    .HasConstraintName("order_details_ibfk_1");
+
+                entity.HasOne(d => d.OdProduct)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.OdProductId)
+                    .HasConstraintName("order_details_ibfk_2");
+
+                entity.HasOne(d => d.OdSpecs)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.OdSpecsId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("order_details_ibfk_3");
+            });
+
+            modelBuilder.Entity<OrderPayment>(entity =>
+            {
+                entity.HasKey(e => e.OpId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("order_payment");
+
+                entity.HasComment("支付记录表");
+
+                entity.HasIndex(e => e.OpOrderId, "OP_OrderID");
+
+                entity.Property(e => e.OpId)
+                    .HasMaxLength(32)
+                    .HasColumnName("OP_ID")
+                    .HasComment("支付记录ID");
+
+                entity.Property(e => e.OpAmount)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("OP_Amount")
+                    .HasComment("支付金额");
+
+                entity.Property(e => e.OpCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("OP_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.OpOrderId)
+                    .HasMaxLength(100)
+                    .HasColumnName("OP_OrderID")
+                    .HasComment("订单ID");
+
+                entity.Property(e => e.OpPayTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("OP_PayTime")
+                    .HasComment("支付时间");
+
+                entity.Property(e => e.OpStatus)
+                    .HasColumnName("OP_Status")
+                    .HasComment("支付状态：1-支付中，2-支付成功，3-支付失败");
+
+                entity.Property(e => e.OpTransactionNo)
+                    .HasMaxLength(100)
+                    .HasColumnName("OP_TransactionNo")
+                    .HasComment("交易流水号");
+
+                entity.Property(e => e.OpType)
+                    .HasColumnName("OP_Type")
+                    .HasComment("支付方式：1-现金，2-微信，3-支付宝，4-银行卡");
+
+                entity.HasOne(d => d.OpOrder)
+                    .WithMany(p => p.OrderPayments)
+                    .HasForeignKey(d => d.OpOrderId)
+                    .HasConstraintName("order_payment_ibfk_1");
+            });
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.HasKey(e => e.PId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("product");
+
+                entity.HasComment("产品信息表");
+
+                entity.Property(e => e.PId)
+                    .HasMaxLength(32)
+                    .HasColumnName("P_ID")
+                    .HasComment("产品ID");
+
+                entity.Property(e => e.PCategory)
+                    .HasMaxLength(32)
+                    .HasColumnName("P_Category")
+                    .HasComment("产品分类ID");
+
+                entity.Property(e => e.PCostPrice)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("P_CostPrice")
+                    .HasComment("产品成本价");
+
+                entity.Property(e => e.PCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("P_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.PDescription)
+                    .HasColumnType("text")
+                    .HasColumnName("P_Description")
+                    .HasComment("产品描述");
+
+                entity.Property(e => e.PName)
+                    .HasMaxLength(100)
+                    .HasColumnName("P_Name")
+                    .HasComment("产品名称");
+
+                entity.Property(e => e.PPrice)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("P_Price")
+                    .HasComment("产品价格");
+
+                entity.Property(e => e.PStatus)
+                    .HasColumnName("P_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-下架，1-上架");
+
+                entity.Property(e => e.PType)
+                    .HasColumnName("P_Type")
+                    .HasComment("产品类型：1-实物，2-服务");
+
+                entity.Property(e => e.PUpdateTime)
+                    .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasColumnName("P_UpdateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("最后更新时间");
+            });
+
+            modelBuilder.Entity<ProductInventory>(entity =>
+            {
+                entity.HasKey(e => e.PiId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("product_inventory");
+
+                entity.HasComment("库存记录表");
+
+                entity.HasIndex(e => e.PiProductId, "PI_ProductID");
+
+                entity.HasIndex(e => e.PiSpecsId, "PI_SpecsID");
+
+                entity.Property(e => e.PiId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PI_ID")
+                    .HasComment("库存记录ID");
+
+                entity.Property(e => e.PiAfterStock)
+                    .HasColumnName("PI_AfterStock")
+                    .HasComment("变更后库存");
+
+                entity.Property(e => e.PiBeforeStock)
+                    .HasColumnName("PI_BeforeStock")
+                    .HasComment("变更前库存");
+
+                entity.Property(e => e.PiCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("PI_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.PiOperator)
+                    .HasMaxLength(32)
+                    .HasColumnName("PI_Operator")
+                    .HasComment("操作人");
+
+                entity.Property(e => e.PiProductId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PI_ProductID")
+                    .HasComment("产品ID");
+
+                entity.Property(e => e.PiQuantity)
+                    .HasColumnName("PI_Quantity")
+                    .HasComment("变动数量");
+
+                entity.Property(e => e.PiReason)
+                    .HasMaxLength(200)
+                    .HasColumnName("PI_Reason")
+                    .HasComment("变动原因");
+
+                entity.Property(e => e.PiSpecsId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PI_SpecsID")
+                    .HasComment("规格ID");
+
+                entity.Property(e => e.PiType)
+                    .HasColumnName("PI_Type")
+                    .HasComment("变动类型：1-入库，2-出库，3-调整");
+
+                entity.HasOne(d => d.PiProduct)
+                    .WithMany(p => p.ProductInventories)
+                    .HasForeignKey(d => d.PiProductId)
+                    .HasConstraintName("product_inventory_ibfk_1");
+
+                entity.HasOne(d => d.PiSpecs)
+                    .WithMany(p => p.ProductInventories)
+                    .HasForeignKey(d => d.PiSpecsId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("product_inventory_ibfk_2");
+            });
+
+            modelBuilder.Entity<ProductPackage>(entity =>
+            {
+                entity.HasKey(e => e.PpId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("product_package");
+
+                entity.HasComment("产品套餐表");
+
+                entity.Property(e => e.PpId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PP_ID")
+                    .HasComment("套餐ID");
+
+                entity.Property(e => e.PpCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("PP_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.PpDescription)
+                    .HasColumnType("text")
+                    .HasColumnName("PP_Description")
+                    .HasComment("套餐描述");
+
+                entity.Property(e => e.PpDiscount)
+                    .HasPrecision(5, 2)
+                    .HasColumnName("PP_Discount")
+                    .HasComment("折扣率");
+
+                entity.Property(e => e.PpName)
+                    .HasMaxLength(100)
+                    .HasColumnName("PP_Name")
+                    .HasComment("套餐名称");
+
+                entity.Property(e => e.PpPrice)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("PP_Price")
+                    .HasComment("套餐价格");
+
+                entity.Property(e => e.PpStatus)
+                    .HasColumnName("PP_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-下架，1-上架");
+            });
+
+            modelBuilder.Entity<ProductPackageDetail>(entity =>
+            {
+                entity.HasKey(e => e.PpdId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("product_package_details");
+
+                entity.HasComment("套餐明细表");
+
+                entity.HasIndex(e => e.PpdPackageId, "PPD_PackageID");
+
+                entity.HasIndex(e => e.PpdProductId, "PPD_ProductID");
+
+                entity.Property(e => e.PpdId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PPD_ID")
+                    .HasComment("套餐明细ID");
+
+                entity.Property(e => e.PpdCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("PPD_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.PpdPackageId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PPD_PackageID")
+                    .HasComment("套餐ID");
+
+                entity.Property(e => e.PpdPrice)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("PPD_Price")
+                    .HasComment("明细价格");
+
+                entity.Property(e => e.PpdProductId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PPD_ProductID")
+                    .HasComment("产品ID");
+
+                entity.Property(e => e.PpdQuantity)
+                    .HasColumnName("PPD_Quantity")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("产品数量");
+
+                entity.HasOne(d => d.PpdPackage)
+                    .WithMany(p => p.ProductPackageDetails)
+                    .HasForeignKey(d => d.PpdPackageId)
+                    .HasConstraintName("product_package_details_ibfk_1");
+
+                entity.HasOne(d => d.PpdProduct)
+                    .WithMany(p => p.ProductPackageDetails)
+                    .HasForeignKey(d => d.PpdProductId)
+                    .HasConstraintName("product_package_details_ibfk_2");
+            });
+
+            modelBuilder.Entity<ProductSpec>(entity =>
+            {
+                entity.HasKey(e => e.PsId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("product_specs");
+
+                entity.HasComment("产品规格表");
+
+                entity.HasIndex(e => e.PsProductId, "PS_ProductID");
+
+                entity.Property(e => e.PsId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PS_ID")
+                    .HasComment("规格ID");
+
+                entity.Property(e => e.PsCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("PS_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.PsName)
+                    .HasMaxLength(100)
+                    .HasColumnName("PS_Name")
+                    .HasComment("规格名称");
+
+                entity.Property(e => e.PsPrice)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("PS_Price")
+                    .HasComment("规格价格");
+
+                entity.Property(e => e.PsProductId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PS_ProductID")
+                    .HasComment("产品ID");
+
+                entity.Property(e => e.PsStatus)
+                    .HasColumnName("PS_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-停用，1-启用");
+
+                entity.Property(e => e.PsStock)
+                    .HasColumnName("PS_Stock")
+                    .HasDefaultValueSql("'0'")
+                    .HasComment("库存数量");
+
+                entity.Property(e => e.PsValue)
+                    .HasMaxLength(100)
+                    .HasColumnName("PS_Value")
+                    .HasComment("规格值");
+
+                entity.HasOne(d => d.PsProduct)
+                    .WithMany(p => p.ProductSpecs)
+                    .HasForeignKey(d => d.PsProductId)
+                    .HasConstraintName("product_specs_ibfk_1");
+            });
+
+            modelBuilder.Entity<SysDepartment>(entity =>
+            {
+                entity.HasKey(e => e.DId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_department");
+
+                entity.HasComment("部门信息表");
+
+                entity.Property(e => e.DId)
+                    .HasMaxLength(32)
+                    .HasColumnName("D_ID")
+                    .HasComment("部门ID");
+
+                entity.Property(e => e.DCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("D_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.DManager)
+                    .HasMaxLength(32)
+                    .HasColumnName("D_Manager")
+                    .HasComment("部门经理员工ID");
+
+                entity.Property(e => e.DName)
+                    .HasMaxLength(50)
+                    .HasColumnName("D_Name")
+                    .HasComment("部门名称");
+
+                entity.Property(e => e.DParentId)
+                    .HasMaxLength(32)
+                    .HasColumnName("D_ParentID")
+                    .HasComment("上级部门ID");
+
+                entity.Property(e => e.DStatus)
+                    .HasColumnName("D_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-停用，1-启用");
+            });
+
+            modelBuilder.Entity<SysDictionary>(entity =>
+            {
+                entity.HasKey(e => e.DId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_dictionary");
+
+                entity.HasComment("系统字典表");
+
+                entity.HasIndex(e => new { e.DType, e.DValue }, "uk_type_value")
+                    .IsUnique();
+
+                entity.Property(e => e.DId)
+                    .HasMaxLength(32)
+                    .HasColumnName("D_ID")
+                    .HasComment("字典ID");
+
+                entity.Property(e => e.DCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("D_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.DDescription)
+                    .HasMaxLength(200)
+                    .HasColumnName("D_Description")
+                    .HasComment("字典描述");
+
+                entity.Property(e => e.DSort)
+                    .HasColumnName("D_Sort")
+                    .HasDefaultValueSql("'0'")
+                    .HasComment("排序号");
+
+                entity.Property(e => e.DStatus)
+                    .HasColumnName("D_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-停用，1-启用");
+
+                entity.Property(e => e.DType)
+                    .HasMaxLength(50)
+                    .HasColumnName("D_Type")
+                    .HasComment("字典类型");
+
+                entity.Property(e => e.DValue)
+                    .HasMaxLength(100)
+                    .HasColumnName("D_Value")
+                    .HasComment("字典值");
+            });
+
+            modelBuilder.Entity<SysDuty>(entity =>
+            {
+                entity.HasKey(e => e.DId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_duty");
+
+                entity.HasComment("岗位信息表");
+
+                entity.Property(e => e.DId)
+                    .HasMaxLength(32)
+                    .HasColumnName("D_ID")
+                    .HasComment("岗位ID");
+
+                entity.Property(e => e.DCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("D_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.DDescription)
+                    .HasColumnType("text")
+                    .HasColumnName("D_Description")
+                    .HasComment("岗位描述");
+
+                entity.Property(e => e.DName)
+                    .HasMaxLength(50)
+                    .HasColumnName("D_Name")
+                    .HasComment("岗位名称");
+
+                entity.Property(e => e.DStatus)
+                    .HasColumnName("D_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-停用，1-启用");
+            });
+
+            modelBuilder.Entity<SysEmployee>(entity =>
+            {
+                entity.HasKey(e => e.EId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_employees");
+
+                entity.HasComment("系统员工信息表");
+
+                entity.HasIndex(e => e.EAccount, "E_Account")
+                    .IsUnique();
+
+                entity.Property(e => e.EId)
+                    .HasMaxLength(32)
+                    .HasColumnName("E_ID")
+                    .HasComment("员工ID");
+
+                entity.Property(e => e.EAccount)
+                    .HasMaxLength(11)
+                    .HasColumnName("E_Account")
+                    .HasComment("员工登录账号");
+
+                entity.Property(e => e.ECreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("E_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.EDept)
+                    .HasMaxLength(32)
+                    .HasColumnName("E_Dept")
+                    .HasComment("所属部门ID");
+
+                entity.Property(e => e.EDuty)
+                    .HasMaxLength(32)
+                    .HasColumnName("E_Duty")
+                    .HasComment("岗位ID");
+
+                entity.Property(e => e.EGender)
+                    .HasColumnName("E_Gender")
+                    .HasComment("性别：0-女，1-男");
+
+                entity.Property(e => e.EName)
+                    .HasMaxLength(50)
+                    .HasColumnName("E_Name")
+                    .HasComment("员工姓名");
+
+                entity.Property(e => e.EPassword)
+                    .HasMaxLength(32)
+                    .HasColumnName("E_Password")
+                    .HasComment("登录密码");
+
+                entity.Property(e => e.EPhone)
+                    .HasMaxLength(20)
+                    .HasColumnName("E_Phone")
+                    .HasComment("联系电话");
+
+                entity.Property(e => e.EStatus)
+                    .HasColumnName("E_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-离职，1-在职");
+            });
+
+            OnModelCreatingPartial(modelBuilder);
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+}
