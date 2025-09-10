@@ -9,7 +9,7 @@ interface StatCardProps {
     isIncrease: boolean; // 是否增长
     compareText: string; // 比较文本，如“较上月”
   };
-  icon: React.ReactNode;
+  icon: React.ComponentType;
   iconColor?: string;
   className?: string;
 }
@@ -18,7 +18,7 @@ const StatCard = ({
   title,
   value,
   trend,
-  icon,
+  icon: Icon,
   iconColor = 'bg-amber-100',
   className,
 }: StatCardProps) => {
@@ -38,7 +38,7 @@ const StatCard = ({
           'flex items-center h-fit p-2 rounded-full w-fit',
           iconColor,
         )}>
-        {icon}
+        {Icon && <Icon />}
       </div>
     </article>
   );
