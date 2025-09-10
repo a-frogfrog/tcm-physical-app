@@ -1,92 +1,177 @@
-/* 主布局样式 */
-.site-layout .site-layout-background {
-  background: #fff;
+/* 基础样式重置：统一浏览器默认样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* 侧边栏样式 */
-.logo {
-  padding: 16px;
+body {
+  background-color: #f5f5f5;
+  font-family: "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 主布局容器：占满屏幕高度，垂直排列 */
+.main-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 加载中状态：居中显示动画+文字 */
+.loading-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa;
+}
+
+.loading-content {
   text-align: center;
-  border-bottom: 1px solid #e8e8e8;
 }
 
-.ant-layout-sider {
-  transition: all 0.3s ease;
+/* 加载动画：棕色旋转圆环 */
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 16px;
+  border: 4px solid rgba(139, 90, 43, 0.1);
+  border-left-color: #8B5A2B;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.ant-menu-inline {
-  border-right: none;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.menu-item-selected {
-  background-color: rgba(139, 90, 43, 0.1) !important;
+.loading-content p {
+  color: #666;
+  font-size: 14px;
 }
 
-.menu-item-selected .ant-menu-item-icon,
-.menu-item-selected .ant-menu-title-content {
+/* 顶部导航栏：白色背景+阴影+固定高度 */
+.main-header {
+  padding: 0 24px !important;
+  background: #fff !important;
+  border-bottom: 1px solid #e8e8e8 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  z-index: 10 !important;
+  height: 64px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+/* 头部左侧：Logo容器 */
+.header-left {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* Logo区域：移除分割线，仅保留右侧间距 */
+.logo-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 16px;
+  margin-right: 16px; /* 右侧间距，与导航区分开 */
+  min-width: 160px; /* 最小宽度，防止Logo文字被压缩 */
+}
+
+.logo-text h1 {
+  color: #8B5A2B; /* 中医馆主色调：棕色 */
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  line-height: 1;
+}
+
+.logo-text p {
+  color: #666;
+  font-size: 12px;
+  margin: 0;
+  line-height: 1;
+}
+
+/* 顶部导航菜单：水平居中+无默认边框 */
+.top-navigation {
+  border-bottom: none !important;
+  background: transparent !important;
+  height: 100% !important;
+  margin: 0 auto; /* 核心：实现导航栏水平居中 */
+}
+
+.ant-menu-horizontal {
+  line-height: 64px !important; /* 与头部高度一致，文字垂直居中 */
+}
+
+.ant-menu-item {
+  padding: 0 16px !important;
+  margin: 0 !important;
+  transition: all 0.2s ease !important;
+}
+
+/* 导航项激活状态：棕色下边框+棕色文字 */
+.nav-item-active {
   color: #8B5A2B !important;
+  background-color: transparent !important;
 }
 
-/* 顶部导航样式（优化后） */
-.ant-layout-header {
-  padding: 0 24px;
-  height: 64px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  z-index: 1;
+.nav-item-active .ant-menu-item-icon,
+.nav-item-active .ant-menu-title-content {
+  color: #8B5A2B !important; /* 激活态图标+文字同步变色 */
 }
 
-/* 头部左侧标题区域 */
-.header-title {
-  font-size: 18px;
-  color: #333;
-  font-weight: 500;
+/* 导航项hover状态：浅棕色背景 */
+.ant-menu-horizontal .ant-menu-item:hover {
+  color: #8B5A2B !important;
+  background-color: rgba(139, 90, 43, 0.05) !important;
 }
 
-/* 头部右侧操作区容器 */
-.header-actions {
+/* 头部右侧：通知+全屏+用户下拉容器 */
+.header-right {
   display: flex;
   align-items: center;
-  gap: 16px; /* 元素间统一间距 */
+  gap: 16px; /* 元素间距，视觉协调 */
 }
 
-/* 搜索框样式（优化，仅保留宽度和交互，移除颜色自定义） */
-.ant-input-search {
-  width: 240px; /* 适当加宽搜索框 */
-  transition: width 0.3s ease;
-}
-
-.ant-input-search:hover,
-.ant-input-search:focus-within {
-  width: 280px; /* hover/focus 时动态加宽，增强交互感 */
-}
-
-/* 搜索按钮（恢复 Ant Design 默认样式，移除自定义背景色和边框色） */
-.ant-input-search-button {
+/* 通知图标：hover变棕色 */
+.notification-badge {
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.ant-input-search-button:hover {
-  transform: scale(1.05); /* hover 时轻微放大，保留交互效果 */
-}
-
-
-/* 通知图标样式（优化） */
-.ant-badge {
-  cursor: pointer;
+.notification-icon {
   font-size: 18px;
+  color: #666;
   transition: color 0.2s ease;
 }
 
-.ant-badge:hover {
-  color: #8B5A2B; /* hover 时变主色 */
+.notification-badge:hover .notification-icon {
+  color: #8B5A2B;
 }
 
-/* 用户下拉菜单触发区域（优化） */
-.user-dropdown-trigger {
+/* 全屏切换按钮：hover变棕色+光标提示 */
+.fullscreen-toggle {
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.fullscreen-toggle:hover .fullscreen-icon {
+  color: #8B5A2B;
+}
+
+/* 用户下拉触发区：hover浅灰背景 */
+.user-menu-trigger {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -95,54 +180,99 @@
   transition: background-color 0.2s ease;
 }
 
-.user-dropdown-trigger:hover {
-  background-color: #f5f5f5; /* hover 时背景轻微变灰 */
+.user-menu-trigger:hover {
+  background-color: #f5f5f5;
 }
 
-.user-dropdown-trigger .ant-avatar {
+/* 用户头像：棕色背景 */
+.user-avatar {
+  background-color: #8B5A2B !important;
   margin-right: 8px;
 }
 
-.user-dropdown-trigger span {
+/* 用户名：常规文字色 */
+.user-name {
   font-size: 14px;
   color: #333;
 }
 
-/* 内容区域样式 */
-.ant-layout-content {
-  margin: 24px 16px;
-  padding: 24px;
-  min-height: 280px;
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+/* 用户下拉菜单：hover浅棕色背景 */
+.ant-dropdown-menu-item {
+  transition: all 0.2s ease !important;
 }
 
-/* 响应式调整（更细致） */
-@media (max-width: 768px) {
-  .ant-layout-header {
-    padding: 0 12px;
+.ant-dropdown-menu-item:hover,
+.ant-dropdown-menu-item-active {
+  background-color: rgba(139, 90, 43, 0.1) !important;
+  color: #8B5A2B !important;
+}
+
+/* 主内容区域：白色背景+阴影+圆角 */
+.main-content {
+  flex: 1; /* 占满剩余高度 */
+  margin: 24px 16px !important;
+  padding: 24px !important;
+  background: #fff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 响应式适配：不同屏幕尺寸优化 */
+@media (max-width: 1200px) {
+  .logo-container {
+    min-width: 140px;
+    margin-right: 12px;
   }
-  
-  .ant-input-search {
-    width: 120px !important;
-  }
-  
-  .ant-input-search:hover,
-  .ant-input-search:focus-within {
-    width: 160px !important;
-  }
-  
-  .header-actions {
-    gap: 8px; /* 小屏幕缩小间距 */
-  }
-  
-  .user-dropdown-trigger span {
-    display: none; /* 小屏幕隐藏用户名文字，只保留头像 */
-  }
-  
-  .ant-layout-content {
-    margin: 16px;
-    padding: 16px;
+  .header-right {
+    gap: 12px;
   }
 }
+
+@media (max-width: 992px) {
+  .ant-menu-title-content {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-container {
+    min-width: 100px;
+    padding: 0 10px;
+  }
+  .logo-text p {
+    display: none; /* 隐藏"中医馆收银管理系统"文字 */
+  }
+  .ant-menu-horizontal .ant-menu-title-content {
+    display: none; /* 隐藏菜单文字，只留图标 */
+  }
+  .ant-menu-item {
+    padding: 0 12px !important;
+  }
+  .user-name {
+    display: none; /* 隐藏用户名，只留头像 */
+  }
+  .main-content {
+    margin: 16px 8px !important;
+    padding: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-header {
+    padding: 0 12px !important;
+  }
+  .logo-container {
+    min-width: 80px;
+    margin-right: 8px;
+  }
+  .logo-text h1 {
+    font-size: 16px;
+  }
+  .header-right {
+    gap: 10px;
+  }
+  .notification-icon, .fullscreen-icon {
+    font-size: 16px;
+  }
+}
+    

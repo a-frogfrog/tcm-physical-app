@@ -17,7 +17,7 @@ const LoginPage = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // 在实际应用中，这里应该是与后端验证的逻辑
-      if (values.username === 'admin' && values.password === 'admin123') {
+      if (values.username === 'admin' && values.password === '123456') {
         // 登录成功，保存用户信息到localStorage
         localStorage.setItem('userInfo', JSON.stringify({
           id: 1,
