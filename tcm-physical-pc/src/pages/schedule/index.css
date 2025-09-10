@@ -1,0 +1,115 @@
+/* 医生排班页面样式 */
+.schedule-page {
+  padding: 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.calendar-card {
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.calendar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+}
+
+.date-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 300px;
+}
+
+.current-date {
+  flex: 1;
+  text-align: center;
+  font-weight: 500;
+}
+
+.search-card {
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.search-form {
+  padding: 16px 0;
+}
+
+.search-form .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.table-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.schedule-form .ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* 预约进度条样式 */
+.progress-bar {
+  height: 6px;
+  background-color: #e8e8e8;
+  border-radius: 3px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background-color: #8B5A2B;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .calendar-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .date-nav {
+    width: 100%;
+  }
+  
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .search-form .ant-form-item {
+    width: 100%;
+  }
+}
+    

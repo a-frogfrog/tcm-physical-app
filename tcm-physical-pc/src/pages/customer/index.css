@@ -1,0 +1,170 @@
+/* 客户管理页面样式 */
+.customer-page {
+  padding: 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.search-card {
+  margin-bottom: 24px;
+  background-color: #f9f9f9;
+  border: 1px solid #e8e8e8;
+}
+
+.search-form {
+  padding: 16px 0;
+}
+
+.table-card {
+  margin-bottom: 24px;
+}
+
+.stats-bar {
+  margin-bottom: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.stats-label {
+  color: #666;
+}
+
+.stats-value {
+  font-weight: 500;
+  color: #8B5A2B;
+}
+
+/* 客户表单样式 */
+.customer-form .ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* 客户详情样式 */
+.customer-detail-tabs {
+  margin-top: 16px;
+}
+
+.customer-basic-info {
+  margin-bottom: 16px;
+}
+
+.customer-avatar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.customer-avatar .ant-avatar {
+  margin-right: 16px;
+  border: 2px solid #f0f0f0;
+}
+
+.customer-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+/* 就诊历史样式 */
+.history-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.history-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.visit-date {
+  font-weight: 500;
+  color: #333;
+}
+
+.doctor-name, .department {
+  color: #666;
+  font-size: 14px;
+}
+
+.history-content {
+  color: #333;
+}
+
+.history-content p {
+  margin: 4px 0;
+}
+
+.no-history {
+  text-align: center;
+  padding: 40px 0;
+  color: #999;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .search-form .ant-row {
+    width: 100%;
+  }
+  
+  .stats-bar {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  
+  .stats-bar .ant-space {
+    width: max-content;
+  }
+  
+  .customer-avatar {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .customer-avatar .ant-avatar {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  
+  .customer-name {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+}

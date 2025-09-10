@@ -1,0 +1,58 @@
+/* 登录页面样式 */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238b5a2b' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.login-card {
+  width: 380px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border: none;
+}
+
+.login-card .ant-card-head-title {
+  text-align: center;
+  font-size: 20px;
+  color: #8B5A2B;
+  font-weight: 600;
+}
+
+.login-icon {
+  color: rgba(139, 90, 43, 0.6);
+}
+
+.login-input {
+  border-radius: 4px;
+  height: 40px;
+}
+
+.remember-checkbox {
+  color: #666;
+}
+
+.login-button {
+  width: 100%;
+  height: 40px;
+  background-color: #8B5A2B;
+  border-color: #8B5A2B;
+  font-size: 16px;
+}
+
+.login-button:hover,
+.login-button:focus {
+  background-color: #704620;
+  border-color: #704620;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+  .login-card {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
