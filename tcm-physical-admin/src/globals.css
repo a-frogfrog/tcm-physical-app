@@ -129,3 +129,9 @@
     font-variation-settings: normal; /* Chrome 140 以下版本需要 */
   }
 }
+
+@layer utilities {
+  .base-card {
+    @apply bg-card text-card-foreground rounded-md p-4 shadow;
+  }
+}

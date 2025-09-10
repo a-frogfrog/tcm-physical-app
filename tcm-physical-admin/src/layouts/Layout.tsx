@@ -89,7 +89,11 @@ const LayoutFooter = ({
 };
 
 const LayoutMain = ({ children, ...props }: React.ComponentProps<'main'>) => {
-  return <main {...props}>{children}</main>;
+  return (
+    <main role='main' aria-label='main' {...props}>
+      {children}
+    </main>
+  );
 };
 
 export { LayoutProvider, LayoutHeader, LayoutFooter, LayoutMain, Layout };
