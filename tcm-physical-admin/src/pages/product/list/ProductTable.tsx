@@ -20,6 +20,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '#/components/ui/pagination';
+import { useState } from 'react';
 
 export interface Product {
   id: number;
@@ -33,6 +34,27 @@ export interface Product {
   description: string;
 }
 
+const PaginationLogic = () => {
+  const pages = useState({
+    currentPage: 1,
+    pageSize: 10,
+    totalPages: 10,
+  });
+  return (
+    <>
+      {Array.from({ length: pages[0].totalPages }, (_, i) => i + 1).map(
+        (item) => (
+          <PaginationItem key={item}>
+            <PaginationLink href='#' isActive={item === pages[0].currentPage}>
+              {item}
+            </PaginationLink>
+          </PaginationItem>
+        ),
+      )}
+    </>
+  );
+};
+
 const ProductPagination = () => {
   return (
     <Pagination className='w-full justify-end'>
@@ -40,17 +62,7 @@ const ProductPagination = () => {
         <PaginationItem>
           <PaginationPrevious href='#' />
         </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href='#'>1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href='#' isActive>
-            2
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href='#'>3</PaginationLink>
-        </PaginationItem>
+        <PaginationLogic />
         <PaginationItem>
           <PaginationEllipsis />
         </PaginationItem>
