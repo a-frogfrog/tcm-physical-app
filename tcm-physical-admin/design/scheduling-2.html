@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗 - 排班管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#4D7C0F', // 中医绿色作为主色调
+              secondary: '#A3E635', // 辅助绿色
+              accent: '#F59E0B', // 强调色-暖黄色
+              neutral: '#F3F4F6', // 中性色-浅灰
+              'neutral-dark': '#4B5563', // 中性深色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .schedule-cell {
+          @apply min-h-[80px] border border-gray-200 p-1 hover:bg-neutral/50 transition-colors;
+        }
+        .schedule-event {
+          @apply rounded-md p-1 text-xs mb-1 cursor-pointer overflow-hidden whitespace-nowrap;
+        }
+        .btn-primary {
+          @apply bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-all shadow-md hover:shadow-lg;
+        }
+        .btn-secondary {
+          @apply bg-white text-neutral-dark border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50 transition-all;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 min-h-screen">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+      <div
+        class="container mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa fa-leaf text-primary text-2xl"></i>
+          <h1 class="text-xl font-bold text-gray-800">中医理疗管理系统</h1>
+        </div>
+
+        <div class="flex items-center space-x-6">
+          <nav class="hidden md:flex space-x-6">
+            <a
+              href="#"
+              class="text-gray-500 hover:text-primary transition-colors"
+              >首页</a
+            >
+            <a
+              href="#"
+              class="text-primary font-medium border-b-2 border-primary pb-1"
+              >排班管理</a
+            >
+            <a
+              href="#"
+              class="text-gray-500 hover:text-primary transition-colors"
+              >客户管理</a
+            >
+            <a
+              href="#"
+              class="text-gray-500 hover:text-primary transition-colors"
+              >业绩统计</a
+            >
+          </nav>
+
+          <div class="flex items-center space-x-3">
+            <button class="text-gray-500 hover:text-primary transition-colors">
+              <i class="fa fa-bell-o"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+              <img
+                src="https://picsum.photos/id/1005/40/40"
+                alt="管理员头像"
+                class="w-8 h-8 rounded-full object-cover" />
+              <span class="text-sm font-medium hidden md:inline">王经理</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-6">
+      <!-- 页面标题和操作区 -->
+      <div
+        class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">排班管理</h2>
+          <p class="text-gray-500 mt-1">安排技术人员的服务排班计划</p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <div class="relative">
+            <select
+              class="pl-3 pr-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none bg-white">
+              <option>本月</option>
+              <option>上月</option>
+              <option>下月</option>
+              <option>全年</option>
+            </select>
+            <i
+              class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+          </div>
+
+          <button class="btn-primary flex items-center">
+            <i class="fa fa-plus mr-2"></i>
+            <span>新增排班</span>
+          </button>
+
+          <button class="btn-secondary flex items-center">
+            <i class="fa fa-download mr-2"></i>
+            <span>导出</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 日历控制栏 -->
+      <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center space-x-4">
+            <button class="p-2 rounded hover:bg-gray-100 transition-colors">
+              <i class="fa fa-chevron-left text-gray-600"></i>
+            </button>
+            <h3 class="text-lg font-medium text-gray-800">2023年11月</h3>
+            <button class="p-2 rounded hover:bg-gray-100 transition-colors">
+              <i class="fa fa-chevron-right text-gray-600"></i>
+            </button>
+            <button class="btn-secondary text-sm px-3 py-1">今天</button>
+          </div>
+
+          <div class="flex space-x-2">
+            <button class="px-3 py-1 rounded bg-primary text-white text-sm">
+              月
+            </button>
+            <button
+              class="px-3 py-1 rounded hover:bg-gray-100 text-sm text-gray-600">
+              周
+            </button>
+            <button
+              class="px-3 py-1 rounded hover:bg-gray-100 text-sm text-gray-600">
+              日
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 排班表格 -->
+      <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <!-- 技术人员列 -->
+                <th
+                  class="w-40 bg-gray-50 py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                  技术人员
+                </th>
+
+                <!-- 日期列 - 第一周 -->
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">10/30</div>
+                  <div class="text-xs text-gray-400">周一</div>
+                </th>
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">10/31</div>
+                  <div class="text-xs text-gray-400">周二</div>
+                </th>
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">11/1</div>
+                  <div class="text-xs text-gray-400">周三</div>
+                </th>
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">11/2</div>
+                  <div class="text-xs text-gray-400">周四</div>
+                </th>
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">11/3</div>
+                  <div class="text-xs text-gray-400">周五</div>
+                </th>
+                <th class="py-2 px-1 text-center bg-gray-50">
+                  <div class="text-xs font-medium text-gray-500">11/4</div>
+                  <div class="text-xs text-gray-400">周六</div>
+                </th>
+                <th class="py-2 px-1 text-center bg-gray-50">
+                  <div class="text-xs font-medium text-gray-500">11/5</div>
+                  <div class="text-xs text-gray-400">周日</div>
+                </th>
+
+                <!-- 日期列 - 第二周 -->
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">11/6</div>
+                  <div class="text-xs text-gray-400">周一</div>
+                </th>
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">11/7</div>
+                  <div class="text-xs text-gray-400">周二</div>
+                </th>
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">11/8</div>
+                  <div class="text-xs text-gray-400">周三</div>
+                </th>
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">11/9</div>
+                  <div class="text-xs text-gray-400">周四</div>
+                </th>
+                <th class="py-2 px-1 text-center">
+                  <div class="text-xs font-medium text-gray-500">11/10</div>
+                  <div class="text-xs text-gray-400">周五</div>
+                </th>
+                <th class="py-2 px-1 text-center bg-gray-50">
+                  <div class="text-xs font-medium text-gray-500">11/11</div>
+                  <div class="text-xs text-gray-400">周六</div>
+                </th>
+                <th class="py-2 px-1 text-center bg-gray-50">
+                  <div class="text-xs font-medium text-gray-500">11/12</div>
+                  <div class="text-xs text-gray-400">周日</div>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-200">
+              <!-- 技术人员1 -->
+              <tr>
+                <td class="py-2 px-4 border-r border-gray-200 bg-gray-50">
+                  <div class="flex items-center">
+                    <img
+                      src="https://picsum.photos/id/1012/40/40"
+                      alt="张医师"
+                      class="w-8 h-8 rounded-full mr-3" />
+                    <div>
+                      <div class="text-sm font-medium text-gray-800">
+                        张医师
+                      </div>
+                      <div class="text-xs text-gray-500">推拿、艾灸</div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- 排班内容 -->
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    09:00-12:00 推拿
+                  </div>
+                  <div class="schedule-event bg-blue-100 text-blue-800">
+                    14:00-17:00 艾灸
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    10:00-15:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell"></td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-purple-100 text-purple-800">
+                    全天 休息
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    09:00-18:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-blue-100 text-blue-800">
+                    13:00-17:00 艾灸
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    09:00-12:00 推拿
+                  </div>
+                </td>
+
+                <!-- 更多日期的排班 -->
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    09:00-12:00 推拿
+                  </div>
+                  <div class="schedule-event bg-blue-100 text-blue-800">
+                    14:00-17:00 艾灸
+                  </div>
+                </td>
+                <td class="schedule-cell"></td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    10:00-15:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-purple-100 text-purple-800">
+                    全天 休息
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-blue-100 text-blue-800">
+                    09:00-18:00 艾灸
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    13:00-17:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50"></td>
+              </tr>
+
+              <!-- 技术人员2 -->
+              <tr>
+                <td class="py-2 px-4 border-r border-gray-200 bg-gray-50">
+                  <div class="flex items-center">
+                    <img
+                      src="https://picsum.photos/id/1027/40/40"
+                      alt="李医师"
+                      class="w-8 h-8 rounded-full mr-3" />
+                    <div>
+                      <div class="text-sm font-medium text-gray-800">
+                        李医师
+                      </div>
+                      <div class="text-xs text-gray-500">针灸、拔罐</div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- 排班内容 -->
+                <td class="schedule-cell"></td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-red-100 text-red-800">
+                    14:00-17:00 针灸
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-yellow-100 text-yellow-800">
+                    09:00-12:00 拔罐
+                  </div>
+                  <div class="schedule-event bg-red-100 text-red-800">
+                    14:00-18:00 针灸
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-yellow-100 text-yellow-800">
+                    10:00-16:00 拔罐
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-purple-100 text-purple-800">
+                    全天 休息
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-red-100 text-red-800">
+                    09:00-18:00 针灸
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-yellow-100 text-yellow-800">
+                    13:00-17:00 拔罐
+                  </div>
+                </td>
+
+                <!-- 更多日期的排班 -->
+                <td class="schedule-cell"></td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-red-100 text-red-800">
+                    14:00-17:00 针灸
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-yellow-100 text-yellow-800">
+                    09:00-12:00 拔罐
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-red-100 text-red-800">
+                    10:00-16:00 针灸
+                  </div>
+                </td>
+                <td class="schedule-cell"></td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-red-100 text-red-800">
+                    09:00-18:00 针灸
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-purple-100 text-purple-800">
+                    全天 休息
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 技术人员3 -->
+              <tr>
+                <td class="py-2 px-4 border-r border-gray-200 bg-gray-50">
+                  <div class="flex items-center">
+                    <img
+                      src="https://picsum.photos/id/1025/40/40"
+                      alt="王医师"
+                      class="w-8 h-8 rounded-full mr-3" />
+                    <div>
+                      <div class="text-sm font-medium text-gray-800">
+                        王医师
+                      </div>
+                      <div class="text-xs text-gray-500">推拿、刮痧</div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- 排班内容 -->
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    10:00-15:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell"></td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-indigo-100 text-indigo-800">
+                    13:00-17:00 刮痧
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    09:00-12:00 推拿
+                  </div>
+                  <div class="schedule-event bg-indigo-100 text-indigo-800">
+                    14:00-18:00 刮痧
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    10:00-16:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-purple-100 text-purple-800">
+                    全天 休息
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    09:00-18:00 推拿
+                  </div>
+                </td>
+
+                <!-- 更多日期的排班 -->
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-indigo-100 text-indigo-800">
+                    10:00-15:00 刮痧
+                  </div>
+                </td>
+                <td class="schedule-cell"></td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    13:00-17:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-indigo-100 text-indigo-800">
+                    09:00-12:00 刮痧
+                  </div>
+                </td>
+                <td class="schedule-cell">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    10:00-16:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50">
+                  <div class="schedule-event bg-green-100 text-green-800">
+                    13:00-17:00 推拿
+                  </div>
+                </td>
+                <td class="schedule-cell bg-gray-50"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 图例说明 -->
+      <div class="mt-6 bg-white rounded-lg shadow-sm p-4">
+        <h4 class="text-sm font-medium text-gray-800 mb-3">服务类型说明</h4>
+        <div class="flex flex-wrap gap-x-6 gap-y-2">
+          <div class="flex items-center">
+            <span class="w-3 h-3 rounded bg-green-100 inline-block mr-2"></span>
+            <span class="text-xs text-gray-600">推拿</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-3 h-3 rounded bg-blue-100 inline-block mr-2"></span>
+            <span class="text-xs text-gray-600">艾灸</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-3 h-3 rounded bg-red-100 inline-block mr-2"></span>
+            <span class="text-xs text-gray-600">针灸</span>
+          </div>
+          <div class="flex items-center">
+            <span
+              class="w-3 h-3 rounded bg-yellow-100 inline-block mr-2"></span>
+            <span class="text-xs text-gray-600">拔罐</span>
+          </div>
+          <div class="flex items-center">
+            <span
+              class="w-3 h-3 rounded bg-indigo-100 inline-block mr-2"></span>
+            <span class="text-xs text-gray-600">刮痧</span>
+          </div>
+          <div class="flex items-center">
+            <span
+              class="w-3 h-3 rounded bg-purple-100 inline-block mr-2"></span>
+            <span class="text-xs text-gray-600">休息</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 mt-8 py-6">
+      <div class="container mx-auto px-4 text-center text-sm text-gray-500">
+        <p>© 2023 中医理疗管理系统 - 版权所有</p>
+      </div>
+    </footer>
+
+    <!-- 新增排班模态框 (默认隐藏) -->
+    <div
+      id="scheduleModal"
+      class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
+        <div
+          class="p-5 border-b border-gray-200 flex justify-between items-center">
+          <h3 class="text-lg font-medium text-gray-800">新增排班</h3>
+          <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+
+        <div class="p-5">
+          <form>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >技术人员</label
+              >
+              <select
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50">
+                <option>张医师</option>
+                <option>李医师</option>
+                <option>王医师</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >日期</label
+              >
+              <input
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >服务类型</label
+              >
+              <select
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50">
+                <option>推拿</option>
+                <option>艾灸</option>
+                <option>针灸</option>
+                <option>拔罐</option>
+                <option>刮痧</option>
+                <option>休息</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >时间段</label
+              >
+              <div class="flex space-x-2">
+                <input
+                  type="time"
+                  class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                <span class="flex items-center text-gray-500">-</span>
+                <input
+                  type="time"
+                  class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50" />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >备注</label
+              >
+              <textarea
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                rows="2"
+                placeholder="可选"></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="p-4 border-t border-gray-200 flex justify-end space-x-3">
+          <button id="cancelModal" class="btn-secondary">取消</button>
+          <button class="btn-primary">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 模态框控制
+      document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('scheduleModal');
+        const openModalBtn = document.querySelector('button.btn-primary');
+        const closeModalBtn = document.getElementById('closeModal');
+        const cancelModalBtn = document.getElementById('cancelModal');
+
+        // 打开模态框
+        openModalBtn.addEventListener('click', function () {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          document.body.style.overflow = 'hidden'; // 防止背景滚动
+        });
+
+        // 关闭模态框
+        function closeModal() {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          document.body.style.overflow = ''; // 恢复背景滚动
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelModalBtn.addEventListener('click', closeModal);
+
+        // 点击模态框外部关闭
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+
+        // 排班事件点击编辑
+        const scheduleEvents = document.querySelectorAll('.schedule-event');
+        scheduleEvents.forEach((event) => {
+          event.addEventListener('click', function () {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+          });
+        });
+
+        // 日历切换功能
+        const prevMonthBtn =
+          document.querySelector('.fa-chevron-left').parentElement;
+        const nextMonthBtn =
+          document.querySelector('.fa-chevron-right').parentElement;
+        const currentMonthEl = document.querySelector('h3.text-lg.font-medium');
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        prevMonthBtn.addEventListener('click', function () {
+          currentMonth--;
+          if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+          }
+          updateCalendarHeader();
+        });
+
+        nextMonthBtn.addEventListener('click', function () {
+          currentMonth++;
+          if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+          }
+          updateCalendarHeader();
+        });
+
+        function updateCalendarHeader() {
+          const months = [
+            '1月',
+            '2月',
+            '3月',
+            '4月',
+            '5月',
+            '6月',
+            '7月',
+            '8月',
+            '9月',
+            '10月',
+            '11月',
+            '12月',
+          ];
+          currentMonthEl.textContent = `${currentYear}年${months[currentMonth]}`;
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -47,3 +47,5 @@ packages/
 # 发布输出
 publish/
 out/
+*storybook.log
+storybook-static
