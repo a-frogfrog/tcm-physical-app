@@ -16,6 +16,7 @@ import {
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
+  TableHead,
 } from '#/components/ui';
 import { useProductPackageData } from './useProductPackage';
 
@@ -85,14 +86,16 @@ export default function PackageTable() {
       <PackageTableFilter />
       <Table className='w-full'>
         <TableHeader>
-          <TableCell>套餐名称</TableCell>
-          <TableCell>分类</TableCell>
-          <TableCell>价格</TableCell>
-          <TableCell>时长</TableCell>
-          <TableCell>包含项目</TableCell>
-          <TableCell>销量</TableCell>
-          <TableCell>状态</TableCell>
-          <TableCell>操作</TableCell>
+          <TableRow>
+            <TableHead>套餐名称</TableHead>
+            <TableHead>分类</TableHead>
+            <TableHead>价格</TableHead>
+            <TableHead>时长</TableHead>
+            <TableHead>包含项目</TableHead>
+            <TableHead>销量</TableHead>
+            <TableHead>状态</TableHead>
+            <TableHead>操作</TableHead>
+          </TableRow>
         </TableHeader>
         <TableBody>
           {packageTableData.map((pkg) => (
