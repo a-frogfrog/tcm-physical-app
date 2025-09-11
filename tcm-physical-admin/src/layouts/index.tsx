@@ -2,6 +2,7 @@ import { SidebarProvider } from '#/components/ui/sidebar';
 import { Outlet } from 'react-router-dom';
 import AppSidebar, { AppSidebarError } from './sidebar';
 import AppHeader from './Header';
+import { GridBackground } from '#/components/common';
 import {
   LayoutFooter,
   LayoutHeader,
@@ -28,10 +29,9 @@ export default function AppLayout() {
     <LayoutProvider>
       <SidebarProvider>
         <AppSidebarError>
-          <AppSidebar />
+          <AppSidebar className='shadow-md' />
         </AppSidebarError>
-
-        <Layout className='bg-[#F4F5FA]'>
+        <Layout className='relative z-10'>
           <LayoutHeader>
             <AppHeader />
           </LayoutHeader>
@@ -42,6 +42,7 @@ export default function AppLayout() {
             <AppFooter />
           </LayoutFooter>
         </Layout>
+        <GridBackground className='fixed inset-0 z-0' />
       </SidebarProvider>
     </LayoutProvider>
   );
