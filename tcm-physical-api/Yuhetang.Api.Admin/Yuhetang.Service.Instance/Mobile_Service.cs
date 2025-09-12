@@ -1,11 +1,6 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using MimeKit;
 using Newtonsoft.Json;
-using System.Configuration;
 using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
@@ -38,7 +33,12 @@ namespace Yuhetang.Service.EFCore
             _verification_Code_Service = verification_Code_Service;
             _mobile_IOC = mobile_IOC;
         }
-
+       /// <summary>
+       /// 检查登录
+       /// </summary>
+       /// <param name="code"></param>
+       /// <param name="account"></param>
+       /// <returns></returns>
         public User_Response_Dto Check_Login(string code, string account)
         {
             var _user = _redisStringService.Get<string>(code);
@@ -46,7 +46,7 @@ namespace Yuhetang.Service.EFCore
             {
                 return JsonConvert.DeserializeObject<User_Response_Dto>(_user);
             }
-            var key = _configuration["Redis:Keys:Check_Login"];
+            var key = _configuration["Redis:Keys:Mobile_Check_Login"];
             //如果在此处你查询了这个
             var jwt = _redisStringService.Get<string>(key + account);
             if (code == jwt)
@@ -66,6 +66,12 @@ namespace Yuhetang.Service.EFCore
             else
                 return null;
         }
+        /// <summary>
+        /// 登录和注册（如果没有账号会自动注册新账号）
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="account"></param>
+        /// <returns></returns>
         public async Task<Api_Response_Dto> Logins(Login_Request_Dto dto)
         {
             try

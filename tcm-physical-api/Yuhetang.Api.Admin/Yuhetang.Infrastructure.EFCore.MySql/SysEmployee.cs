@@ -23,7 +23,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 员工姓名
         /// </summary>
-        public string EName { get; set; } = null!;
+        public string? EName { get; set; }
         /// <summary>
         /// 性别：0-女，1-男
         /// </summary>

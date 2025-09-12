@@ -15,15 +15,15 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 套餐ID
         /// </summary>
-        public string PpdPackageId { get; set; } = null!;
+        public string? PpdPackageId { get; set; }
         /// <summary>
         /// 产品ID
         /// </summary>
-        public string PpdProductId { get; set; } = null!;
+        public string? PpdProductId { get; set; }
         /// <summary>
         /// 产品数量
         /// </summary>
-        public int PpdQuantity { get; set; }
+        public int? PpdQuantity { get; set; }
         /// <summary>
         /// 明细价格
         /// </summary>
@@ -33,7 +33,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public DateTime? PpdCreateTime { get; set; }
 
-        public virtual ProductPackage PpdPackage { get; set; } = null!;
-        public virtual Product PpdProduct { get; set; } = null!;
+        public virtual ProductPackage? PpdPackage { get; set; }
+        public virtual Product? PpdProduct { get; set; }
     }
 }

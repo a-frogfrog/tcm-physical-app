@@ -11,6 +11,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public Custom()
         {
             CustomFollows = new HashSet<CustomFollow>();
+            MembershipCards = new HashSet<MembershipCard>();
         }
 
         /// <summary>
@@ -60,5 +61,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
         public virtual CustomsVip CustomsVip { get; set; } = null!;
         public virtual ICollection<CustomFollow> CustomFollows { get; set; }
+        public virtual ICollection<MembershipCard> MembershipCards { get; set; }
     }
 }

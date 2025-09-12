@@ -5,6 +5,9 @@ using Yuhetang.Service.Interface;
 
 namespace Yuhetang.Admin.Controllers
 {
+    /// <summary>
+    /// 邮箱验证
+    /// </summary>
     public class EmailController : BaseController
     {
         private readonly I_Verification_Code_Service _verificationCodeService;
