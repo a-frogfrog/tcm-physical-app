@@ -1,4 +1,3 @@
-pnpm exec lint-staged
 if git diff --cached --name-only | grep -q "^tcm-physical-admin/"; then
   cd tcm-physical-admin && pnpm exec lint-staged
 fi
