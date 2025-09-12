@@ -1,5 +1,5 @@
-import { TabsContent } from "#/components/ui";
-import { Tag } from "lucide-react";
+import { TabsContent } from '#/components/ui';
+import { Tag } from 'lucide-react';
 
 export const ProductFormPackage = () => {
   return (

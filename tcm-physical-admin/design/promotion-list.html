@@ -1,589 +1,782 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>中医理疗管理系统 - 推广列表</title>
-  <!-- 引入外部资源 -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-  
-  <!-- Tailwind 配置 -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#8B5A2B',    // 深棕色 - 主色调
-            secondary: '#4F7942',  // 绿色 - 辅助色
-            accent: '#D2B48C',     // 棕褐色 - 强调色
-            neutral: '#F5F5DC',    // 米色 - 中性色
-            'neutral-dark': '#3E2723' // 深棕黑色 - 文字色
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗管理系统 - 推广列表</title>
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <!-- Tailwind 配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 深棕色 - 主色调
+              secondary: '#4F7942', // 绿色 - 辅助色
+              accent: '#D2B48C', // 棕褐色 - 强调色
+              neutral: '#F5F5DC', // 米色 - 中性色
+              'neutral-dark': '#3E2723', // 深棕黑色 - 文字色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
           },
         },
-      }
-    }
-  </script>
-  
-  <!-- 自定义工具类 -->
-  <style type="text/tailwindcss">
-    @layer utilities {
-      .content-auto {
-        content-visibility: auto;
-      }
-      .sidebar-item {
-        @apply flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary rounded-lg transition-all duration-200;
-      }
-      .sidebar-item.active {
-        @apply bg-primary/20 text-primary font-medium;
-      }
-      .btn-action {
-        @apply p-2 rounded hover:bg-gray-100 transition-colors duration-200;
-      }
-      .stat-card {
-        @apply bg-white rounded-xl shadow-sm p-5 border border-gray-100 hover:shadow-md transition-shadow duration-300;
-      }
-    }
-  </style>
-</head>
+      };
+    </script>
 
-<body class="bg-gray-50 text-neutral-dark min-h-screen flex flex-col">
-  <!-- 顶部导航栏 -->
-  <header class="bg-white shadow-sm z-10">
-    <div class="container mx-auto px-4">
-      <div class="flex items-center justify-between h-16">
-        <!-- 左侧Logo和标题 -->
-        <div class="flex items-center gap-3">
-          <button id="sidebar-toggle" class="lg:hidden text-gray-600 hover:text-primary">
-            <i class="fa fa-bars text-xl"></i>
-          </button>
-          <div class="flex items-center gap-2">
-            <i class="fa fa-leaf text-2xl text-secondary"></i>
-            <h1 class="text-xl font-semibold text-primary hidden sm:block">中医理疗管理系统</h1>
-          </div>
-        </div>
-        
-        <!-- 右侧用户信息和操作 -->
-        <div class="flex items-center gap-5">
-          <button class="relative text-gray-600 hover:text-primary transition-colors">
-            <i class="fa fa-bell text-xl"></i>
-            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-          </button>
-          <div class="flex items-center gap-2 cursor-pointer group">
-            <img src="https://picsum.photos/id/64/200/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover border-2 border-primary/20">
-            <div class="hidden md:block">
-              <p class="text-sm font-medium">王医生</p>
-              <p class="text-xs text-gray-500">管理员</p>
-            </div>
-            <i class="fa fa-chevron-down text-xs text-gray-500 group-hover:text-primary transition-colors"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .sidebar-item {
+          @apply flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary rounded-lg transition-all duration-200;
+        }
+        .sidebar-item.active {
+          @apply bg-primary/20 text-primary font-medium;
+        }
+        .btn-action {
+          @apply p-2 rounded hover:bg-gray-100 transition-colors duration-200;
+        }
+        .stat-card {
+          @apply bg-white rounded-xl shadow-sm p-5 border border-gray-100 hover:shadow-md transition-shadow duration-300;
+        }
+      }
+    </style>
+  </head>
 
-  <div class="flex flex-1 overflow-hidden">
-    <!-- 侧边栏导航 -->
-    <aside id="sidebar" class="bg-white w-64 shadow-sm transform -translate-x-full lg:translate-x-0 fixed lg:static h-[calc(100vh-4rem)] z-20 transition-transform duration-300 overflow-y-auto">
-      <div class="p-4">
-        <div class="relative">
-          <input type="text" placeholder="搜索功能..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
-          <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-        </div>
-      </div>
-      
-      <nav class="p-2">
-        <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">主菜单</p>
-        <ul class="space-y-1">
-          <li><a href="#" class="sidebar-item"><i class="fa fa-tachometer w-5 text-center"></i> 仪表盘</a></li>
-          <li><a href="#" class="sidebar-item active"><i class="fa fa-bullhorn w-5 text-center"></i> 推广管理</a></li>
-          <li><a href="#" class="sidebar-item"><i class="fa fa-users w-5 text-center"></i> 客户管理</a></li>
-          <li><a href="#" class="sidebar-item"><i class="fa fa-calendar w-5 text-center"></i> 预约管理</a></li>
-          <li><a href="#" class="sidebar-item"><i class="fa fa-stethoscope w-5 text-center"></i> 理疗项目</a></li>
-          <li><a href="#" class="sidebar-item"><i class="fa fa-credit-card w-5 text-center"></i> 财务管理</a></li>
-        </ul>
-        
-        <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">系统设置</p>
-        <ul class="space-y-1">
-          <li><a href="#" class="sidebar-item"><i class="fa fa-cog w-5 text-center"></i> 系统设置</a></li>
-          <li><a href="#" class="sidebar-item"><i class="fa fa-user-circle w-5 text-center"></i> 员工管理</a></li>
-          <li><a href="#" class="sidebar-item"><i class="fa fa-file-text w-5 text-center"></i> 日志管理</a></li>
-        </ul>
-      </nav>
-    </aside>
-
-    <!-- 主内容区域 -->
-    <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">
-      <!-- 页面标题和操作 -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-        <div>
-          <h2 class="text-[clamp(1.25rem,3vw,1.75rem)] font-bold text-neutral-dark">推广活动管理</h2>
-          <p class="text-gray-500 mt-1">管理所有中医理疗服务的推广活动和营销内容</p>
-        </div>
-        <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm hover:shadow">
-          <i class="fa fa-plus"></i>
-          <span>新增推广</span>
-        </button>
-      </div>
-      
-      <!-- 统计卡片 -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-        <div class="stat-card">
-          <div class="flex items-start justify-between">
-            <div>
-              <p class="text-gray-500 text-sm">总推广活动</p>
-              <h3 class="text-2xl font-bold mt-1">24</h3>
-              <p class="text-secondary text-sm mt-2 flex items-center">
-                <i class="fa fa-arrow-up mr-1"></i> 较上月增长 12%
-              </p>
-            </div>
-            <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <i class="fa fa-bullhorn"></i>
-            </div>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="flex items-start justify-between">
-            <div>
-              <p class="text-gray-500 text-sm">进行中</p>
-              <h3 class="text-2xl font-bold mt-1">8</h3>
-              <p class="text-secondary text-sm mt-2 flex items-center">
-                <i class="fa fa-arrow-up mr-1"></i> 较上月增长 5%
-              </p>
-            </div>
-            <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-              <i class="fa fa-play"></i>
-            </div>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="flex items-start justify-between">
-            <div>
-              <p class="text-gray-500 text-sm">已结束</p>
-              <h3 class="text-2xl font-bold mt-1">12</h3>
-              <p class="text-red-500 text-sm mt-2 flex items-center">
-                <i class="fa fa-arrow-down mr-1"></i> 较上月减少 3%
-              </p>
-            </div>
-            <div class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-              <i class="fa fa-stop"></i>
-            </div>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="flex items-start justify-between">
-            <div>
-              <p class="text-gray-500 text-sm">推广转化率</p>
-              <h3 class="text-2xl font-bold mt-1">23.5%</h3>
-              <p class="text-secondary text-sm mt-2 flex items-center">
-                <i class="fa fa-arrow-up mr-1"></i> 较上月增长 4.2%
-              </p>
-            </div>
-            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-              <i class="fa fa-line-chart"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 筛选区域 -->
-      <div class="bg-white rounded-xl shadow-sm p-5 mb-6 border border-gray-100">
-        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
-          <h3 class="font-semibold text-lg">筛选条件</h3>
-          <button class="text-primary hover:text-primary/80 text-sm flex items-center gap-1 mt-2 md:mt-0">
-            <i class="fa fa-refresh"></i> 重置筛选
-          </button>
-        </div>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">推广类型</label>
-            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
-              <option value="">全部类型</option>
-              <option value="discount">折扣优惠</option>
-              <option value="package">套餐促销</option>
-              <option value="new">新项目推广</option>
-              <option value="member">会员活动</option>
-            </select>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">推广状态</label>
-            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
-              <option value="">全部状态</option>
-              <option value="pending">未开始</option>
-              <option value="active">进行中</option>
-              <option value="completed">已结束</option>
-              <option value="paused">已暂停</option>
-            </select>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">开始日期</label>
-            <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">结束日期</label>
-            <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
-          </div>
-        </div>
-        
-        <div class="mt-5 flex justify-end">
-          <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg mr-3 transition-colors">
-            搜索
-          </button>
-          <button class="border border-gray-300 hover:bg-gray-50 text-gray-700 px-5 py-2 rounded-lg transition-colors">
-            取消
-          </button>
-        </div>
-      </div>
-      
-      <!-- 列表区域 -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <!-- 列表头部 -->
-        <div class="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h3 class="font-semibold text-lg">推广活动列表</h3>
+  <body class="bg-gray-50 text-neutral-dark min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm z-10">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- 左侧Logo和标题 -->
           <div class="flex items-center gap-3">
-            <div class="relative">
-              <input type="text" placeholder="搜索推广活动..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary w-full sm:w-64">
-              <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <button
+              id="sidebar-toggle"
+              class="lg:hidden text-gray-600 hover:text-primary">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2">
+              <i class="fa fa-leaf text-2xl text-secondary"></i>
+              <h1 class="text-xl font-semibold text-primary hidden sm:block">
+                中医理疗管理系统
+              </h1>
+            </div>
+          </div>
+
+          <!-- 右侧用户信息和操作 -->
+          <div class="flex items-center gap-5">
+            <button
+              class="relative text-gray-600 hover:text-primary transition-colors">
+              <i class="fa fa-bell text-xl"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+                >3</span
+              >
+            </button>
+            <div class="flex items-center gap-2 cursor-pointer group">
+              <img
+                src="https://picsum.photos/id/64/200/200"
+                alt="用户头像"
+                class="w-8 h-8 rounded-full object-cover border-2 border-primary/20" />
+              <div class="hidden md:block">
+                <p class="text-sm font-medium">王医生</p>
+                <p class="text-xs text-gray-500">管理员</p>
+              </div>
+              <i
+                class="fa fa-chevron-down text-xs text-gray-500 group-hover:text-primary transition-colors"></i>
             </div>
           </div>
         </div>
-        
-        <!-- 表格 -->
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead>
-              <tr class="bg-gray-50 text-left">
-                <th class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
-                  <div class="flex items-center gap-1">
-                    <input type="checkbox" class="rounded text-primary focus:ring-primary/30">
-                  </div>
-                </th>
-                <th class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
-                  <div class="flex items-center gap-1 cursor-pointer">
-                    推广名称
-                    <i class="fa fa-sort text-gray-400"></i>
-                  </div>
-                </th>
-                <th class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
-                  <div class="flex items-center gap-1 cursor-pointer">
-                    推广类型
-                    <i class="fa fa-sort text-gray-400"></i>
-                  </div>
-                </th>
-                <th class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
-                  <div class="flex items-center gap-1 cursor-pointer">
-                    时间范围
-                    <i class="fa fa-sort text-gray-400"></i>
-                  </div>
-                </th>
-                <th class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
-                  <div class="flex items-center gap-1 cursor-pointer">
-                    状态
-                    <i class="fa fa-sort text-gray-400"></i>
-                  </div>
-                </th>
-                <th class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
-                  <div class="flex items-center gap-1 cursor-pointer">
-                    参与人数
-                    <i class="fa fa-sort text-gray-400"></i>
-                  </div>
-                </th>
-                <th class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
-                  操作
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-              <!-- 列表项 1 -->
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-5 py-4">
-                  <input type="checkbox" class="rounded text-primary focus:ring-primary/30">
-                </td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-3">
-                    <img src="https://picsum.photos/id/237/80/80" alt="针灸理疗推广" class="w-10 h-10 rounded object-cover">
-                    <div>
-                      <p class="font-medium">春季针灸调理特惠</p>
-                      <p class="text-xs text-gray-500">ID: PROM2023001</p>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    折扣优惠
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">
-                  <p>2023-03-01</p>
-                  <p class="text-gray-500">至 2023-04-30</p>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    <i class="fa fa-circle text-[6px] mr-1"></i> 进行中
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">128</td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-1">
-                    <button class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50" title="查看详情">
-                      <i class="fa fa-eye"></i>
-                    </button>
-                    <button class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5" title="编辑">
-                      <i class="fa fa-pencil"></i>
-                    </button>
-                    <button class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50" title="删除">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <!-- 列表项 2 -->
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-5 py-4">
-                  <input type="checkbox" class="rounded text-primary focus:ring-primary/30">
-                </td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-3">
-                    <img src="https://picsum.photos/id/239/80/80" alt="推拿套餐推广" class="w-10 h-10 rounded object-cover">
-                    <div>
-                      <p class="font-medium">中医推拿疗程套餐</p>
-                      <p class="text-xs text-gray-500">ID: PROM2023002</p>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                    套餐促销
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">
-                  <p>2023-02-15</p>
-                  <p class="text-gray-500">至 2023-03-15</p>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    <i class="fa fa-circle text-[6px] mr-1"></i> 已结束
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">96</td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-1">
-                    <button class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50" title="查看详情">
-                      <i class="fa fa-eye"></i>
-                    </button>
-                    <button class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5" title="编辑">
-                      <i class="fa fa-pencil"></i>
-                    </button>
-                    <button class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50" title="删除">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <!-- 列表项 3 -->
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-5 py-4">
-                  <input type="checkbox" class="rounded text-primary focus:ring-primary/30">
-                </td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-3">
-                    <img src="https://picsum.photos/id/240/80/80" alt="艾灸推广" class="w-10 h-10 rounded object-cover">
-                    <div>
-                      <p class="font-medium">艾草熏蒸养生体验</p>
-                      <p class="text-xs text-gray-500">ID: PROM2023003</p>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                    新项目推广
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">
-                  <p>2023-04-01</p>
-                  <p class="text-gray-500">至 2023-05-15</p>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    <i class="fa fa-circle text-[6px] mr-1"></i> 进行中
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">75</td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-1">
-                    <button class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50" title="查看详情">
-                      <i class="fa fa-eye"></i>
-                    </button>
-                    <button class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5" title="编辑">
-                      <i class="fa fa-pencil"></i>
-                    </button>
-                    <button class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50" title="删除">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <!-- 列表项 4 -->
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-5 py-4">
-                  <input type="checkbox" class="rounded text-primary focus:ring-primary/30">
-                </td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-3">
-                    <img src="https://picsum.photos/id/241/80/80" alt="会员推广" class="w-10 h-10 rounded object-cover">
-                    <div>
-                      <p class="font-medium">春季会员专享福利</p>
-                      <p class="text-xs text-gray-500">ID: PROM2023004</p>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                    会员活动
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">
-                  <p>2023-03-15</p>
-                  <p class="text-gray-500">至 2023-04-15</p>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    <i class="fa fa-circle text-[6px] mr-1"></i> 进行中
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">52</td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-1">
-                    <button class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50" title="查看详情">
-                      <i class="fa fa-eye"></i>
-                    </button>
-                    <button class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5" title="编辑">
-                      <i class="fa fa-pencil"></i>
-                    </button>
-                    <button class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50" title="删除">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <!-- 列表项 5 -->
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-5 py-4">
-                  <input type="checkbox" class="rounded text-primary focus:ring-primary/30">
-                </td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-3">
-                    <img src="https://picsum.photos/id/242/80/80" alt="拔罐推广" class="w-10 h-10 rounded object-cover">
-                    <div>
-                      <p class="font-medium">拔罐除湿特惠活动</p>
-                      <p class="text-xs text-gray-500">ID: PROM2023005</p>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    折扣优惠
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">
-                  <p>2023-01-01</p>
-                  <p class="text-gray-500">至 2023-01-31</p>
-                </td>
-                <td class="px-5 py-4">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    <i class="fa fa-circle text-[6px] mr-1"></i> 已结束
-                  </span>
-                </td>
-                <td class="px-5 py-4 text-sm">68</td>
-                <td class="px-5 py-4">
-                  <div class="flex items-center gap-1">
-                    <button class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50" title="查看详情">
-                      <i class="fa fa-eye"></i>
-                    </button>
-                    <button class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5" title="编辑">
-                      <i class="fa fa-pencil"></i>
-                    </button>
-                    <button class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50" title="删除">
-                      <i class="fa fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- 侧边栏导航 -->
+      <aside
+        id="sidebar"
+        class="bg-white w-64 shadow-sm transform -translate-x-full lg:translate-x-0 fixed lg:static h-[calc(100vh-4rem)] z-20 transition-transform duration-300 overflow-y-auto">
+        <div class="p-4">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="搜索功能..."
+              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
+            <i
+              class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
         </div>
-        
-        <!-- 分页 -->
-        <div class="px-5 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p class="text-sm text-gray-500">显示 1 到 5 条，共 24 条</p>
-          <div class="flex items-center gap-1">
-            <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-              <i class="fa fa-chevron-left text-xs"></i>
+
+        <nav class="p-2">
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            主菜单
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-tachometer w-5 text-center"></i> 仪表盘</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item active"
+                ><i class="fa fa-bullhorn w-5 text-center"></i> 推广管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-users w-5 text-center"></i> 客户管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-calendar w-5 text-center"></i> 预约管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-stethoscope w-5 text-center"></i> 理疗项目</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-credit-card w-5 text-center"></i> 财务管理</a
+              >
+            </li>
+          </ul>
+
+          <p
+            class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">
+            系统设置
+          </p>
+          <ul class="space-y-1">
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-cog w-5 text-center"></i> 系统设置</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-user-circle w-5 text-center"></i> 员工管理</a
+              >
+            </li>
+            <li>
+              <a href="#" class="sidebar-item"
+                ><i class="fa fa-file-text w-5 text-center"></i> 日志管理</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">
+        <!-- 页面标题和操作 -->
+        <div
+          class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+          <div>
+            <h2
+              class="text-[clamp(1.25rem,3vw,1.75rem)] font-bold text-neutral-dark">
+              推广活动管理
+            </h2>
+            <p class="text-gray-500 mt-1">
+              管理所有中医理疗服务的推广活动和营销内容
+            </p>
+          </div>
+          <button
+            class="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm hover:shadow">
+            <i class="fa fa-plus"></i>
+            <span>新增推广</span>
+          </button>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+          <div class="stat-card">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-gray-500 text-sm">总推广活动</p>
+                <h3 class="text-2xl font-bold mt-1">24</h3>
+                <p class="text-secondary text-sm mt-2 flex items-center">
+                  <i class="fa fa-arrow-up mr-1"></i> 较上月增长 12%
+                </p>
+              </div>
+              <div
+                class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <i class="fa fa-bullhorn"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-gray-500 text-sm">进行中</p>
+                <h3 class="text-2xl font-bold mt-1">8</h3>
+                <p class="text-secondary text-sm mt-2 flex items-center">
+                  <i class="fa fa-arrow-up mr-1"></i> 较上月增长 5%
+                </p>
+              </div>
+              <div
+                class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                <i class="fa fa-play"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-gray-500 text-sm">已结束</p>
+                <h3 class="text-2xl font-bold mt-1">12</h3>
+                <p class="text-red-500 text-sm mt-2 flex items-center">
+                  <i class="fa fa-arrow-down mr-1"></i> 较上月减少 3%
+                </p>
+              </div>
+              <div
+                class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+                <i class="fa fa-stop"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-gray-500 text-sm">推广转化率</p>
+                <h3 class="text-2xl font-bold mt-1">23.5%</h3>
+                <p class="text-secondary text-sm mt-2 flex items-center">
+                  <i class="fa fa-arrow-up mr-1"></i> 较上月增长 4.2%
+                </p>
+              </div>
+              <div
+                class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                <i class="fa fa-line-chart"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 筛选区域 -->
+        <div
+          class="bg-white rounded-xl shadow-sm p-5 mb-6 border border-gray-100">
+          <div
+            class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+            <h3 class="font-semibold text-lg">筛选条件</h3>
+            <button
+              class="text-primary hover:text-primary/80 text-sm flex items-center gap-1 mt-2 md:mt-0">
+              <i class="fa fa-refresh"></i> 重置筛选
             </button>
-            <button class="w-9 h-9 flex items-center justify-center rounded bg-primary text-white">1</button>
-            <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">2</button>
-            <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">3</button>
-            <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">4</button>
-            <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">5</button>
-            <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 text-gray-700 hover:bg-gray-50">
-              <i class="fa fa-chevron-right text-xs"></i>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >推广类型</label
+              >
+              <select
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                <option value="">全部类型</option>
+                <option value="discount">折扣优惠</option>
+                <option value="package">套餐促销</option>
+                <option value="new">新项目推广</option>
+                <option value="member">会员活动</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >推广状态</label
+              >
+              <select
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                <option value="">全部状态</option>
+                <option value="pending">未开始</option>
+                <option value="active">进行中</option>
+                <option value="completed">已结束</option>
+                <option value="paused">已暂停</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >开始日期</label
+              >
+              <input
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >结束日期</label
+              >
+              <input
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
+            </div>
+          </div>
+
+          <div class="mt-5 flex justify-end">
+            <button
+              class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg mr-3 transition-colors">
+              搜索
+            </button>
+            <button
+              class="border border-gray-300 hover:bg-gray-50 text-gray-700 px-5 py-2 rounded-lg transition-colors">
+              取消
             </button>
           </div>
         </div>
-      </div>
-    </main>
-  </div>
 
-  <!-- 遮罩层（移动端侧边栏打开时显示） -->
-  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"></div>
+        <!-- 列表区域 -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <!-- 列表头部 -->
+          <div
+            class="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h3 class="font-semibold text-lg">推广活动列表</h3>
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <input
+                  type="text"
+                  placeholder="搜索推广活动..."
+                  class="pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary w-full sm:w-64" />
+                <i
+                  class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              </div>
+            </div>
+          </div>
 
-  <script>
-    // 侧边栏切换功能
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('-translate-x-full');
-      overlay.classList.toggle('hidden');
-    });
-    
-    overlay.addEventListener('click', () => {
-      sidebar.classList.add('-translate-x-full');
-      overlay.classList.add('hidden');
-    });
-    
-    // 模拟数据加载和交互效果
-    document.addEventListener('DOMContentLoaded', () => {
-      // 为按钮添加简单的点击效果
-      const buttons = document.querySelectorAll('button');
-      buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
-          // 排除不需要效果的按钮
-          if (!this.classList.contains('no-effect')) {
-            this.classList.add('scale-95');
-            setTimeout(() => {
-              this.classList.remove('scale-95');
-            }, 150);
-          }
+          <!-- 表格 -->
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gray-50 text-left">
+                  <th
+                    class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
+                    <div class="flex items-center gap-1">
+                      <input
+                        type="checkbox"
+                        class="rounded text-primary focus:ring-primary/30" />
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
+                    <div class="flex items-center gap-1 cursor-pointer">
+                      推广名称
+                      <i class="fa fa-sort text-gray-400"></i>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
+                    <div class="flex items-center gap-1 cursor-pointer">
+                      推广类型
+                      <i class="fa fa-sort text-gray-400"></i>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
+                    <div class="flex items-center gap-1 cursor-pointer">
+                      时间范围
+                      <i class="fa fa-sort text-gray-400"></i>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
+                    <div class="flex items-center gap-1 cursor-pointer">
+                      状态
+                      <i class="fa fa-sort text-gray-400"></i>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
+                    <div class="flex items-center gap-1 cursor-pointer">
+                      参与人数
+                      <i class="fa fa-sort text-gray-400"></i>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-3 text-sm font-semibold text-gray-600 tracking-wider">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <!-- 列表项 1 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-5 py-4">
+                    <input
+                      type="checkbox"
+                      class="rounded text-primary focus:ring-primary/30" />
+                  </td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        src="https://picsum.photos/id/237/80/80"
+                        alt="针灸理疗推广"
+                        class="w-10 h-10 rounded object-cover" />
+                      <div>
+                        <p class="font-medium">春季针灸调理特惠</p>
+                        <p class="text-xs text-gray-500">ID: PROM2023001</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      折扣优惠
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">
+                    <p>2023-03-01</p>
+                    <p class="text-gray-500">至 2023-04-30</p>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <i class="fa fa-circle text-[6px] mr-1"></i> 进行中
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">128</td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-1">
+                      <button
+                        class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                        title="查看详情">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5"
+                        title="编辑">
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <button
+                        class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50"
+                        title="删除">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 列表项 2 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-5 py-4">
+                    <input
+                      type="checkbox"
+                      class="rounded text-primary focus:ring-primary/30" />
+                  </td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        src="https://picsum.photos/id/239/80/80"
+                        alt="推拿套餐推广"
+                        class="w-10 h-10 rounded object-cover" />
+                      <div>
+                        <p class="font-medium">中医推拿疗程套餐</p>
+                        <p class="text-xs text-gray-500">ID: PROM2023002</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                      套餐促销
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">
+                    <p>2023-02-15</p>
+                    <p class="text-gray-500">至 2023-03-15</p>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                      <i class="fa fa-circle text-[6px] mr-1"></i> 已结束
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">96</td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-1">
+                      <button
+                        class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                        title="查看详情">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5"
+                        title="编辑">
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <button
+                        class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50"
+                        title="删除">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 列表项 3 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-5 py-4">
+                    <input
+                      type="checkbox"
+                      class="rounded text-primary focus:ring-primary/30" />
+                  </td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        src="https://picsum.photos/id/240/80/80"
+                        alt="艾灸推广"
+                        class="w-10 h-10 rounded object-cover" />
+                      <div>
+                        <p class="font-medium">艾草熏蒸养生体验</p>
+                        <p class="text-xs text-gray-500">ID: PROM2023003</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      新项目推广
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">
+                    <p>2023-04-01</p>
+                    <p class="text-gray-500">至 2023-05-15</p>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <i class="fa fa-circle text-[6px] mr-1"></i> 进行中
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">75</td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-1">
+                      <button
+                        class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                        title="查看详情">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5"
+                        title="编辑">
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <button
+                        class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50"
+                        title="删除">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 列表项 4 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-5 py-4">
+                    <input
+                      type="checkbox"
+                      class="rounded text-primary focus:ring-primary/30" />
+                  </td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        src="https://picsum.photos/id/241/80/80"
+                        alt="会员推广"
+                        class="w-10 h-10 rounded object-cover" />
+                      <div>
+                        <p class="font-medium">春季会员专享福利</p>
+                        <p class="text-xs text-gray-500">ID: PROM2023004</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                      会员活动
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">
+                    <p>2023-03-15</p>
+                    <p class="text-gray-500">至 2023-04-15</p>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <i class="fa fa-circle text-[6px] mr-1"></i> 进行中
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">52</td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-1">
+                      <button
+                        class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                        title="查看详情">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5"
+                        title="编辑">
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <button
+                        class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50"
+                        title="删除">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 列表项 5 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-5 py-4">
+                    <input
+                      type="checkbox"
+                      class="rounded text-primary focus:ring-primary/30" />
+                  </td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        src="https://picsum.photos/id/242/80/80"
+                        alt="拔罐推广"
+                        class="w-10 h-10 rounded object-cover" />
+                      <div>
+                        <p class="font-medium">拔罐除湿特惠活动</p>
+                        <p class="text-xs text-gray-500">ID: PROM2023005</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      折扣优惠
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">
+                    <p>2023-01-01</p>
+                    <p class="text-gray-500">至 2023-01-31</p>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                      <i class="fa fa-circle text-[6px] mr-1"></i> 已结束
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm">68</td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-1">
+                      <button
+                        class="btn-action text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                        title="查看详情">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn-action text-primary hover:text-primary/80 hover:bg-primary/5"
+                        title="编辑">
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <button
+                        class="btn-action text-red-600 hover:text-red-800 hover:bg-red-50"
+                        title="删除">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 分页 -->
+          <div
+            class="px-5 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-sm text-gray-500">显示 1 到 5 条，共 24 条</p>
+            <div class="flex items-center gap-1">
+              <button
+                class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled>
+                <i class="fa fa-chevron-left text-xs"></i>
+              </button>
+              <button
+                class="w-9 h-9 flex items-center justify-center rounded bg-primary text-white">
+                1
+              </button>
+              <button
+                class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">
+                2
+              </button>
+              <button
+                class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">
+                3
+              </button>
+              <button
+                class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">
+                4
+              </button>
+              <button
+                class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50">
+                5
+              </button>
+              <button
+                class="w-9 h-9 flex items-center justify-center rounded border border-gray-200 text-gray-700 hover:bg-gray-50">
+                <i class="fa fa-chevron-right text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 遮罩层（移动端侧边栏打开时显示） -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"></div>
+
+    <script>
+      // 侧边栏切换功能
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+
+      // 模拟数据加载和交互效果
+      document.addEventListener('DOMContentLoaded', () => {
+        // 为按钮添加简单的点击效果
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((button) => {
+          button.addEventListener('click', function (e) {
+            // 排除不需要效果的按钮
+            if (!this.classList.contains('no-effect')) {
+              this.classList.add('scale-95');
+              setTimeout(() => {
+                this.classList.remove('scale-95');
+              }, 150);
+            }
+          });
         });
       });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

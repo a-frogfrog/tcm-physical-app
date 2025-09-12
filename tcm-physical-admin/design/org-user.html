@@ -1,760 +1,988 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>企业组织架构管理系统</title>
-  <!-- 外部资源引入 -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  
-  <!-- Tailwind 自定义配置 -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#165DFF',      // 主色调：企业蓝
-            secondary: '#36D399',    // 辅助色：成功绿
-            warning: '#FBBD23',      // 警示色：提醒黄
-            danger: '#F87272',       // 危险色：错误红
-            dark: '#1E293B',         // 深色文本
-            'gray-light': '#F8FAFC', // 浅色背景
-            'gray-mid': '#94A3B8',   // 中等灰度
-            'gray-dark': '#334155'   // 深灰色
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>企业组织架构管理系统</title>
+    <!-- 外部资源引入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+
+    <!-- Tailwind 自定义配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#165DFF', // 主色调：企业蓝
+              secondary: '#36D399', // 辅助色：成功绿
+              warning: '#FBBD23', // 警示色：提醒黄
+              danger: '#F87272', // 危险色：错误红
+              dark: '#1E293B', // 深色文本
+              'gray-light': '#F8FAFC', // 浅色背景
+              'gray-mid': '#94A3B8', // 中等灰度
+              'gray-dark': '#334155', // 深灰色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
           },
         },
-      }
-    }
-  </script>
-  
-  <!-- 自定义工具类 -->
-  <style type="text/tailwindcss">
-    @layer utilities {
-      .content-auto {
-        content-visibility: auto;
-      }
-      .org-tree-line {
-        @apply border-l-2 border-dashed border-gray-300 pl-4 ml-3;
-      }
-      .dept-item {
-        @apply py-2 px-3 rounded-lg cursor-pointer transition-all hover:bg-primary/5 hover:text-primary;
-      }
-      .dept-active {
-        @apply bg-primary/10 text-primary font-medium;
-      }
-      .table-hover {
-        @apply hover:bg-gray-light transition-colors;
-      }
-      .status-badge {
-        @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
-      }
-    }
-  </style>
-</head>
+      };
+    </script>
 
-<body class="bg-gray-light font-sans text-dark antialiased">
-  <div class="flex h-screen overflow-hidden">
-    <!-- 侧边栏导航 -->
-    <aside class="w-64 bg-white shadow-sm fixed h-full z-20 hidden md:block">
-      <!-- 系统Logo -->
-      <div class="flex items-center justify-center h-16 border-b border-gray-200">
-        <span class="text-primary text-2xl mr-2"><i class="fa fa-sitemap"></i></span>
-        <h1 class="text-xl font-bold">组织架构管理</h1>
-      </div>
-      
-      <!-- 导航菜单 -->
-      <nav class="py-6 px-4">
-        <ul class="space-y-1">
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-primary bg-primary/5 rounded-lg font-medium">
-              <i class="fa fa-building-o w-5 h-5 mr-3"></i>
-              <span>组织架构</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
-              <i class="fa fa-users w-5 h-5 mr-3"></i>
-              <span>用户管理</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
-              <i class="fa fa-shield w-5 h-5 mr-3"></i>
-              <span>角色权限</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
-              <i class="fa fa-tasks w-5 h-5 mr-3"></i>
-              <span>岗位管理</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
-              <i class="fa fa-exchange w-5 h-5 mr-3"></i>
-              <span>人员调动</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
-              <i class="fa fa-bar-chart w-5 h-5 mr-3"></i>
-              <span>统计分析</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-      
-      <!-- 组织信息 -->
-      <div class="px-4 mt-8">
-        <div class="bg-primary/5 rounded-xl p-4 border border-primary/10">
-          <h3 class="text-sm font-medium text-primary mb-3">当前组织</h3>
-          <div class="space-y-2">
-            <div class="flex items-center">
-              <i class="fa fa-building text-primary w-5 h-5 mr-2"></i>
-              <span class="text-sm">未来科技有限公司</span>
-            </div>
-            <div class="flex items-center">
-              <i class="fa fa-user text-primary w-5 h-5 mr-2"></i>
-              <span class="text-sm">总人数: 248人</span>
-            </div>
-            <div class="flex items-center">
-              <i class="fa fa-sitemap text-primary w-5 h-5 mr-2"></i>
-              <span class="text-sm">部门数: 12个</span>
-            </div>
-          </div>
-          <button class="w-full mt-4 py-2 text-sm text-primary border border-primary/30 rounded-lg hover:bg-primary/5 transition-colors">
-            切换组织
-          </button>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .org-tree-line {
+          @apply border-l-2 border-dashed border-gray-300 pl-4 ml-3;
+        }
+        .dept-item {
+          @apply py-2 px-3 rounded-lg cursor-pointer transition-all hover:bg-primary/5 hover:text-primary;
+        }
+        .dept-active {
+          @apply bg-primary/10 text-primary font-medium;
+        }
+        .table-hover {
+          @apply hover:bg-gray-light transition-colors;
+        }
+        .status-badge {
+          @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-light font-sans text-dark antialiased">
+    <div class="flex h-screen overflow-hidden">
+      <!-- 侧边栏导航 -->
+      <aside class="w-64 bg-white shadow-sm fixed h-full z-20 hidden md:block">
+        <!-- 系统Logo -->
+        <div
+          class="flex items-center justify-center h-16 border-b border-gray-200">
+          <span class="text-primary text-2xl mr-2"
+            ><i class="fa fa-sitemap"></i
+          ></span>
+          <h1 class="text-xl font-bold">组织架构管理</h1>
         </div>
-      </div>
-    </aside>
-    
-    <!-- 主内容区域 -->
-    <div class="flex-1 flex flex-col overflow-hidden md:ml-64">
-      <!-- 顶部导航栏 -->
-      <header class="bg-white shadow-sm z-10 sticky top-0">
-        <div class="flex items-center justify-between h-16 px-6">
-          <!-- 移动端菜单按钮 -->
-          <button id="mobile-menu-btn" class="md:hidden text-gray-mid hover:text-primary transition-colors">
-            <i class="fa fa-bars text-xl"></i>
-          </button>
-          
-          <!-- 页面标题（移动端） -->
-          <h2 class="md:hidden text-lg font-bold">组织架构</h2>
-          
-          <!-- 搜索栏 -->
-          <div class="relative max-w-md w-full mx-4 hidden md:block">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-mid">
-              <i class="fa fa-search"></i>
-            </span>
-            <input type="text" placeholder="搜索部门/人员/岗位..." 
-                  class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm">
-          </div>
-          
-          <!-- 右侧工具栏 -->
-          <div class="flex items-center space-x-4">
-            <!-- 批量操作 -->
-            <div class="relative group">
-              <button class="flex items-center px-3 py-1.5 text-sm text-gray-dark bg-white border border-gray-300 rounded-lg hover:bg-gray-light transition-colors">
-                <i class="fa fa-cog mr-2"></i>
-                <span>批量操作</span>
-                <i class="fa fa-chevron-down ml-1 text-xs"></i>
-              </button>
-              <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-md py-2 hidden group-hover:block z-20">
-                <a href="#" class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
-                  <i class="fa fa-download mr-1"></i> 导出数据
-                </a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
-                  <i class="fa fa-upload mr-1"></i> 导入数据
-                </a>
-                <div class="border-t border-gray-200 my-1"></div>
-                <a href="#" class="block px-4 py-2 text-sm text-danger hover:bg-gray-light transition-colors">
-                  <i class="fa fa-trash-o mr-1"></i> 批量删除
-                </a>
+
+        <!-- 导航菜单 -->
+        <nav class="py-6 px-4">
+          <ul class="space-y-1">
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-primary bg-primary/5 rounded-lg font-medium">
+                <i class="fa fa-building-o w-5 h-5 mr-3"></i>
+                <span>组织架构</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
+                <i class="fa fa-users w-5 h-5 mr-3"></i>
+                <span>用户管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
+                <i class="fa fa-shield w-5 h-5 mr-3"></i>
+                <span>角色权限</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
+                <i class="fa fa-tasks w-5 h-5 mr-3"></i>
+                <span>岗位管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
+                <i class="fa fa-exchange w-5 h-5 mr-3"></i>
+                <span>人员调动</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-dark hover:bg-gray-light rounded-lg transition-colors">
+                <i class="fa fa-bar-chart w-5 h-5 mr-3"></i>
+                <span>统计分析</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 组织信息 -->
+        <div class="px-4 mt-8">
+          <div class="bg-primary/5 rounded-xl p-4 border border-primary/10">
+            <h3 class="text-sm font-medium text-primary mb-3">当前组织</h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <i class="fa fa-building text-primary w-5 h-5 mr-2"></i>
+                <span class="text-sm">未来科技有限公司</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fa fa-user text-primary w-5 h-5 mr-2"></i>
+                <span class="text-sm">总人数: 248人</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fa fa-sitemap text-primary w-5 h-5 mr-2"></i>
+                <span class="text-sm">部门数: 12个</span>
               </div>
             </div>
-            
-            <!-- 新增按钮 -->
-            <div class="relative group">
-              <button class="flex items-center px-3 py-1.5 text-sm text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
-                <i class="fa fa-plus mr-2"></i>
-                <span>新增</span>
-                <i class="fa fa-chevron-down ml-1 text-xs"></i>
-              </button>
-              <div class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-md py-2 hidden group-hover:block z-20">
-                <a href="#" class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
-                  <i class="fa fa-building-o mr-1"></i> 新增部门
-                </a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
-                  <i class="fa fa-user-plus mr-1"></i> 新增人员
-                </a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
-                  <i class="fa fa-briefcase mr-1"></i> 新增岗位
-                </a>
-              </div>
-            </div>
-            
-            <!-- 用户信息 -->
-            <div class="flex items-center">
-              <img src="https://picsum.photos/id/1005/40/40" alt="管理员头像" class="w-8 h-8 rounded-full object-cover">
-              <span class="ml-2 text-sm font-medium hidden md:block">张管理员</span>
-              <i class="fa fa-angle-down ml-1 text-gray-mid hidden md:block"></i>
-            </div>
+            <button
+              class="w-full mt-4 py-2 text-sm text-primary border border-primary/30 rounded-lg hover:bg-primary/5 transition-colors">
+              切换组织
+            </button>
           </div>
         </div>
-      </header>
-      
-      <!-- 页面内容 -->
-      <main class="flex-1 overflow-y-auto p-6">
-        <!-- 页面标题 -->
-        <div class="mb-6">
-          <h2 class="text-[clamp(1.25rem,3vw,1.5rem)] font-bold mb-2">组织架构管理</h2>
-          <p class="text-gray-mid text-sm">查看和管理企业部门结构、人员配置及岗位信息</p>
-        </div>
-        
-        <!-- 组织架构与人员列表容器 -->
-        <div class="flex flex-col lg:flex-row gap-6">
-          <!-- 左侧组织架构树 -->
-          <div class="lg:w-1/4 bg-white rounded-xl shadow-md p-4 h-fit">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-medium">组织架构</h3>
-              <div class="flex space-x-2">
-                <button class="p-1.5 text-gray-mid hover:text-primary hover:bg-primary/5 rounded-lg transition-colors" title="刷新">
-                  <i class="fa fa-refresh"></i>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <div class="flex-1 flex flex-col overflow-hidden md:ml-64">
+        <!-- 顶部导航栏 -->
+        <header class="bg-white shadow-sm z-10 sticky top-0">
+          <div class="flex items-center justify-between h-16 px-6">
+            <!-- 移动端菜单按钮 -->
+            <button
+              id="mobile-menu-btn"
+              class="md:hidden text-gray-mid hover:text-primary transition-colors">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+
+            <!-- 页面标题（移动端） -->
+            <h2 class="md:hidden text-lg font-bold">组织架构</h2>
+
+            <!-- 搜索栏 -->
+            <div class="relative max-w-md w-full mx-4 hidden md:block">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-mid">
+                <i class="fa fa-search"></i>
+              </span>
+              <input
+                type="text"
+                placeholder="搜索部门/人员/岗位..."
+                class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm" />
+            </div>
+
+            <!-- 右侧工具栏 -->
+            <div class="flex items-center space-x-4">
+              <!-- 批量操作 -->
+              <div class="relative group">
+                <button
+                  class="flex items-center px-3 py-1.5 text-sm text-gray-dark bg-white border border-gray-300 rounded-lg hover:bg-gray-light transition-colors">
+                  <i class="fa fa-cog mr-2"></i>
+                  <span>批量操作</span>
+                  <i class="fa fa-chevron-down ml-1 text-xs"></i>
                 </button>
-                <button class="p-1.5 text-gray-mid hover:text-primary hover:bg-primary/5 rounded-lg transition-colors" title="展开/折叠">
-                  <i class="fa fa-compress"></i>
+                <div
+                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-md py-2 hidden group-hover:block z-20">
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
+                    <i class="fa fa-download mr-1"></i> 导出数据
+                  </a>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
+                    <i class="fa fa-upload mr-1"></i> 导入数据
+                  </a>
+                  <div class="border-t border-gray-200 my-1"></div>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-danger hover:bg-gray-light transition-colors">
+                    <i class="fa fa-trash-o mr-1"></i> 批量删除
+                  </a>
+                </div>
+              </div>
+
+              <!-- 新增按钮 -->
+              <div class="relative group">
+                <button
+                  class="flex items-center px-3 py-1.5 text-sm text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
+                  <i class="fa fa-plus mr-2"></i>
+                  <span>新增</span>
+                  <i class="fa fa-chevron-down ml-1 text-xs"></i>
                 </button>
+                <div
+                  class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-md py-2 hidden group-hover:block z-20">
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
+                    <i class="fa fa-building-o mr-1"></i> 新增部门
+                  </a>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
+                    <i class="fa fa-user-plus mr-1"></i> 新增人员
+                  </a>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-dark hover:bg-gray-light transition-colors">
+                    <i class="fa fa-briefcase mr-1"></i> 新增岗位
+                  </a>
+                </div>
+              </div>
+
+              <!-- 用户信息 -->
+              <div class="flex items-center">
+                <img
+                  src="https://picsum.photos/id/1005/40/40"
+                  alt="管理员头像"
+                  class="w-8 h-8 rounded-full object-cover" />
+                <span class="ml-2 text-sm font-medium hidden md:block"
+                  >张管理员</span
+                >
+                <i
+                  class="fa fa-angle-down ml-1 text-gray-mid hidden md:block"></i>
               </div>
             </div>
-            
-            <!-- 组织架构树 -->
-            <div class="org-tree">
-              <!-- 公司总部 -->
-              <div class="dept-item dept-active">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <i class="fa fa-building text-primary mr-2"></i>
-                    <span>未来科技有限公司</span>
-                    <span class="ml-2 status-badge bg-primary/10 text-primary">248人</span>
-                  </div>
-                  <i class="fa fa-chevron-down text-xs text-gray-mid"></i>
+          </div>
+        </header>
+
+        <!-- 页面内容 -->
+        <main class="flex-1 overflow-y-auto p-6">
+          <!-- 页面标题 -->
+          <div class="mb-6">
+            <h2 class="text-[clamp(1.25rem,3vw,1.5rem)] font-bold mb-2">
+              组织架构管理
+            </h2>
+            <p class="text-gray-mid text-sm">
+              查看和管理企业部门结构、人员配置及岗位信息
+            </p>
+          </div>
+
+          <!-- 组织架构与人员列表容器 -->
+          <div class="flex flex-col lg:flex-row gap-6">
+            <!-- 左侧组织架构树 -->
+            <div class="lg:w-1/4 bg-white rounded-xl shadow-md p-4 h-fit">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-medium">组织架构</h3>
+                <div class="flex space-x-2">
+                  <button
+                    class="p-1.5 text-gray-mid hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                    title="刷新">
+                    <i class="fa fa-refresh"></i>
+                  </button>
+                  <button
+                    class="p-1.5 text-gray-mid hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                    title="展开/折叠">
+                    <i class="fa fa-compress"></i>
+                  </button>
                 </div>
-                
-                <!-- 一级部门：董事会 -->
-                <div class="org-tree-line mt-2">
-                  <div class="dept-item">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <i class="fa fa-sitemap text-primary mr-2"></i>
-                        <span>董事会</span>
-                        <span class="ml-2 status-badge bg-primary/10 text-primary">8人</span>
-                      </div>
-                      <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
+              </div>
+
+              <!-- 组织架构树 -->
+              <div class="org-tree">
+                <!-- 公司总部 -->
+                <div class="dept-item dept-active">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <i class="fa fa-building text-primary mr-2"></i>
+                      <span>未来科技有限公司</span>
+                      <span class="ml-2 status-badge bg-primary/10 text-primary"
+                        >248人</span
+                      >
                     </div>
+                    <i class="fa fa-chevron-down text-xs text-gray-mid"></i>
                   </div>
-                  
-                  <!-- 一级部门：总裁办 -->
-                  <div class="dept-item">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <i class="fa fa-sitemap text-primary mr-2"></i>
-                        <span>总裁办</span>
-                        <span class="ml-2 status-badge bg-primary/10 text-primary">12人</span>
+
+                  <!-- 一级部门：董事会 -->
+                  <div class="org-tree-line mt-2">
+                    <div class="dept-item">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <i class="fa fa-sitemap text-primary mr-2"></i>
+                          <span>董事会</span>
+                          <span
+                            class="ml-2 status-badge bg-primary/10 text-primary"
+                            >8人</span
+                          >
+                        </div>
+                        <i
+                          class="fa fa-chevron-right text-xs text-gray-mid"></i>
                       </div>
-                      <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
                     </div>
-                  </div>
-                  
-                  <!-- 一级部门：研发中心 -->
-                  <div class="dept-item">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <i class="fa fa-sitemap text-primary mr-2"></i>
-                        <span>研发中心</span>
-                        <span class="ml-2 status-badge bg-primary/10 text-primary">86人</span>
+
+                    <!-- 一级部门：总裁办 -->
+                    <div class="dept-item">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <i class="fa fa-sitemap text-primary mr-2"></i>
+                          <span>总裁办</span>
+                          <span
+                            class="ml-2 status-badge bg-primary/10 text-primary"
+                            >12人</span
+                          >
+                        </div>
+                        <i
+                          class="fa fa-chevron-right text-xs text-gray-mid"></i>
                       </div>
-                      <i class="fa fa-chevron-down text-xs text-gray-mid"></i>
                     </div>
-                    
-                    <!-- 二级部门：前端开发部 -->
-                    <div class="org-tree-line mt-2">
-                      <div class="dept-item">
-                        <div class="flex items-center justify-between">
-                          <div class="flex items-center">
-                            <i class="fa fa-code text-primary mr-2"></i>
-                            <span>前端开发部</span>
-                            <span class="ml-2 status-badge bg-primary/10 text-primary">24人</span>
+
+                    <!-- 一级部门：研发中心 -->
+                    <div class="dept-item">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <i class="fa fa-sitemap text-primary mr-2"></i>
+                          <span>研发中心</span>
+                          <span
+                            class="ml-2 status-badge bg-primary/10 text-primary"
+                            >86人</span
+                          >
+                        </div>
+                        <i class="fa fa-chevron-down text-xs text-gray-mid"></i>
+                      </div>
+
+                      <!-- 二级部门：前端开发部 -->
+                      <div class="org-tree-line mt-2">
+                        <div class="dept-item">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                              <i class="fa fa-code text-primary mr-2"></i>
+                              <span>前端开发部</span>
+                              <span
+                                class="ml-2 status-badge bg-primary/10 text-primary"
+                                >24人</span
+                              >
+                            </div>
+                            <i
+                              class="fa fa-chevron-right text-xs text-gray-mid"></i>
                           </div>
-                          <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                        </div>
+
+                        <!-- 二级部门：后端开发部 -->
+                        <div class="dept-item">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                              <i class="fa fa-server text-primary mr-2"></i>
+                              <span>后端开发部</span>
+                              <span
+                                class="ml-2 status-badge bg-primary/10 text-primary"
+                                >32人</span
+                              >
+                            </div>
+                            <i
+                              class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                          </div>
+                        </div>
+
+                        <!-- 二级部门：测试部 -->
+                        <div class="dept-item">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                              <i
+                                class="fa fa-check-square-o text-primary mr-2"></i>
+                              <span>测试部</span>
+                              <span
+                                class="ml-2 status-badge bg-primary/10 text-primary"
+                                >18人</span
+                              >
+                            </div>
+                            <i
+                              class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                          </div>
+                        </div>
+
+                        <!-- 二级部门：UI/UX设计部 -->
+                        <div class="dept-item">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                              <i
+                                class="fa fa-paint-brush text-primary mr-2"></i>
+                              <span>UI/UX设计部</span>
+                              <span
+                                class="ml-2 status-badge bg-primary/10 text-primary"
+                                >12人</span
+                              >
+                            </div>
+                            <i
+                              class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                          </div>
                         </div>
                       </div>
-                      
-                      <!-- 二级部门：后端开发部 -->
-                      <div class="dept-item">
-                        <div class="flex items-center justify-between">
-                          <div class="flex items-center">
-                            <i class="fa fa-server text-primary mr-2"></i>
-                            <span>后端开发部</span>
-                            <span class="ml-2 status-badge bg-primary/10 text-primary">32人</span>
-                          </div>
-                          <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                    </div>
+
+                    <!-- 一级部门：市场部 -->
+                    <div class="dept-item">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <i class="fa fa-line-chart text-primary mr-2"></i>
+                          <span>市场部</span>
+                          <span
+                            class="ml-2 status-badge bg-primary/10 text-primary"
+                            >32人</span
+                          >
+                        </div>
+                        <i
+                          class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                      </div>
+                    </div>
+
+                    <!-- 一级部门：销售部 -->
+                    <div class="dept-item">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <i class="fa fa-shopping-cart text-primary mr-2"></i>
+                          <span>销售部</span>
+                          <span
+                            class="ml-2 status-badge bg-primary/10 text-primary"
+                            >48人</span
+                          >
+                        </div>
+                        <i
+                          class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                      </div>
+                    </div>
+
+                    <!-- 一级部门：人力资源部 -->
+                    <div class="dept-item">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <i class="fa fa-users text-primary mr-2"></i>
+                          <span>人力资源部</span>
+                          <span
+                            class="ml-2 status-badge bg-primary/10 text-primary"
+                            >16人</span
+                          >
+                        </div>
+                        <i
+                          class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                      </div>
+                    </div>
+
+                    <!-- 一级部门：财务部 -->
+                    <div class="dept-item">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <i class="fa fa-money text-primary mr-2"></i>
+                          <span>财务部</span>
+                          <span
+                            class="ml-2 status-badge bg-primary/10 text-primary"
+                            >12人</span
+                          >
+                        </div>
+                        <i
+                          class="fa fa-chevron-right text-xs text-gray-mid"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右侧人员列表 -->
+            <div class="lg:w-3/4">
+              <!-- 部门概览卡片 -->
+              <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <div
+                  class="flex flex-col md:flex-row md:items-center justify-between">
+                  <div>
+                    <h3 class="text-lg font-bold mb-1">未来科技有限公司</h3>
+                    <p class="text-gray-mid text-sm">公司总部 / 248名员工</p>
+                  </div>
+                  <div class="flex space-x-3 mt-4 md:mt-0">
+                    <button
+                      class="px-3 py-1.5 text-sm text-gray-dark bg-white border border-gray-300 rounded-lg hover:bg-gray-light transition-colors">
+                      <i class="fa fa-edit mr-1"></i> 编辑部门
+                    </button>
+                    <button
+                      class="px-3 py-1.5 text-sm text-primary bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors">
+                      <i class="fa fa-user-plus mr-1"></i> 添加成员
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 部门统计 -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                  <div class="bg-gray-light rounded-lg p-4">
+                    <p class="text-gray-mid text-sm">总人数</p>
+                    <p class="text-2xl font-bold mt-1">248</p>
+                  </div>
+                  <div class="bg-gray-light rounded-lg p-4">
+                    <p class="text-gray-mid text-sm">在职人员</p>
+                    <p class="text-2xl font-bold mt-1 text-secondary">242</p>
+                  </div>
+                  <div class="bg-gray-light rounded-lg p-4">
+                    <p class="text-gray-mid text-sm">管理人员</p>
+                    <p class="text-2xl font-bold mt-1">36</p>
+                  </div>
+                  <div class="bg-gray-light rounded-lg p-4">
+                    <p class="text-gray-mid text-sm">本月新增</p>
+                    <p class="text-2xl font-bold mt-1 text-primary">8</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 人员列表 -->
+              <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- 列表工具栏 -->
+                <div class="p-4 border-b border-gray-200">
+                  <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between">
+                    <h3 class="font-medium mb-3 sm:mb-0">部门成员</h3>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                      <!-- 筛选下拉 -->
+                      <div class="relative">
+                        <select
+                          class="appearance-none pl-3 pr-8 py-1.5 text-sm bg-gray-light border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+                          <option>全部人员</option>
+                          <option>管理人员</option>
+                          <option>普通员工</option>
+                          <option>本月新增</option>
+                        </select>
+                        <div
+                          class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-mid">
+                          <i class="fa fa-chevron-down text-xs"></i>
                         </div>
                       </div>
-                      
-                      <!-- 二级部门：测试部 -->
-                      <div class="dept-item">
-                        <div class="flex items-center justify-between">
-                          <div class="flex items-center">
-                            <i class="fa fa-check-square-o text-primary mr-2"></i>
-                            <span>测试部</span>
-                            <span class="ml-2 status-badge bg-primary/10 text-primary">18人</span>
-                          </div>
-                          <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
+
+                      <!-- 排序下拉 -->
+                      <div class="relative">
+                        <select
+                          class="appearance-none pl-3 pr-8 py-1.5 text-sm bg-gray-light border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+                          <option>默认排序</option>
+                          <option>按姓名排序</option>
+                          <option>按职位排序</option>
+                          <option>按入职时间</option>
+                        </select>
+                        <div
+                          class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-mid">
+                          <i class="fa fa-chevron-down text-xs"></i>
                         </div>
                       </div>
-                      
-                      <!-- 二级部门：UI/UX设计部 -->
-                      <div class="dept-item">
-                        <div class="flex items-center justify-between">
+
+                      <!-- 视图切换 -->
+                      <div
+                        class="flex border border-gray-300 rounded-lg overflow-hidden">
+                        <button
+                          class="px-3 py-1.5 text-sm bg-primary text-white">
+                          <i class="fa fa-list"></i>
+                        </button>
+                        <button
+                          class="px-3 py-1.5 text-sm bg-white text-gray-mid hover:bg-gray-light transition-colors">
+                          <i class="fa fa-th-large"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 人员表格 -->
+                <div class="overflow-x-auto">
+                  <table class="w-full">
+                    <thead>
+                      <tr
+                        class="bg-gray-light text-left text-xs font-medium text-gray-mid uppercase">
+                        <th class="px-4 py-3 w-10">
+                          <input
+                            type="checkbox"
+                            class="rounded border-gray-300 text-primary focus:ring-primary" />
+                        </th>
+                        <th class="px-4 py-3">姓名</th>
+                        <th class="px-4 py-3">部门</th>
+                        <th class="px-4 py-3">职位</th>
+                        <th class="px-4 py-3">入职时间</th>
+                        <th class="px-4 py-3">状态</th>
+                        <th class="px-4 py-3 text-right">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                      <!-- 人员1 -->
+                      <tr class="table-hover">
+                        <td class="px-4 py-3">
+                          <input
+                            type="checkbox"
+                            class="rounded border-gray-300 text-primary focus:ring-primary" />
+                        </td>
+                        <td class="px-4 py-3">
                           <div class="flex items-center">
-                            <i class="fa fa-paint-brush text-primary mr-2"></i>
-                            <span>UI/UX设计部</span>
-                            <span class="ml-2 status-badge bg-primary/10 text-primary">12人</span>
+                            <img
+                              src="https://picsum.photos/id/1005/40/40"
+                              alt="用户头像"
+                              class="w-8 h-8 rounded-full object-cover" />
+                            <div class="ml-3">
+                              <div class="text-sm font-medium">张明</div>
+                              <div class="text-xs text-gray-mid">CEO</div>
+                            </div>
                           </div>
-                          <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
-                        </div>
-                      </div>
-                    </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">总裁办</td>
+                        <td class="px-4 py-3 text-sm">首席执行官</td>
+                        <td class="px-4 py-3 text-sm text-gray-mid">
+                          2018-03-15
+                        </td>
+                        <td class="px-4 py-3">
+                          <span
+                            class="status-badge bg-secondary/10 text-secondary"
+                            >在职</span
+                          >
+                        </td>
+                        <td class="px-4 py-3 text-right text-sm">
+                          <div class="flex justify-end space-x-1">
+                            <button
+                              class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors"
+                              title="查看详情">
+                              <i class="fa fa-eye"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="编辑信息">
+                              <i class="fa fa-pencil"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="调整岗位">
+                              <i class="fa fa-exchange"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- 人员2 -->
+                      <tr class="table-hover">
+                        <td class="px-4 py-3">
+                          <input
+                            type="checkbox"
+                            class="rounded border-gray-300 text-primary focus:ring-primary" />
+                        </td>
+                        <td class="px-4 py-3">
+                          <div class="flex items-center">
+                            <img
+                              src="https://picsum.photos/id/1000/40/40"
+                              alt="用户头像"
+                              class="w-8 h-8 rounded-full object-cover" />
+                            <div class="ml-3">
+                              <div class="text-sm font-medium">李娜</div>
+                              <div class="text-xs text-gray-mid">CTO</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">研发中心</td>
+                        <td class="px-4 py-3 text-sm">首席技术官</td>
+                        <td class="px-4 py-3 text-sm text-gray-mid">
+                          2018-05-22
+                        </td>
+                        <td class="px-4 py-3">
+                          <span
+                            class="status-badge bg-secondary/10 text-secondary"
+                            >在职</span
+                          >
+                        </td>
+                        <td class="px-4 py-3 text-right text-sm">
+                          <div class="flex justify-end space-x-1">
+                            <button
+                              class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors"
+                              title="查看详情">
+                              <i class="fa fa-eye"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="编辑信息">
+                              <i class="fa fa-pencil"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="调整岗位">
+                              <i class="fa fa-exchange"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- 人员3 -->
+                      <tr class="table-hover">
+                        <td class="px-4 py-3">
+                          <input
+                            type="checkbox"
+                            class="rounded border-gray-300 text-primary focus:ring-primary" />
+                        </td>
+                        <td class="px-4 py-3">
+                          <div class="flex items-center">
+                            <img
+                              src="https://picsum.photos/id/1012/40/40"
+                              alt="用户头像"
+                              class="w-8 h-8 rounded-full object-cover" />
+                            <div class="ml-3">
+                              <div class="text-sm font-medium">王强</div>
+                              <div class="text-xs text-gray-mid">CMO</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">市场部</td>
+                        <td class="px-4 py-3 text-sm">首席营销官</td>
+                        <td class="px-4 py-3 text-sm text-gray-mid">
+                          2019-01-10
+                        </td>
+                        <td class="px-4 py-3">
+                          <span
+                            class="status-badge bg-secondary/10 text-secondary"
+                            >在职</span
+                          >
+                        </td>
+                        <td class="px-4 py-3 text-right text-sm">
+                          <div class="flex justify-end space-x-1">
+                            <button
+                              class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors"
+                              title="查看详情">
+                              <i class="fa fa-eye"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="编辑信息">
+                              <i class="fa fa-pencil"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="调整岗位">
+                              <i class="fa fa-exchange"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- 人员4 -->
+                      <tr class="table-hover">
+                        <td class="px-4 py-3">
+                          <input
+                            type="checkbox"
+                            class="rounded border-gray-300 text-primary focus:ring-primary" />
+                        </td>
+                        <td class="px-4 py-3">
+                          <div class="flex items-center">
+                            <img
+                              src="https://picsum.photos/id/1027/40/40"
+                              alt="用户头像"
+                              class="w-8 h-8 rounded-full object-cover" />
+                            <div class="ml-3">
+                              <div class="text-sm font-medium">刘芳</div>
+                              <div class="text-xs text-gray-mid">
+                                HR Director
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">人力资源部</td>
+                        <td class="px-4 py-3 text-sm">人力资源总监</td>
+                        <td class="px-4 py-3 text-sm text-gray-mid">
+                          2019-03-05
+                        </td>
+                        <td class="px-4 py-3">
+                          <span class="status-badge bg-warning/10 text-warning"
+                            >休假中</span
+                          >
+                        </td>
+                        <td class="px-4 py-3 text-right text-sm">
+                          <div class="flex justify-end space-x-1">
+                            <button
+                              class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors"
+                              title="查看详情">
+                              <i class="fa fa-eye"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="编辑信息">
+                              <i class="fa fa-pencil"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="调整岗位">
+                              <i class="fa fa-exchange"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- 人员5 -->
+                      <tr class="table-hover">
+                        <td class="px-4 py-3">
+                          <input
+                            type="checkbox"
+                            class="rounded border-gray-300 text-primary focus:ring-primary" />
+                        </td>
+                        <td class="px-4 py-3">
+                          <div class="flex items-center">
+                            <img
+                              src="https://picsum.photos/id/1074/40/40"
+                              alt="用户头像"
+                              class="w-8 h-8 rounded-full object-cover" />
+                            <div class="ml-3">
+                              <div class="text-sm font-medium">赵伟</div>
+                              <div class="text-xs text-gray-mid">
+                                Finance Director
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">财务部</td>
+                        <td class="px-4 py-3 text-sm">财务总监</td>
+                        <td class="px-4 py-3 text-sm text-gray-mid">
+                          2018-11-18
+                        </td>
+                        <td class="px-4 py-3">
+                          <span
+                            class="status-badge bg-secondary/10 text-secondary"
+                            >在职</span
+                          >
+                        </td>
+                        <td class="px-4 py-3 text-right text-sm">
+                          <div class="flex justify-end space-x-1">
+                            <button
+                              class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors"
+                              title="查看详情">
+                              <i class="fa fa-eye"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="编辑信息">
+                              <i class="fa fa-pencil"></i>
+                            </button>
+                            <button
+                              class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors"
+                              title="调整岗位">
+                              <i class="fa fa-exchange"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- 分页 -->
+                <div
+                  class="px-4 py-3 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between">
+                  <div class="text-sm text-gray-mid mb-3 sm:mb-0">
+                    显示 <span class="font-medium">1</span> 到
+                    <span class="font-medium">5</span> 条，共
+                    <span class="font-medium">248</span> 条记录
                   </div>
-                  
-                  <!-- 一级部门：市场部 -->
-                  <div class="dept-item">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <i class="fa fa-line-chart text-primary mr-2"></i>
-                        <span>市场部</span>
-                        <span class="ml-2 status-badge bg-primary/10 text-primary">32人</span>
-                      </div>
-                      <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
-                    </div>
-                  </div>
-                  
-                  <!-- 一级部门：销售部 -->
-                  <div class="dept-item">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <i class="fa fa-shopping-cart text-primary mr-2"></i>
-                        <span>销售部</span>
-                        <span class="ml-2 status-badge bg-primary/10 text-primary">48人</span>
-                      </div>
-                      <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
-                    </div>
-                  </div>
-                  
-                  <!-- 一级部门：人力资源部 -->
-                  <div class="dept-item">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <i class="fa fa-users text-primary mr-2"></i>
-                        <span>人力资源部</span>
-                        <span class="ml-2 status-badge bg-primary/10 text-primary">16人</span>
-                      </div>
-                      <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
-                    </div>
-                  </div>
-                  
-                  <!-- 一级部门：财务部 -->
-                  <div class="dept-item">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <i class="fa fa-money text-primary mr-2"></i>
-                        <span>财务部</span>
-                        <span class="ml-2 status-badge bg-primary/10 text-primary">12人</span>
-                      </div>
-                      <i class="fa fa-chevron-right text-xs text-gray-mid"></i>
-                    </div>
+
+                  <div class="flex items-center space-x-1">
+                    <button
+                      class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-mid hover:bg-gray-light disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled>
+                      <i class="fa fa-chevron-left text-xs"></i>
+                    </button>
+                    <button
+                      class="px-3 py-1 rounded border border-primary bg-primary text-white">
+                      1
+                    </button>
+                    <button
+                      class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-dark hover:bg-gray-light">
+                      2
+                    </button>
+                    <button
+                      class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-dark hover:bg-gray-light">
+                      3
+                    </button>
+                    <button
+                      class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-dark hover:bg-gray-light">
+                      4
+                    </button>
+                    <button
+                      class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-dark hover:bg-gray-light">
+                      5
+                    </button>
+                    <button
+                      class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-mid hover:bg-gray-light">
+                      <i class="fa fa-chevron-right text-xs"></i>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          
-          <!-- 右侧人员列表 -->
-          <div class="lg:w-3/4">
-            <!-- 部门概览卡片 -->
-            <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-              <div class="flex flex-col md:flex-row md:items-center justify-between">
-                <div>
-                  <h3 class="text-lg font-bold mb-1">未来科技有限公司</h3>
-                  <p class="text-gray-mid text-sm">公司总部 / 248名员工</p>
-                </div>
-                <div class="flex space-x-3 mt-4 md:mt-0">
-                  <button class="px-3 py-1.5 text-sm text-gray-dark bg-white border border-gray-300 rounded-lg hover:bg-gray-light transition-colors">
-                    <i class="fa fa-edit mr-1"></i> 编辑部门
-                  </button>
-                  <button class="px-3 py-1.5 text-sm text-primary bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors">
-                    <i class="fa fa-user-plus mr-1"></i> 添加成员
-                  </button>
-                </div>
-              </div>
-              
-              <!-- 部门统计 -->
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                <div class="bg-gray-light rounded-lg p-4">
-                  <p class="text-gray-mid text-sm">总人数</p>
-                  <p class="text-2xl font-bold mt-1">248</p>
-                </div>
-                <div class="bg-gray-light rounded-lg p-4">
-                  <p class="text-gray-mid text-sm">在职人员</p>
-                  <p class="text-2xl font-bold mt-1 text-secondary">242</p>
-                </div>
-                <div class="bg-gray-light rounded-lg p-4">
-                  <p class="text-gray-mid text-sm">管理人员</p>
-                  <p class="text-2xl font-bold mt-1">36</p>
-                </div>
-                <div class="bg-gray-light rounded-lg p-4">
-                  <p class="text-gray-mid text-sm">本月新增</p>
-                  <p class="text-2xl font-bold mt-1 text-primary">8</p>
-                </div>
-              </div>
-            </div>
-            
-            <!-- 人员列表 -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-              <!-- 列表工具栏 -->
-              <div class="p-4 border-b border-gray-200">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between">
-                  <h3 class="font-medium mb-3 sm:mb-0">部门成员</h3>
-                  
-                  <div class="flex flex-wrap items-center gap-2">
-                    <!-- 筛选下拉 -->
-                    <div class="relative">
-                      <select class="appearance-none pl-3 pr-8 py-1.5 text-sm bg-gray-light border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
-                        <option>全部人员</option>
-                        <option>管理人员</option>
-                        <option>普通员工</option>
-                        <option>本月新增</option>
-                      </select>
-                      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-mid">
-                        <i class="fa fa-chevron-down text-xs"></i>
-                      </div>
-                    </div>
-                    
-                    <!-- 排序下拉 -->
-                    <div class="relative">
-                      <select class="appearance-none pl-3 pr-8 py-1.5 text-sm bg-gray-light border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
-                        <option>默认排序</option>
-                        <option>按姓名排序</option>
-                        <option>按职位排序</option>
-                        <option>按入职时间</option>
-                      </select>
-                      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-mid">
-                        <i class="fa fa-chevron-down text-xs"></i>
-                      </div>
-                    </div>
-                    
-                    <!-- 视图切换 -->
-                    <div class="flex border border-gray-300 rounded-lg overflow-hidden">
-                      <button class="px-3 py-1.5 text-sm bg-primary text-white">
-                        <i class="fa fa-list"></i>
-                      </button>
-                      <button class="px-3 py-1.5 text-sm bg-white text-gray-mid hover:bg-gray-light transition-colors">
-                        <i class="fa fa-th-large"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- 人员表格 -->
-              <div class="overflow-x-auto">
-                <table class="w-full">
-                  <thead>
-                    <tr class="bg-gray-light text-left text-xs font-medium text-gray-mid uppercase">
-                      <th class="px-4 py-3 w-10">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                      </th>
-                      <th class="px-4 py-3">姓名</th>
-                      <th class="px-4 py-3">部门</th>
-                      <th class="px-4 py-3">职位</th>
-                      <th class="px-4 py-3">入职时间</th>
-                      <th class="px-4 py-3">状态</th>
-                      <th class="px-4 py-3 text-right">操作</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-gray-200">
-                    <!-- 人员1 -->
-                    <tr class="table-hover">
-                      <td class="px-4 py-3">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                      </td>
-                      <td class="px-4 py-3">
-                        <div class="flex items-center">
-                          <img src="https://picsum.photos/id/1005/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
-                          <div class="ml-3">
-                            <div class="text-sm font-medium">张明</div>
-                            <div class="text-xs text-gray-mid">CEO</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-sm">总裁办</td>
-                      <td class="px-4 py-3 text-sm">首席执行官</td>
-                      <td class="px-4 py-3 text-sm text-gray-mid">2018-03-15</td>
-                      <td class="px-4 py-3">
-                        <span class="status-badge bg-secondary/10 text-secondary">在职</span>
-                      </td>
-                      <td class="px-4 py-3 text-right text-sm">
-                        <div class="flex justify-end space-x-1">
-                          <button class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors" title="查看详情">
-                            <i class="fa fa-eye"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="编辑信息">
-                            <i class="fa fa-pencil"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="调整岗位">
-                            <i class="fa fa-exchange"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    
-                    <!-- 人员2 -->
-                    <tr class="table-hover">
-                      <td class="px-4 py-3">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                      </td>
-                      <td class="px-4 py-3">
-                        <div class="flex items-center">
-                          <img src="https://picsum.photos/id/1000/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
-                          <div class="ml-3">
-                            <div class="text-sm font-medium">李娜</div>
-                            <div class="text-xs text-gray-mid">CTO</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-sm">研发中心</td>
-                      <td class="px-4 py-3 text-sm">首席技术官</td>
-                      <td class="px-4 py-3 text-sm text-gray-mid">2018-05-22</td>
-                      <td class="px-4 py-3">
-                        <span class="status-badge bg-secondary/10 text-secondary">在职</span>
-                      </td>
-                      <td class="px-4 py-3 text-right text-sm">
-                        <div class="flex justify-end space-x-1">
-                          <button class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors" title="查看详情">
-                            <i class="fa fa-eye"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="编辑信息">
-                            <i class="fa fa-pencil"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="调整岗位">
-                            <i class="fa fa-exchange"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    
-                    <!-- 人员3 -->
-                    <tr class="table-hover">
-                      <td class="px-4 py-3">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                      </td>
-                      <td class="px-4 py-3">
-                        <div class="flex items-center">
-                          <img src="https://picsum.photos/id/1012/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
-                          <div class="ml-3">
-                            <div class="text-sm font-medium">王强</div>
-                            <div class="text-xs text-gray-mid">CMO</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-sm">市场部</td>
-                      <td class="px-4 py-3 text-sm">首席营销官</td>
-                      <td class="px-4 py-3 text-sm text-gray-mid">2019-01-10</td>
-                      <td class="px-4 py-3">
-                        <span class="status-badge bg-secondary/10 text-secondary">在职</span>
-                      </td>
-                      <td class="px-4 py-3 text-right text-sm">
-                        <div class="flex justify-end space-x-1">
-                          <button class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors" title="查看详情">
-                            <i class="fa fa-eye"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="编辑信息">
-                            <i class="fa fa-pencil"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="调整岗位">
-                            <i class="fa fa-exchange"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    
-                    <!-- 人员4 -->
-                    <tr class="table-hover">
-                      <td class="px-4 py-3">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                      </td>
-                      <td class="px-4 py-3">
-                        <div class="flex items-center">
-                          <img src="https://picsum.photos/id/1027/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
-                          <div class="ml-3">
-                            <div class="text-sm font-medium">刘芳</div>
-                            <div class="text-xs text-gray-mid">HR Director</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-sm">人力资源部</td>
-                      <td class="px-4 py-3 text-sm">人力资源总监</td>
-                      <td class="px-4 py-3 text-sm text-gray-mid">2019-03-05</td>
-                      <td class="px-4 py-3">
-                        <span class="status-badge bg-warning/10 text-warning">休假中</span>
-                      </td>
-                      <td class="px-4 py-3 text-right text-sm">
-                        <div class="flex justify-end space-x-1">
-                          <button class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors" title="查看详情">
-                            <i class="fa fa-eye"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="编辑信息">
-                            <i class="fa fa-pencil"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="调整岗位">
-                            <i class="fa fa-exchange"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    
-                    <!-- 人员5 -->
-                    <tr class="table-hover">
-                      <td class="px-4 py-3">
-                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                      </td>
-                      <td class="px-4 py-3">
-                        <div class="flex items-center">
-                          <img src="https://picsum.photos/id/1074/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
-                          <div class="ml-3">
-                            <div class="text-sm font-medium">赵伟</div>
-                            <div class="text-xs text-gray-mid">Finance Director</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-sm">财务部</td>
-                      <td class="px-4 py-3 text-sm">财务总监</td>
-                      <td class="px-4 py-3 text-sm text-gray-mid">2018-11-18</td>
-                      <td class="px-4 py-3">
-                        <span class="status-badge bg-secondary/10 text-secondary">在职</span>
-                      </td>
-                      <td class="px-4 py-3 text-right text-sm">
-                        <div class="flex justify-end space-x-1">
-                          <button class="p-1 text-primary hover:text-primary/80 hover:bg-primary/5 rounded transition-colors" title="查看详情">
-                            <i class="fa fa-eye"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="编辑信息">
-                            <i class="fa fa-pencil"></i>
-                          </button>
-                          <button class="p-1 text-gray-dark hover:text-gray-700 hover:bg-gray-light rounded transition-colors" title="调整岗位">
-                            <i class="fa fa-exchange"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              
-              <!-- 分页 -->
-              <div class="px-4 py-3 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between">
-                <div class="text-sm text-gray-mid mb-3 sm:mb-0">
-                  显示 <span class="font-medium">1</span> 到 <span class="font-medium">5</span> 条，共 <span class="font-medium">248</span> 条记录
-                </div>
-                
-                <div class="flex items-center space-x-1">
-                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-mid hover:bg-gray-light disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                    <i class="fa fa-chevron-left text-xs"></i>
-                  </button>
-                  <button class="px-3 py-1 rounded border border-primary bg-primary text-white">1</button>
-                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-dark hover:bg-gray-light">2</button>
-                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-dark hover:bg-gray-light">3</button>
-                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-dark hover:bg-gray-light">4</button>
-                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-dark hover:bg-gray-light">5</button>
-                  <button class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-mid hover:bg-gray-light">
-                    <i class="fa fa-chevron-right text-xs"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
-  </div>
-  
-  <!-- JavaScript -->
-  <script>
-    // 移动端菜单切换
-    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-      const sidebar = document.querySelector('aside');
-      sidebar.classList.toggle('hidden');
-      sidebar.classList.toggle('fixed');
-      sidebar.classList.toggle('inset-0');
-      sidebar.classList.toggle('z-50');
-    });
-    
-    // 组织架构树展开/折叠功能
-    document.querySelectorAll('.dept-item').forEach(item => {
-      // 只给有子部门的项添加点击事件
-      if (item.querySelector('.fa-chevron-down') || item.querySelector('.fa-chevron-right')) {
-        item.addEventListener('click', function(e) {
-          // 阻止事件冒泡
-          e.stopPropagation();
-          
-          // 切换激活状态
-          document.querySelectorAll('.dept-item').forEach(i => {
-            i.classList.remove('dept-active');
-          });
-          this.classList.add('dept-active');
-          
-          // 切换展开/折叠图标
-          const icon = this.querySelector('.fa-chevron-down, .fa-chevron-right');
-          if (icon) {
-            if (icon.classList.contains('fa-chevron-right')) {
-              icon.classList.remove('fa-chevron-right');
-              icon.classList.add('fa-chevron-down');
-              
-              // 显示子部门（如果有）
-              const subDepts = this.nextElementSibling;
-              if (subDepts && subDepts.classList.contains('org-tree-line')) {
-                subDepts.style.display = 'block';
-              }
-            } else {
-              icon.classList.remove('fa-chevron-down');
-              icon.classList.add('fa-chevron-right');
-              
-              // 隐藏子部门（如果有）
-              const subDepts = this.nextElementSibling;
-              if (subDepts && subDepts.classList.contains('org-tree-line')) {
-                subDepts.style.display = 'none';
+
+    <!-- JavaScript -->
+    <script>
+      // 移动端菜单切换
+      document
+        .getElementById('mobile-menu-btn')
+        .addEventListener('click', function () {
+          const sidebar = document.querySelector('aside');
+          sidebar.classList.toggle('hidden');
+          sidebar.classList.toggle('fixed');
+          sidebar.classList.toggle('inset-0');
+          sidebar.classList.toggle('z-50');
+        });
+
+      // 组织架构树展开/折叠功能
+      document.querySelectorAll('.dept-item').forEach((item) => {
+        // 只给有子部门的项添加点击事件
+        if (
+          item.querySelector('.fa-chevron-down') ||
+          item.querySelector('.fa-chevron-right')
+        ) {
+          item.addEventListener('click', function (e) {
+            // 阻止事件冒泡
+            e.stopPropagation();
+
+            // 切换激活状态
+            document.querySelectorAll('.dept-item').forEach((i) => {
+              i.classList.remove('dept-active');
+            });
+            this.classList.add('dept-active');
+
+            // 切换展开/折叠图标
+            const icon = this.querySelector(
+              '.fa-chevron-down, .fa-chevron-right',
+            );
+            if (icon) {
+              if (icon.classList.contains('fa-chevron-right')) {
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-down');
+
+                // 显示子部门（如果有）
+                const subDepts = this.nextElementSibling;
+                if (subDepts && subDepts.classList.contains('org-tree-line')) {
+                  subDepts.style.display = 'block';
+                }
+              } else {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-right');
+
+                // 隐藏子部门（如果有）
+                const subDepts = this.nextElementSibling;
+                if (subDepts && subDepts.classList.contains('org-tree-line')) {
+                  subDepts.style.display = 'none';
+                }
               }
             }
-          }
-        });
-      }
-    });
-    
-    // 全选功能
-    const selectAllCheckbox = document.querySelector('thead input[type="checkbox"]');
-    const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-    
-    selectAllCheckbox.addEventListener('change', function() {
-      rowCheckboxes.forEach(checkbox => {
-        checkbox.checked = this.checked;
+          });
+        }
       });
-    });
-  </script>
-</body>
+
+      // 全选功能
+      const selectAllCheckbox = document.querySelector(
+        'thead input[type="checkbox"]',
+      );
+      const rowCheckboxes = document.querySelectorAll(
+        'tbody input[type="checkbox"]',
+      );
+
+      selectAllCheckbox.addEventListener('change', function () {
+        rowCheckboxes.forEach((checkbox) => {
+          checkbox.checked = this.checked;
+        });
+      });
+    </script>
+  </body>
 </html>
-    

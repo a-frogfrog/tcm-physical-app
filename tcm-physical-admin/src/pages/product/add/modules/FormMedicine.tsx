@@ -1,5 +1,5 @@
-import { TabsContent } from "#/components/ui";
-import { FileText } from "lucide-react";
+import { TabsContent } from '#/components/ui';
+import { FileText } from 'lucide-react';
 
 export const ProductFormMedicine = () => {
   return (

@@ -1,991 +1,1249 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>中医理疗 - 订单管理</title>
-  <!-- 外部资源引入 -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-  
-  <!-- Tailwind自定义配置（中医风格配色体系） -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#8B5A2B',    // 主色：中医传统棕色
-            secondary: '#4A6741',  // 辅助色：自然绿色
-            accent: '#D2B48C',     // 强调色：棕褐色
-            light: '#F5F5DC',      // 浅色：米色
-            dark: '#3E2723',       // 深色：深棕色
-            // 订单状态语义化配色
-            pending: '#EAB308',    // 待确认：黄色
-            confirmed: '#22C55E',  // 已确认：绿色
-            completed: '#3B82F6',  // 已完成：蓝色
-            cancelled: '#EF4444'   // 已取消：红色
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中医理疗 - 订单管理</title>
+    <!-- 外部资源引入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <!-- Tailwind自定义配置（中医风格配色体系） -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#8B5A2B', // 主色：中医传统棕色
+              secondary: '#4A6741', // 辅助色：自然绿色
+              accent: '#D2B48C', // 强调色：棕褐色
+              light: '#F5F5DC', // 浅色：米色
+              dark: '#3E2723', // 深色：深棕色
+              // 订单状态语义化配色
+              pending: '#EAB308', // 待确认：黄色
+              confirmed: '#22C55E', // 已确认：绿色
+              completed: '#3B82F6', // 已完成：蓝色
+              cancelled: '#EF4444', // 已取消：红色
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
           },
         },
-      }
-    }
-  </script>
-  
-  <!-- 自定义工具类 -->
-  <style type="text/tailwindcss">
-    @layer utilities {
-      .content-auto {
-        content-visibility: auto;
-      }
-      .card-shadow {
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      }
-      .hover-lift {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-      .hover-lift:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      }
-      .status-badge {
-        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-      }
-      .table-hover {
-        @apply hover:bg-light/50 transition-colors;
-      }
-    }
-  </style>
-</head>
+      };
+    </script>
 
-<body class="bg-gray-50 font-sans text-dark">
-  <div class="flex h-screen overflow-hidden">
-    <!-- 侧边栏导航 -->
-    <aside class="hidden md:flex flex-col w-64 bg-white shadow-lg fixed h-full z-20">
-      <!-- 品牌标识 -->
-      <div class="flex items-center justify-center h-16 bg-primary text-white">
-        <i class="fa fa-leaf text-2xl mr-2"></i>
-        <h1 class="text-xl font-bold">中医理疗管理系统</h1>
-      </div>
-      
-      <!-- 导航菜单 -->
-      <nav class="flex-1 overflow-y-auto py-6 px-4">
-        <ul class="space-y-1">
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <i class="fa fa-tachometer w-5 h-5 mr-3"></i>
-              <span>仪表盘</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <i class="fa fa-list-alt w-5 h-5 mr-3"></i>
-              <span>产品套餐</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 bg-primary/10 text-primary rounded-lg font-medium transition-colors">
-              <i class="fa fa-calendar w-5 h-5 mr-3"></i>
-              <span>订单管理</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <i class="fa fa-users w-5 h-5 mr-3"></i>
-              <span>客户管理</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <i class="fa fa-user-md w-5 h-5 mr-3"></i>
-              <span>医师管理</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <i class="fa fa-bar-chart w-5 h-5 mr-3"></i>
-              <span>销售统计</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <i class="fa fa-cog w-5 h-5 mr-3"></i>
-              <span>系统设置</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-      
-      <!-- 用户信息 -->
-      <div class="p-4 border-t border-gray-200">
-        <div class="flex items-center">
-          <img src="https://picsum.photos/id/1005/40/40" alt="管理员头像" class="w-10 h-10 rounded-full object-cover border-2 border-primary/20">
-          <div class="ml-3">
-            <p class="text-sm font-medium">张医生</p>
-            <p class="text-xs text-gray-500">系统管理员</p>
-          </div>
-          <button class="ml-auto text-gray-400 hover:text-gray-600 transition-colors">
-            <i class="fa fa-sign-out"></i>
-          </button>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .card-shadow {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .hover-lift {
+          transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .status-badge {
+          @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+        }
+        .table-hover {
+          @apply hover:bg-light/50 transition-colors;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 font-sans text-dark">
+    <div class="flex h-screen overflow-hidden">
+      <!-- 侧边栏导航 -->
+      <aside
+        class="hidden md:flex flex-col w-64 bg-white shadow-lg fixed h-full z-20">
+        <!-- 品牌标识 -->
+        <div
+          class="flex items-center justify-center h-16 bg-primary text-white">
+          <i class="fa fa-leaf text-2xl mr-2"></i>
+          <h1 class="text-xl font-bold">中医理疗管理系统</h1>
         </div>
-      </div>
-    </aside>
-    
-    <!-- 主内容区域 -->
-    <div class="flex-1 flex flex-col overflow-hidden md:ml-64">
-      <!-- 顶部导航栏 -->
-      <header class="bg-white shadow-sm z-10 sticky top-0">
-        <div class="flex items-center justify-between h-16 px-6">
-          <!-- 移动端菜单按钮 -->
-          <button id="mobileMenuBtn" class="md:hidden text-gray-500 hover:text-gray-700 transition-colors">
-            <i class="fa fa-bars text-xl"></i>
-          </button>
-          
-          <!-- 搜索栏 -->
-          <div class="relative max-w-md w-full mx-4">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-              <i class="fa fa-search"></i>
-            </span>
-            <input type="text" placeholder="搜索订单号/客户姓名/手机号..." 
-                  class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
-          </div>
-          
-          <!-- 右侧工具栏 -->
-          <div class="flex items-center space-x-4">
-            <!-- 日期筛选下拉 -->
-            <div class="relative group">
-              <button class="flex items-center px-3 py-1.5 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-                <i class="fa fa-calendar-o mr-2"></i>
-                <span>今日</span>
-                <i class="fa fa-chevron-down ml-1 text-xs"></i>
-              </button>
-              <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-20">
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">今日</a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">昨日</a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">本周</a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">本月</a>
-                <div class="border-t border-gray-100 my-1"></div>
-                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-gray-100 transition-colors">
-                  <i class="fa fa-calendar mr-1"></i> 自定义日期
-                </a>
-              </div>
+
+        <!-- 导航菜单 -->
+        <nav class="flex-1 overflow-y-auto py-6 px-4">
+          <ul class="space-y-1">
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-tachometer w-5 h-5 mr-3"></i>
+                <span>仪表盘</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-list-alt w-5 h-5 mr-3"></i>
+                <span>产品套餐</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 bg-primary/10 text-primary rounded-lg font-medium transition-colors">
+                <i class="fa fa-calendar w-5 h-5 mr-3"></i>
+                <span>订单管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-users w-5 h-5 mr-3"></i>
+                <span>客户管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-user-md w-5 h-5 mr-3"></i>
+                <span>医师管理</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-bar-chart w-5 h-5 mr-3"></i>
+                <span>销售统计</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fa fa-cog w-5 h-5 mr-3"></i>
+                <span>系统设置</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 用户信息 -->
+        <div class="p-4 border-t border-gray-200">
+          <div class="flex items-center">
+            <img
+              src="https://picsum.photos/id/1005/40/40"
+              alt="管理员头像"
+              class="w-10 h-10 rounded-full object-cover border-2 border-primary/20" />
+            <div class="ml-3">
+              <p class="text-sm font-medium">张医生</p>
+              <p class="text-xs text-gray-500">系统管理员</p>
             </div>
-            
-            <!-- 通知图标 -->
-            <button class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
-              <i class="fa fa-bell"></i>
-              <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            
-            <!-- 导出按钮（PC端） -->
-            <button class="hidden md:flex items-center px-3 py-1.5 text-sm font-medium text-white bg-secondary rounded-lg hover:bg-secondary/90 transition-colors">
-              <i class="fa fa-download mr-2"></i>
-              <span>导出订单</span>
-            </button>
-            
-            <!-- 导出按钮（移动端） -->
-            <button class="md:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
-              <i class="fa fa-download"></i>
+            <button
+              class="ml-auto text-gray-400 hover:text-gray-600 transition-colors">
+              <i class="fa fa-sign-out"></i>
             </button>
           </div>
         </div>
-      </header>
-      
-      <!-- 页面内容 -->
-      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
-        <!-- 页面标题与快捷筛选 -->
-        <div class="mb-8">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-            <div>
-              <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-gray-800 mb-2">订单管理</h2>
-              <p class="text-gray-600">查看和管理所有中医理疗订单，处理预约确认、服务完成等操作</p>
+      </aside>
+
+      <!-- 主内容区域 -->
+      <div class="flex-1 flex flex-col overflow-hidden md:ml-64">
+        <!-- 顶部导航栏 -->
+        <header class="bg-white shadow-sm z-10 sticky top-0">
+          <div class="flex items-center justify-between h-16 px-6">
+            <!-- 移动端菜单按钮 -->
+            <button
+              id="mobileMenuBtn"
+              class="md:hidden text-gray-500 hover:text-gray-700 transition-colors">
+              <i class="fa fa-bars text-xl"></i>
+            </button>
+
+            <!-- 搜索栏 -->
+            <div class="relative max-w-md w-full mx-4">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                <i class="fa fa-search"></i>
+              </span>
+              <input
+                type="text"
+                placeholder="搜索订单号/客户姓名/手机号..."
+                class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" />
             </div>
-            <!-- 订单状态快捷筛选 -->
-            <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
-              <button class="px-3 py-1.5 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                全部订单
+
+            <!-- 右侧工具栏 -->
+            <div class="flex items-center space-x-4">
+              <!-- 日期筛选下拉 -->
+              <div class="relative group">
+                <button
+                  class="flex items-center px-3 py-1.5 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                  <i class="fa fa-calendar-o mr-2"></i>
+                  <span>今日</span>
+                  <i class="fa fa-chevron-down ml-1 text-xs"></i>
+                </button>
+                <div
+                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-20">
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >今日</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >昨日</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >本周</a
+                  >
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >本月</a
+                  >
+                  <div class="border-t border-gray-100 my-1"></div>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-primary hover:bg-gray-100 transition-colors">
+                    <i class="fa fa-calendar mr-1"></i> 自定义日期
+                  </a>
+                </div>
+              </div>
+
+              <!-- 通知图标 -->
+              <button
+                class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+                <i class="fa fa-bell"></i>
+                <span
+                  class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <button class="px-3 py-1.5 text-sm bg-pending/10 text-pending border border-pending/20 rounded-lg hover:bg-pending/20 transition-colors">
-                待确认(12)
+
+              <!-- 导出按钮（PC端） -->
+              <button
+                class="hidden md:flex items-center px-3 py-1.5 text-sm font-medium text-white bg-secondary rounded-lg hover:bg-secondary/90 transition-colors">
+                <i class="fa fa-download mr-2"></i>
+                <span>导出订单</span>
               </button>
-              <button class="px-3 py-1.5 text-sm bg-confirmed/10 text-confirmed border border-confirmed/20 rounded-lg hover:bg-confirmed/20 transition-colors">
-                已确认(38)
+
+              <!-- 导出按钮（移动端） -->
+              <button
+                class="md:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+                <i class="fa fa-download"></i>
               </button>
             </div>
           </div>
-          
-          <!-- 订单状态统计卡片 -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- 待确认订单 -->
-            <div class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-pending">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-gray-500 text-sm">待确认订单</p>
-                  <h3 class="text-3xl font-bold mt-1">12</h3>
-                  <p class="text-yellow-500 text-sm mt-2 flex items-center">
-                    <i class="fa fa-arrow-up mr-1"></i> 5% 较昨日
-                  </p>
-                </div>
-                <div class="w-12 h-12 rounded-full bg-pending/10 flex items-center justify-center text-pending">
-                  <i class="fa fa-clock-o text-xl"></i>
-                </div>
+        </header>
+
+        <!-- 页面内容 -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+          <!-- 页面标题与快捷筛选 -->
+          <div class="mb-8">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+              <div>
+                <h2
+                  class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-gray-800 mb-2">
+                  订单管理
+                </h2>
+                <p class="text-gray-600">
+                  查看和管理所有中医理疗订单，处理预约确认、服务完成等操作
+                </p>
               </div>
-            </div>
-            
-            <!-- 已确认订单 -->
-            <div class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-confirmed">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-gray-500 text-sm">已确认订单</p>
-                  <h3 class="text-3xl font-bold mt-1">38</h3>
-                  <p class="text-green-500 text-sm mt-2 flex items-center">
-                    <i class="fa fa-arrow-up mr-1"></i> 12% 较昨日
-                  </p>
-                </div>
-                <div class="w-12 h-12 rounded-full bg-confirmed/10 flex items-center justify-center text-confirmed">
-                  <i class="fa fa-check-circle text-xl"></i>
-                </div>
-              </div>
-            </div>
-            
-            <!-- 已完成订单 -->
-            <div class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-completed">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-gray-500 text-sm">已完成订单</p>
-                  <h3 class="text-3xl font-bold mt-1">86</h3>
-                  <p class="text-green-500 text-sm mt-2 flex items-center">
-                    <i class="fa fa-arrow-up mr-1"></i> 8% 较昨日
-                  </p>
-                </div>
-                <div class="w-12 h-12 rounded-full bg-completed/10 flex items-center justify-center text-completed">
-                  <i class="fa fa-thumbs-up text-xl"></i>
-                </div>
-              </div>
-            </div>
-            
-            <!-- 已取消订单 -->
-            <div class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-cancelled">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-gray-500 text-sm">已取消订单</p>
-                  <h3 class="text-3xl font-bold mt-1">5</h3>
-                  <p class="text-red-500 text-sm mt-2 flex items-center">
-                    <i class="fa fa-arrow-down mr-1"></i> 3% 较昨日
-                  </p>
-                </div>
-                <div class="w-12 h-12 rounded-full bg-cancelled/10 flex items-center justify-center text-cancelled">
-                  <i class="fa fa-times-circle text-xl"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 订单趋势图表 -->
-        <div class="bg-white rounded-xl p-6 shadow-sm mb-8">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="font-bold text-lg">订单趋势分析</h3>
-            <div class="flex space-x-2">
-              <button class="px-3 py-1 text-sm bg-primary/10 text-primary rounded-md">周度</button>
-              <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-md">月度</button>
-              <button class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-md">季度</button>
-            </div>
-          </div>
-          <div class="h-64">
-            <canvas id="orderTrendChart"></canvas>
-          </div>
-        </div>
-        
-        <!-- 订单列表 -->
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-          <!-- 筛选和操作栏 -->
-          <div class="p-6 border-b border-gray-100">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <h3 class="font-bold text-lg">订单列表</h3>
-              
-              <div class="flex flex-wrap items-center gap-3">
-                <!-- 订单状态筛选 -->
-                <div class="relative">
-                  <select class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-                    <option>所有状态</option>
-                    <option>待确认</option>
-                    <option>已确认</option>
-                    <option>已完成</option>
-                    <option>已取消</option>
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <i class="fa fa-chevron-down text-xs"></i>
-                  </div>
-                </div>
-                
-                <!-- 套餐类型筛选 -->
-                <div class="relative">
-                  <select class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-                    <option>所有套餐</option>
-                    <option>推拿按摩</option>
-                    <option>针灸理疗</option>
-                    <option>中药调理</option>
-                    <option>艾灸养生</option>
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <i class="fa fa-chevron-down text-xs"></i>
-                  </div>
-                </div>
-                
-                <!-- 支付方式筛选 -->
-                <div class="relative">
-                  <select class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-                    <option>所有支付方式</option>
-                    <option>微信支付</option>
-                    <option>支付宝</option>
-                    <option>现金支付</option>
-                    <option>会员卡支付</option>
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <i class="fa fa-chevron-down text-xs"></i>
-                  </div>
-                </div>
-                
-                <!-- 筛选按钮 -->
-                <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
-                  <i class="fa fa-filter mr-2"></i>筛选
+              <!-- 订单状态快捷筛选 -->
+              <div class="flex flex-wrap gap-2 mt-4 sm:mt-0">
+                <button
+                  class="px-3 py-1.5 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  全部订单
+                </button>
+                <button
+                  class="px-3 py-1.5 text-sm bg-pending/10 text-pending border border-pending/20 rounded-lg hover:bg-pending/20 transition-colors">
+                  待确认(12)
+                </button>
+                <button
+                  class="px-3 py-1.5 text-sm bg-confirmed/10 text-confirmed border border-confirmed/20 rounded-lg hover:bg-confirmed/20 transition-colors">
+                  已确认(38)
                 </button>
               </div>
             </div>
-          </div>
-          
-          <!-- 订单表格 -->
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">订单编号</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">客户信息</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">套餐名称</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">预约时间</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金额</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">支付方式</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
-                  <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <!-- 订单1 -->
-                <tr class="table-hover">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">ORD20230512001</div>
-                    <div class="text-xs text-gray-500">2023-05-12</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="h-8 w-8 flex-shrink-0">
-                        <img class="h-8 w-8 rounded-full object-cover" src="https://picsum.photos/id/1027/40/40" alt="客户头像">
-                      </div>
-                      <div class="ml-3">
-                        <div class="text-sm font-medium text-gray-900">李女士</div>
-                        <div class="text-xs text-gray-500">138****5678</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">全身推拿套餐</div>
-                    <div class="text-xs text-gray-500">90分钟</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">2023-05-15</div>
-                    <div class="text-xs text-gray-500">15:00-16:30</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">¥298.00</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center text-sm text-gray-900">
-                      <i class="fa fa-weixin text-green-500 mr-1"></i> 微信支付
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="status-badge bg-pending/10 text-pending">
-                      <i class="fa fa-clock-o mr-1"></i> 待确认
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button class="text-primary hover:text-primary/80 mr-3">确认</button>
-                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
-                    <button class="text-red-500 hover:text-red-700">取消</button>
-                  </td>
-                </tr>
-                
-                <!-- 订单2 -->
-                <tr class="table-hover">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">ORD20230512002</div>
-                    <div class="text-xs text-gray-500">2023-05-12</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="h-8 w-8 flex-shrink-0">
-                        <img class="h-8 w-8 rounded-full object-cover" src="https://picsum.photos/id/1012/40/40" alt="客户头像">
-                      </div>
-                      <div class="ml-3">
-                        <div class="text-sm font-medium text-gray-900">王先生</div>
-                        <div class="text-xs text-gray-500">139****1234</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">针灸理疗套餐</div>
-                    <div class="text-xs text-gray-500">60分钟</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">2023-05-14</div>
-                    <div class="text-xs text-gray-500">10:00-11:00</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">¥368.00</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center text-sm text-gray-900">
-                      <i class="fa fa-credit-card text-blue-500 mr-1"></i> 支付宝
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="status-badge bg-confirmed/10 text-confirmed">
-                      <i class="fa fa-check mr-1"></i> 已确认
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button class="text-green-500 hover:text-green-700 mr-3">完成</button>
-                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
-                    <button class="text-red-500 hover:text-red-700">取消</button>
-                  </td>
-                </tr>
-                
-                <!-- 订单3 -->
-                <tr class="table-hover">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">ORD20230511005</div>
-                    <div class="text-xs text-gray-500">2023-05-11</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="h-8 w-8 flex-shrink-0">
-                        <img class="h-8 w-8 rounded-full object-cover" src="https://picsum.photos/id/1000/40/40" alt="客户头像">
-                      </div>
-                      <div class="ml-3">
-                        <div class="text-sm font-medium text-gray-900">张女士</div>
-                        <div class="text-xs text-gray-500">136****8901</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">中药熏蒸套餐</div>
-                    <div class="text-xs text-gray-500">45分钟</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">2023-05-12</div>
-                    <div class="text-xs text-gray-500">09:30-10:15</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">¥268.00</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center text-sm text-gray-900">
-                      <i class="fa fa-money text-green-600 mr-1"></i> 现金支付
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="status-badge bg-completed/10 text-completed">
-                      <i class="fa fa-check-circle mr-1"></i> 已完成
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
-                    <button class="text-gray-500 hover:text-gray-700">凭证</button>
-                  </td>
-                </tr>
-                
-                <!-- 订单4 -->
-                <tr class="table-hover">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">ORD20230510012</div>
-                    <div class="text-xs text-gray-500">2023-05-10</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="h-8 w-8 flex-shrink-0">
-                        <img class="h-8 w-8 rounded-full object-cover" src="https://picsum.photos/id/1074/40/40" alt="客户头像">
-                      </div>
-                      <div class="ml-3">
-                        <div class="text-sm font-medium text-gray-900">赵先生</div>
-                        <div class="text-xs text-gray-500">135****2345</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">艾灸养生套餐</div>
-                    <div class="text-xs text-gray-500">30分钟</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">2023-05-13</div>
-                    <div class="text-xs text-gray-500">16:00-16:30</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">¥198.00</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center text-sm text-gray-900">
-                      <i class="fa fa-id-card text-purple-500 mr-1"></i> 会员卡
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="status-badge bg-cancelled/10 text-cancelled">
-                      <i class="fa fa-times mr-1"></i> 已取消
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
-                    <button class="text-primary hover:text-primary/80">退款</button>
-                  </td>
-                </tr>
-                
-                <!-- 订单5 -->
-                <tr class="table-hover">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">ORD20230509008</div>
-                    <div class="text-xs text-gray-500">2023-05-09</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="h-8 w-8 flex-shrink-0">
-                        <img class="h-8 w-8 rounded-full object-cover" src="https://picsum.photos/id/1062/40/40" alt="客户头像">
-                      </div>
-                      <div class="ml-3">
-                        <div class="text-sm font-medium text-gray-900">陈女士</div>
-                        <div class="text-xs text-gray-500">137****6789</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">四季养生套餐</div>
-                    <div class="text-xs text-gray-500">120分钟</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">2023-05-11</div>
-                    <div class="text-xs text-gray-500">14:00-16:00</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">¥598.00</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center text-sm text-gray-900">
-                      <i class="fa fa-weixin text-green-500 mr-1"></i> 微信支付
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="status-badge bg-completed/10 text-completed">
-                      <i class="fa fa-check-circle mr-1"></i> 已完成
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button class="text-gray-500 hover:text-gray-700 mr-3">详情</button>
-                    <button class="text-gray-500 hover:text-gray-700">凭证</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <!-- 分页 -->
-          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
-            <div class="flex-1 flex justify-between sm:hidden">
-              <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                上一页
-              </button>
-              <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                下一页
-              </button>
+
+            <!-- 订单状态统计卡片 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <!-- 待确认订单 -->
+              <div
+                class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-pending">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-gray-500 text-sm">待确认订单</p>
+                    <h3 class="text-3xl font-bold mt-1">12</h3>
+                    <p class="text-yellow-500 text-sm mt-2 flex items-center">
+                      <i class="fa fa-arrow-up mr-1"></i> 5% 较昨日
+                    </p>
+                  </div>
+                  <div
+                    class="w-12 h-12 rounded-full bg-pending/10 flex items-center justify-center text-pending">
+                    <i class="fa fa-clock-o text-xl"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 已确认订单 -->
+              <div
+                class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-confirmed">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-gray-500 text-sm">已确认订单</p>
+                    <h3 class="text-3xl font-bold mt-1">38</h3>
+                    <p class="text-green-500 text-sm mt-2 flex items-center">
+                      <i class="fa fa-arrow-up mr-1"></i> 12% 较昨日
+                    </p>
+                  </div>
+                  <div
+                    class="w-12 h-12 rounded-full bg-confirmed/10 flex items-center justify-center text-confirmed">
+                    <i class="fa fa-check-circle text-xl"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 已完成订单 -->
+              <div
+                class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-completed">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-gray-500 text-sm">已完成订单</p>
+                    <h3 class="text-3xl font-bold mt-1">86</h3>
+                    <p class="text-green-500 text-sm mt-2 flex items-center">
+                      <i class="fa fa-arrow-up mr-1"></i> 8% 较昨日
+                    </p>
+                  </div>
+                  <div
+                    class="w-12 h-12 rounded-full bg-completed/10 flex items-center justify-center text-completed">
+                    <i class="fa fa-thumbs-up text-xl"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 已取消订单 -->
+              <div
+                class="bg-white rounded-xl p-6 shadow-sm hover-lift border-l-4 border-cancelled">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-gray-500 text-sm">已取消订单</p>
+                    <h3 class="text-3xl font-bold mt-1">5</h3>
+                    <p class="text-red-500 text-sm mt-2 flex items-center">
+                      <i class="fa fa-arrow-down mr-1"></i> 3% 较昨日
+                    </p>
+                  </div>
+                  <div
+                    class="w-12 h-12 rounded-full bg-cancelled/10 flex items-center justify-center text-cancelled">
+                    <i class="fa fa-times-circle text-xl"></i>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          </div>
+
+          <!-- 订单趋势图表 -->
+          <div class="bg-white rounded-xl p-6 shadow-sm mb-8">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="font-bold text-lg">订单趋势分析</h3>
+              <div class="flex space-x-2">
+                <button
+                  class="px-3 py-1 text-sm bg-primary/10 text-primary rounded-md">
+                  周度
+                </button>
+                <button
+                  class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+                  月度
+                </button>
+                <button
+                  class="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+                  季度
+                </button>
+              </div>
+            </div>
+            <div class="h-64">
+              <canvas id="orderTrendChart"></canvas>
+            </div>
+          </div>
+
+          <!-- 订单列表 -->
+          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <!-- 筛选和操作栏 -->
+            <div class="p-6 border-b border-gray-100">
+              <div
+                class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <h3 class="font-bold text-lg">订单列表</h3>
+
+                <div class="flex flex-wrap items-center gap-3">
+                  <!-- 订单状态筛选 -->
+                  <div class="relative">
+                    <select
+                      class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                      <option>所有状态</option>
+                      <option>待确认</option>
+                      <option>已确认</option>
+                      <option>已完成</option>
+                      <option>已取消</option>
+                    </select>
+                    <div
+                      class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <i class="fa fa-chevron-down text-xs"></i>
+                    </div>
+                  </div>
+
+                  <!-- 套餐类型筛选 -->
+                  <div class="relative">
+                    <select
+                      class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                      <option>所有套餐</option>
+                      <option>推拿按摩</option>
+                      <option>针灸理疗</option>
+                      <option>中药调理</option>
+                      <option>艾灸养生</option>
+                    </select>
+                    <div
+                      class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <i class="fa fa-chevron-down text-xs"></i>
+                    </div>
+                  </div>
+
+                  <!-- 支付方式筛选 -->
+                  <div class="relative">
+                    <select
+                      class="appearance-none pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                      <option>所有支付方式</option>
+                      <option>微信支付</option>
+                      <option>支付宝</option>
+                      <option>现金支付</option>
+                      <option>会员卡支付</option>
+                    </select>
+                    <div
+                      class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <i class="fa fa-chevron-down text-xs"></i>
+                    </div>
+                  </div>
+
+                  <!-- 筛选按钮 -->
+                  <button
+                    class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">
+                    <i class="fa fa-filter mr-2"></i>筛选
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 订单表格 -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      订单编号
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      客户信息
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      套餐名称
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      预约时间
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      金额
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      支付方式
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      状态
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      操作
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <!-- 订单1 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ORD20230512001
+                      </div>
+                      <div class="text-xs text-gray-500">2023-05-12</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-8 w-8 flex-shrink-0">
+                          <img
+                            class="h-8 w-8 rounded-full object-cover"
+                            src="https://picsum.photos/id/1027/40/40"
+                            alt="客户头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            李女士
+                          </div>
+                          <div class="text-xs text-gray-500">138****5678</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">全身推拿套餐</div>
+                      <div class="text-xs text-gray-500">90分钟</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">2023-05-15</div>
+                      <div class="text-xs text-gray-500">15:00-16:30</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ¥298.00
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center text-sm text-gray-900">
+                        <i class="fa fa-weixin text-green-500 mr-1"></i>
+                        微信支付
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-pending/10 text-pending">
+                        <i class="fa fa-clock-o mr-1"></i> 待确认
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-primary hover:text-primary/80 mr-3">
+                        确认
+                      </button>
+                      <button class="text-gray-500 hover:text-gray-700 mr-3">
+                        详情
+                      </button>
+                      <button class="text-red-500 hover:text-red-700">
+                        取消
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 订单2 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ORD20230512002
+                      </div>
+                      <div class="text-xs text-gray-500">2023-05-12</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-8 w-8 flex-shrink-0">
+                          <img
+                            class="h-8 w-8 rounded-full object-cover"
+                            src="https://picsum.photos/id/1012/40/40"
+                            alt="客户头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            王先生
+                          </div>
+                          <div class="text-xs text-gray-500">139****1234</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">针灸理疗套餐</div>
+                      <div class="text-xs text-gray-500">60分钟</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">2023-05-14</div>
+                      <div class="text-xs text-gray-500">10:00-11:00</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ¥368.00
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center text-sm text-gray-900">
+                        <i class="fa fa-credit-card text-blue-500 mr-1"></i>
+                        支付宝
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-confirmed/10 text-confirmed">
+                        <i class="fa fa-check mr-1"></i> 已确认
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-green-500 hover:text-green-700 mr-3">
+                        完成
+                      </button>
+                      <button class="text-gray-500 hover:text-gray-700 mr-3">
+                        详情
+                      </button>
+                      <button class="text-red-500 hover:text-red-700">
+                        取消
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 订单3 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ORD20230511005
+                      </div>
+                      <div class="text-xs text-gray-500">2023-05-11</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-8 w-8 flex-shrink-0">
+                          <img
+                            class="h-8 w-8 rounded-full object-cover"
+                            src="https://picsum.photos/id/1000/40/40"
+                            alt="客户头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            张女士
+                          </div>
+                          <div class="text-xs text-gray-500">136****8901</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">中药熏蒸套餐</div>
+                      <div class="text-xs text-gray-500">45分钟</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">2023-05-12</div>
+                      <div class="text-xs text-gray-500">09:30-10:15</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ¥268.00
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center text-sm text-gray-900">
+                        <i class="fa fa-money text-green-600 mr-1"></i> 现金支付
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-completed/10 text-completed">
+                        <i class="fa fa-check-circle mr-1"></i> 已完成
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-gray-500 hover:text-gray-700 mr-3">
+                        详情
+                      </button>
+                      <button class="text-gray-500 hover:text-gray-700">
+                        凭证
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 订单4 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ORD20230510012
+                      </div>
+                      <div class="text-xs text-gray-500">2023-05-10</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-8 w-8 flex-shrink-0">
+                          <img
+                            class="h-8 w-8 rounded-full object-cover"
+                            src="https://picsum.photos/id/1074/40/40"
+                            alt="客户头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            赵先生
+                          </div>
+                          <div class="text-xs text-gray-500">135****2345</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">艾灸养生套餐</div>
+                      <div class="text-xs text-gray-500">30分钟</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">2023-05-13</div>
+                      <div class="text-xs text-gray-500">16:00-16:30</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ¥198.00
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center text-sm text-gray-900">
+                        <i class="fa fa-id-card text-purple-500 mr-1"></i>
+                        会员卡
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-cancelled/10 text-cancelled">
+                        <i class="fa fa-times mr-1"></i> 已取消
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-gray-500 hover:text-gray-700 mr-3">
+                        详情
+                      </button>
+                      <button class="text-primary hover:text-primary/80">
+                        退款
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- 订单5 -->
+                  <tr class="table-hover">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ORD20230509008
+                      </div>
+                      <div class="text-xs text-gray-500">2023-05-09</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-8 w-8 flex-shrink-0">
+                          <img
+                            class="h-8 w-8 rounded-full object-cover"
+                            src="https://picsum.photos/id/1062/40/40"
+                            alt="客户头像" />
+                        </div>
+                        <div class="ml-3">
+                          <div class="text-sm font-medium text-gray-900">
+                            陈女士
+                          </div>
+                          <div class="text-xs text-gray-500">137****6789</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">四季养生套餐</div>
+                      <div class="text-xs text-gray-500">120分钟</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">2023-05-11</div>
+                      <div class="text-xs text-gray-500">14:00-16:00</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        ¥598.00
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center text-sm text-gray-900">
+                        <i class="fa fa-weixin text-green-500 mr-1"></i>
+                        微信支付
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="status-badge bg-completed/10 text-completed">
+                        <i class="fa fa-check-circle mr-1"></i> 已完成
+                      </span>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-gray-500 hover:text-gray-700 mr-3">
+                        详情
+                      </button>
+                      <button class="text-gray-500 hover:text-gray-700">
+                        凭证
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 分页 -->
+            <div
+              class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+              <div class="flex-1 flex justify-between sm:hidden">
+                <button
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                  上一页
+                </button>
+                <button
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                  下一页
+                </button>
+              </div>
+              <div
+                class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <p class="text-sm text-gray-700">
+                    显示第 <span class="font-medium">1</span> 到
+                    <span class="font-medium">5</span> 条，共
+                    <span class="font-medium">141</span> 条结果
+                  </p>
+                </div>
+                <div>
+                  <nav
+                    class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                    aria-label="Pagination">
+                    <button
+                      class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                      <span class="sr-only">上一页</span>
+                      <i class="fa fa-chevron-left text-xs"></i>
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
+                      1
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                      2
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                      3
+                    </button>
+                    <span
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                      ...
+                    </span>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                      29
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                      <span class="sr-only">下一页</span>
+                      <i class="fa fa-chevron-right text-xs"></i>
+                    </button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- 订单详情模态框 (默认隐藏) -->
+    <div
+      id="orderDetailModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div
+        class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+        <div
+          class="p-6 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
+          <h3 class="text-lg font-bold">订单详情</h3>
+          <button
+            id="closeDetailModal"
+            class="text-gray-500 hover:text-gray-700">
+            <i class="fa fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <!-- 订单基本信息 -->
+          <div class="mb-6 pb-6 border-b border-gray-100">
+            <div
+              class="flex flex-col md:flex-row md:items-center justify-between mb-4">
               <div>
-                <p class="text-sm text-gray-700">
-                  显示第 <span class="font-medium">1</span> 到 <span class="font-medium">5</span> 条，共 <span class="font-medium">141</span> 条结果
+                <h4 class="text-base font-semibold">ORD20230512001</h4>
+                <p class="text-sm text-gray-500">
+                  下单时间：2023-05-12 09:24:36
                 </p>
               </div>
+              <span
+                class="status-badge bg-pending/10 text-pending mt-2 md:mt-0">
+                <i class="fa fa-clock-o mr-1"></i> 待确认
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                  <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    <span class="sr-only">上一页</span>
-                    <i class="fa fa-chevron-left text-xs"></i>
-                  </button>
-                  <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
-                    1
-                  </button>
-                  <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    2
-                  </button>
-                  <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    3
-                  </button>
-                  <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                    ...
-                  </span>
-                  <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    29
-                  </button>
-                  <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    <span class="sr-only">下一页</span>
-                    <i class="fa fa-chevron-right text-xs"></i>
-                  </button>
-                </nav>
+                <h5 class="text-sm font-medium text-gray-500 mb-2">客户信息</h5>
+                <div class="flex items-center">
+                  <div class="h-12 w-12 flex-shrink-0">
+                    <img
+                      class="h-12 w-12 rounded-full object-cover"
+                      src="https://picsum.photos/id/1027/60/60"
+                      alt="客户头像" />
+                  </div>
+                  <div class="ml-3">
+                    <div class="text-base font-medium text-gray-900">
+                      李女士
+                    </div>
+                    <div class="text-sm text-gray-500">138****5678</div>
+                    <div class="text-sm text-gray-500">会员等级：白银会员</div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h5 class="text-sm font-medium text-gray-500 mb-2">支付信息</h5>
+                <div class="space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-sm text-gray-600">支付方式：</span>
+                    <span class="text-sm font-medium flex items-center">
+                      <i class="fa fa-weixin text-green-500 mr-1"></i> 微信支付
+                    </span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-sm text-gray-600">支付状态：</span>
+                    <span class="text-sm font-medium text-green-600"
+                      >已支付</span
+                    >
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-sm text-gray-600">支付时间：</span>
+                    <span class="text-sm font-medium">2023-05-12 09:25:10</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-sm text-gray-600">交易流水号：</span>
+                    <span class="text-sm font-medium"
+                      >4200001856202305127589123456</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 套餐信息 -->
+          <div class="mb-6 pb-6 border-b border-gray-100">
+            <h5 class="text-sm font-medium text-gray-500 mb-3">套餐信息</h5>
+            <div
+              class="flex flex-col md:flex-row border rounded-lg overflow-hidden">
+              <div class="w-full md:w-1/4">
+                <img
+                  src="https://picsum.photos/id/237/300/200"
+                  alt="全身推拿套餐"
+                  class="w-full h-full object-cover" />
+              </div>
+              <div class="w-full md:w-3/4 p-4">
+                <h4 class="text-base font-semibold mb-1">全身推拿套餐</h4>
+                <p class="text-sm text-gray-600 mb-3">
+                  包含肩颈推拿、背部推拿、腿部放松，缓解肌肉疲劳，促进血液循环
+                </p>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">套餐时长：</span>
+                    <span class="font-medium">90分钟</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">原价：</span>
+                    <span class="font-medium line-through text-gray-500"
+                      >¥368.00</span
+                    >
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">优惠价：</span>
+                    <span class="font-medium text-primary">¥298.00</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">服务医师：</span>
+                    <span class="font-medium">刘医师</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 预约信息 -->
+          <div class="mb-6 pb-6 border-b border-gray-100">
+            <h5 class="text-sm font-medium text-gray-500 mb-3">预约信息</h5>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm text-gray-600">预约日期</span>
+                  <span class="text-sm font-medium">2023-05-15</span>
+                </div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm text-gray-600">预约时间</span>
+                  <span class="text-sm font-medium">15:00-16:30</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-600">服务房间</span>
+                  <span class="text-sm font-medium">理疗室 03</span>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm text-gray-600">客户备注</span>
+                </div>
+                <p class="text-sm font-medium">肩颈部位不适，希望重点按摩</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 订单状态记录 -->
+          <div>
+            <h5 class="text-sm font-medium text-gray-500 mb-3">订单状态记录</h5>
+            <div class="space-y-4">
+              <div class="flex">
+                <div class="flex flex-col items-center mr-4">
+                  <div
+                    class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 z-10">
+                    <i class="fa fa-check text-sm"></i>
+                  </div>
+                  <div class="w-0.5 h-full bg-gray-200 mt-1 -mb-8"></div>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">订单创建，已支付</p>
+                  <p class="text-xs text-gray-500 mt-1">2023-05-12 09:25:10</p>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="flex flex-col items-center mr-4">
+                  <div
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 z-10">
+                    <i class="fa fa-clock-o text-sm"></i>
+                  </div>
+                  <div class="w-0.5 h-full bg-gray-200 mt-1 -mb-8"></div>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">等待商家确认</p>
+                  <p class="text-xs text-gray-500 mt-1">待处理</p>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="flex flex-col items-center mr-4">
+                  <div
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 z-10">
+                    <i class="fa fa-check-circle text-sm"></i>
+                  </div>
+                  <div class="w-0.5 h-full bg-gray-200 mt-1 -mb-8"></div>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">订单已确认</p>
+                  <p class="text-xs text-gray-500 mt-1">待处理</p>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="flex flex-col items-center mr-4">
+                  <div
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 z-10">
+                    <i class="fa fa-thumbs-up text-sm"></i>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">服务已完成</p>
+                  <p class="text-xs text-gray-500 mt-1">待处理</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </main>
-    </div>
-  </div>
-  
-  <!-- 订单详情模态框 (默认隐藏) -->
-  <div id="orderDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-      <div class="p-6 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
-        <h3 class="text-lg font-bold">订单详情</h3>
-        <button id="closeDetailModal" class="text-gray-500 hover:text-gray-700">
-          <i class="fa fa-times text-xl"></i>
-        </button>
-      </div>
-      
-      <div class="p-6">
-        <!-- 订单基本信息 -->
-        <div class="mb-6 pb-6 border-b border-gray-100">
-          <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
-            <div>
-              <h4 class="text-base font-semibold">ORD20230512001</h4>
-              <p class="text-sm text-gray-500">下单时间：2023-05-12 09:24:36</p>
-            </div>
-            <span class="status-badge bg-pending/10 text-pending mt-2 md:mt-0">
-              <i class="fa fa-clock-o mr-1"></i> 待确认
-            </span>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h5 class="text-sm font-medium text-gray-500 mb-2">客户信息</h5>
-              <div class="flex items-center">
-                <div class="h-12 w-12 flex-shrink-0">
-                  <img class="h-12 w-12 rounded-full object-cover" src="https://picsum.photos/id/1027/60/60" alt="客户头像">
-                </div>
-                <div class="ml-3">
-                  <div class="text-base font-medium text-gray-900">李女士</div>
-                  <div class="text-sm text-gray-500">138****5678</div>
-                  <div class="text-sm text-gray-500">会员等级：白银会员</div>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h5 class="text-sm font-medium text-gray-500 mb-2">支付信息</h5>
-              <div class="space-y-2">
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">支付方式：</span>
-                  <span class="text-sm font-medium flex items-center">
-                    <i class="fa fa-weixin text-green-500 mr-1"></i> 微信支付
-                  </span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">支付状态：</span>
-                  <span class="text-sm font-medium text-green-600">已支付</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">支付时间：</span>
-                  <span class="text-sm font-medium">2023-05-12 09:25:10</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-sm text-gray-600">交易流水号：</span>
-                  <span class="text-sm font-medium">4200001856202305127589123456</span>
-                </div>
-              </div>
-            </div>
-          </div>
+
+        <div
+          class="p-6 border-t border-gray-200 flex justify-end space-x-3 sticky bottom-0 bg-white z-10">
+          <button
+            id="cancelDetailModal"
+            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+            关闭
+          </button>
+          <button
+            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            确认订单
+          </button>
         </div>
-        
-        <!-- 套餐信息 -->
-        <div class="mb-6 pb-6 border-b border-gray-100">
-          <h5 class="text-sm font-medium text-gray-500 mb-3">套餐信息</h5>
-          <div class="flex flex-col md:flex-row border rounded-lg overflow-hidden">
-            <div class="w-full md:w-1/4">
-              <img src="https://picsum.photos/id/237/300/200" alt="全身推拿套餐" class="w-full h-full object-cover">
-            </div>
-            <div class="w-full md:w-3/4 p-4">
-              <h4 class="text-base font-semibold mb-1">全身推拿套餐</h4>
-              <p class="text-sm text-gray-600 mb-3">包含肩颈推拿、背部推拿、腿部放松，缓解肌肉疲劳，促进血液循环</p>
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">套餐时长：</span>
-                  <span class="font-medium">90分钟</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">原价：</span>
-                  <span class="font-medium line-through text-gray-500">¥368.00</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">优惠价：</span>
-                  <span class="font-medium text-primary">¥298.00</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">服务医师：</span>
-                  <span class="font-medium">刘医师</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 预约信息 -->
-        <div class="mb-6 pb-6 border-b border-gray-100">
-          <h5 class="text-sm font-medium text-gray-500 mb-3">预约信息</h5>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-sm text-gray-600">预约日期</span>
-                <span class="text-sm font-medium">2023-05-15</span>
-              </div>
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-sm text-gray-600">预约时间</span>
-                <span class="text-sm font-medium">15:00-16:30</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">服务房间</span>
-                <span class="text-sm font-medium">理疗室 03</span>
-              </div>
-            </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-sm text-gray-600">客户备注</span>
-              </div>
-              <p class="text-sm font-medium">肩颈部位不适，希望重点按摩</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 订单状态记录 -->
-        <div>
-          <h5 class="text-sm font-medium text-gray-500 mb-3">订单状态记录</h5>
-          <div class="space-y-4">
-            <div class="flex">
-              <div class="flex flex-col items-center mr-4">
-                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 z-10">
-                  <i class="fa fa-check text-sm"></i>
-                </div>
-                <div class="w-0.5 h-full bg-gray-200 mt-1 -mb-8"></div>
-              </div>
-              <div>
-                <p class="text-sm font-medium">订单创建，已支付</p>
-                <p class="text-xs text-gray-500 mt-1">2023-05-12 09:25:10</p>
-              </div>
-            </div>
-            
-            <div class="flex">
-              <div class="flex flex-col items-center mr-4">
-                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 z-10">
-                  <i class="fa fa-clock-o text-sm"></i>
-                </div>
-                <div class="w-0.5 h-full bg-gray-200 mt-1 -mb-8"></div>
-              </div>
-              <div>
-                <p class="text-sm font-medium">等待商家确认</p>
-                <p class="text-xs text-gray-500 mt-1">待处理</p>
-              </div>
-            </div>
-            
-            <div class="flex">
-              <div class="flex flex-col items-center mr-4">
-                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 z-10">
-                  <i class="fa fa-check-circle text-sm"></i>
-                </div>
-                <div class="w-0.5 h-full bg-gray-200 mt-1 -mb-8"></div>
-              </div>
-              <div>
-                <p class="text-sm font-medium">订单已确认</p>
-                <p class="text-xs text-gray-500 mt-1">待处理</p>
-              </div>
-            </div>
-            
-            <div class="flex">
-              <div class="flex flex-col items-center mr-4">
-                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 z-10">
-                  <i class="fa fa-thumbs-up text-sm"></i>
-                </div>
-              </div>
-              <div>
-                <p class="text-sm font-medium">服务已完成</p>
-                <p class="text-xs text-gray-500 mt-1">待处理</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="p-6 border-t border-gray-200 flex justify-end space-x-3 sticky bottom-0 bg-white z-10">
-        <button id="cancelDetailModal" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">关闭</button>
-        <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">确认订单</button>
       </div>
     </div>
-  </div>
-  
-  <!-- JavaScript -->
-  <script>
-    // 页面加载完成后初始化
-    document.addEventListener('DOMContentLoaded', function() {
-      // 初始化订单趋势图表
-      const ctx = document.getElementById('orderTrendChart').getContext('2d');
-      const orderChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-          datasets: [
-            {
-              label: '订单数量',
-              data: [18, 25, 22, 30, 28, 42, 36],
-              borderColor: '#8B5A2B',
-              backgroundColor: 'rgba(139, 90, 43, 0.1)',
-              tension: 0.3,
-              fill: true,
-              yAxisID: 'y'
-            },
-            {
-              label: '订单金额',
-              data: [5200, 7100, 6500, 8800, 8200, 12500, 10800],
-              borderColor: '#4A6741',
-              backgroundColor: 'transparent',
-              tension: 0.3,
-              fill: false,
-              yAxisID: 'y1'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: {
-            mode: 'index',
-            intersect: false,
+
+    <!-- JavaScript -->
+    <script>
+      // 页面加载完成后初始化
+      document.addEventListener('DOMContentLoaded', function () {
+        // 初始化订单趋势图表
+        const ctx = document.getElementById('orderTrendChart').getContext('2d');
+        const orderChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            datasets: [
+              {
+                label: '订单数量',
+                data: [18, 25, 22, 30, 28, 42, 36],
+                borderColor: '#8B5A2B',
+                backgroundColor: 'rgba(139, 90, 43, 0.1)',
+                tension: 0.3,
+                fill: true,
+                yAxisID: 'y',
+              },
+              {
+                label: '订单金额',
+                data: [5200, 7100, 6500, 8800, 8200, 12500, 10800],
+                borderColor: '#4A6741',
+                backgroundColor: 'transparent',
+                tension: 0.3,
+                fill: false,
+                yAxisID: 'y1',
+              },
+            ],
           },
-          scales: {
-            y: {
-              type: 'linear',
-              display: true,
-              position: 'left',
-              title: {
-                display: true,
-                text: '订单数量'
-              },
-              beginAtZero: true
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false,
             },
-            y1: {
-              type: 'linear',
-              display: true,
-              position: 'right',
-              title: {
+            scales: {
+              y: {
+                type: 'linear',
                 display: true,
-                text: '订单金额 (元)'
+                position: 'left',
+                title: {
+                  display: true,
+                  text: '订单数量',
+                },
+                beginAtZero: true,
               },
-              beginAtZero: true,
-              grid: {
-                drawOnChartArea: false
-              }
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                  display: true,
+                  text: '订单金额 (元)',
+                },
+                beginAtZero: true,
+                grid: {
+                  drawOnChartArea: false,
+                },
+              },
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
             },
-            x: {
-              grid: {
-                display: false
-              }
+          },
+        });
+
+        // 模态框控制
+        const modal = document.getElementById('orderDetailModal');
+        const detailButtons = document.querySelectorAll(
+          'button:contains("详情")',
+        );
+        const closeModal = document.getElementById('closeDetailModal');
+        const cancelModal = document.getElementById('cancelDetailModal');
+
+        // 为所有详情按钮添加点击事件
+        detailButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+          });
+        });
+
+        // 关闭模态框
+        function hideModal() {
+          modal.classList.add('hidden');
+          document.body.style.overflow = 'auto';
+        }
+
+        closeModal.addEventListener('click', hideModal);
+        cancelModal.addEventListener('click', hideModal);
+
+        // 点击模态框外部关闭
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            hideModal();
+          }
+        });
+
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.querySelector('aside');
+
+        if (mobileMenuBtn && sidebar) {
+          mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('z-50');
+          });
+        }
+
+        // 订单状态操作按钮事件
+        const confirmButtons = document.querySelectorAll(
+          'button:contains("确认")',
+        );
+        const completeButtons = document.querySelectorAll(
+          'button:contains("完成")',
+        );
+        const cancelOrderButtons = document.querySelectorAll(
+          'button:contains("取消")',
+        );
+
+        // 确认订单按钮
+        confirmButtons.forEach((button) => {
+          button.addEventListener('click', function () {
+            if (confirm('确定要确认此订单吗？')) {
+              // 这里添加确认订单的逻辑
+              alert('订单已确认');
             }
-          }
-        }
-      });
-      
-      // 模态框控制
-      const modal = document.getElementById('orderDetailModal');
-      const detailButtons = document.querySelectorAll('button:contains("详情")');
-      const closeModal = document.getElementById('closeDetailModal');
-      const cancelModal = document.getElementById('cancelDetailModal');
-      
-      // 为所有详情按钮添加点击事件
-      detailButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          modal.classList.remove('hidden');
-          document.body.style.overflow = 'hidden';
+          });
+        });
+
+        // 完成订单按钮
+        completeButtons.forEach((button) => {
+          button.addEventListener('click', function () {
+            if (confirm('确定要标记此订单为已完成吗？')) {
+              // 这里添加完成订单的逻辑
+              alert('订单已标记为完成');
+            }
+          });
+        });
+
+        // 取消订单按钮
+        cancelOrderButtons.forEach((button) => {
+          button.addEventListener('click', function () {
+            if (confirm('确定要取消此订单吗？这将可能需要进行退款操作。')) {
+              // 这里添加取消订单的逻辑
+              alert('订单已取消');
+            }
+          });
         });
       });
-      
-      // 关闭模态框
-      function hideModal() {
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-      }
-      
-      closeModal.addEventListener('click', hideModal);
-      cancelModal.addEventListener('click', hideModal);
-      
-      // 点击模态框外部关闭
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          hideModal();
-        }
-      });
-      
-      // 移动端菜单切换
-      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-      const sidebar = document.querySelector('aside');
-      
-      if (mobileMenuBtn && sidebar) {
-        mobileMenuBtn.addEventListener('click', () => {
-          sidebar.classList.toggle('hidden');
-          sidebar.classList.toggle('fixed');
-          sidebar.classList.toggle('z-50');
-        });
-      }
-      
-      // 订单状态操作按钮事件
-      const confirmButtons = document.querySelectorAll('button:contains("确认")');
-      const completeButtons = document.querySelectorAll('button:contains("完成")');
-      const cancelOrderButtons = document.querySelectorAll('button:contains("取消")');
-      
-      // 确认订单按钮
-      confirmButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          if (confirm('确定要确认此订单吗？')) {
-            // 这里添加确认订单的逻辑
-            alert('订单已确认');
-          }
-        });
-      });
-      
-      // 完成订单按钮
-      completeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          if (confirm('确定要标记此订单为已完成吗？')) {
-            // 这里添加完成订单的逻辑
-            alert('订单已标记为完成');
-          }
-        });
-      });
-      
-      // 取消订单按钮
-      cancelOrderButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          if (confirm('确定要取消此订单吗？这将可能需要进行退款操作。')) {
-            // 这里添加取消订单的逻辑
-            alert('订单已取消');
-          }
-        });
-      });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
-    

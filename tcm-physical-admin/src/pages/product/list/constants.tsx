@@ -75,7 +75,7 @@ export const tableData = [
     productInfo: 'Product 4 Info',
     photo: 'https://picsum.photos/200/300',
     category: 'Category 4',
-    price: '￥400.00', 
+    price: '￥400.00',
     stock: 40,
     status: 'Active',
     description: 'Product 4 Description',
@@ -88,7 +88,7 @@ export const tableData = [
     category: 'Category 5',
     price: '￥500.00',
     stock: 50,
-    status: 'Active', 
+    status: 'Active',
     description: 'Product 5 Description',
   },
   {
