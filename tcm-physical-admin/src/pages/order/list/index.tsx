@@ -37,7 +37,7 @@ const cardItems = [
     title: '待更新套餐',
     value: 2,
     trend: {
-      percentage: 10,
+      percentage: 11,
       isIncrease: true,
       compareText: '较上月增加',
     },
