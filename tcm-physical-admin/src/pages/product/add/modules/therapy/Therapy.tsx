@@ -46,7 +46,7 @@ const SubmitSuccessUI = ({ isSuccess }: { isSuccess: boolean }) => {
     return null;
   }
   return (
-    <Alert className='bg-green-50 border-green-200 text-green-800 mb-6'>
+    <Alert className='mb-6 border-green-200 bg-green-50 text-green-800'>
       <CheckCircle2 size={18} className='mr-2' />
       产品信息提交成功！
     </Alert>
@@ -58,7 +58,7 @@ const NavigationButtons = () => {
     useFormTherapy();
 
   return (
-    <div className='flex justify-between mt-10'>
+    <div className='mt-10 flex justify-between'>
       <Button
         variant='outline'
         onClick={goToPrevTab}
@@ -74,7 +74,7 @@ const NavigationButtons = () => {
           {isSubmitting ? (
             <>
               <svg
-                className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
+                className='mr-2 -ml-1 h-4 w-4 animate-spin text-white'
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
                 viewBox='0 0 24 24'>
@@ -128,27 +128,23 @@ const ProductFormStepIndicator = () => {
     },
   ];
   return (
-    <div className='flex items-center justify-between mb-8 relative'>
-      <div className='absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2 z-0'></div>
+    <div className='relative mb-8 flex items-center justify-between'>
+      <div className='absolute top-1/2 right-0 left-0 z-0 h-1 -translate-y-1/2 bg-gray-200'></div>
       <div
-        className='absolute top-1/2 left-0 h-1 bg-primary -translate-y-1/2 z-10'
+        className='bg-primary absolute top-1/2 left-0 z-10 h-1 -translate-y-1/2'
         style={{
           width: `${(['basic', 'pricing', 'details', 'settings'].indexOf(activeTab) + 1) * 25}%`,
         }}></div>
       {tabs.map((step, index) => (
         <div key={step.id} className='relative z-20 flex flex-col items-center'>
           <div
-            className={`
-                    w-10 h-10 rounded-full flex items-center justify-center mb-2
-                    ${
-                      activeTab === step.id ||
-                      ['basic', 'pricing', 'details', 'settings'].indexOf(
-                        activeTab,
-                      ) > index
-                        ? 'bg-primary text-white'
-                        : 'bg-gray-200 text-gray-600'
-                    }
-                  `}>
+            className={`mb-2 flex h-10 w-10 items-center justify-center rounded-full ${
+              activeTab === step.id ||
+              ['basic', 'pricing', 'details', 'settings'].indexOf(activeTab) >
+                index
+                ? 'bg-primary text-white'
+                : 'bg-gray-200 text-gray-600'
+            } `}>
             {step.icon}
           </div>
           <span className='text-sm font-medium'>{step.label}</span>

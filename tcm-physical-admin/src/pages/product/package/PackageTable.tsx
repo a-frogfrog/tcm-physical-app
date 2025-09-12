@@ -22,7 +22,7 @@ import { useProductPackageData } from './useProductPackage';
 
 const PackageTableFilter = () => {
   return (
-    <div className='flex justify-between items-center mb-4'>
+    <div className='mb-4 flex items-center justify-between'>
       <h3 className='text-lg font-semibold'>套餐列表</h3>
       <div className='flex items-center space-x-3'>
         <Select>
@@ -111,7 +111,7 @@ export default function PackageTable() {
               <TableCell>
                 <div>
                   <span>{pkg.price}</span>
-                  <span className='text-sm text-gray-500 ml-1'>
+                  <span className='ml-1 text-sm text-gray-500'>
                     {pkg.originalPrice}
                   </span>
                 </div>
@@ -121,7 +121,7 @@ export default function PackageTable() {
                 {pkg.items.map((item, idx) => (
                   <span
                     key={idx}
-                    className='inline-block px-2 py-1 text-xs bg-gray-100 rounded mr-1 mb-1'>
+                    className='mr-1 mb-1 inline-block rounded bg-gray-100 px-2 py-1 text-xs'>
                     {item}
                   </span>
                 ))}
@@ -129,7 +129,7 @@ export default function PackageTable() {
               <TableCell>{pkg.sales}</TableCell>
               <TableCell>
                 <span
-                  className={`px-2 py-1 text-xs rounded-full ${
+                  className={`rounded-full px-2 py-1 text-xs ${
                     pkg.status === '启用'
                       ? 'bg-green-100 text-green-800'
                       : 'bg-gray-100 text-gray-800'

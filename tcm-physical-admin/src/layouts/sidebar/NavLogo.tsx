@@ -14,12 +14,12 @@ export function NavLogo({ item }: NavLogoProps) {
   }
 
   return (
-    <div className='flex gap-2 items-center data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
+    <div className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground flex items-center gap-2'>
       <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
         <item.logo className='size-4' />
       </div>
       <div className='grid flex-1 text-left text-sm leading-tight'>
-        <span className='truncate font-medium text-lg font-ali-mama'>
+        <span className='font-ali-mama truncate text-lg font-medium'>
           {item.name}
         </span>
         <span className='truncate text-xs'>{item.plan}</span>

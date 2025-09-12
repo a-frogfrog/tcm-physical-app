@@ -24,7 +24,7 @@ const StatCard = ({
 }: StatCardProps) => {
   return (
     <article
-      className={`bg-white rounded-md shadow p-4 flex justify-end ${className}`}>
+      className={`flex justify-end rounded-md bg-white p-4 shadow ${className}`}>
       <div className='flex-1'>
         <h2 className='text-gray-500'>{title}</h2>
         <strong className='text-4xl'>{value}</strong>
@@ -35,7 +35,7 @@ const StatCard = ({
       </div>
       <div
         className={cn(
-          'flex items-center h-fit p-2 rounded-full w-fit',
+          'flex h-fit w-fit items-center rounded-full p-2',
           iconColor,
         )}>
         {Icon && <Icon />}

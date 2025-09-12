@@ -7,7 +7,7 @@ import { memo } from 'react';
 
 const ProductFormHeader = () => {
   return (
-    <div className='flex justify-between items-center mb-8'>
+    <div className='mb-8 flex items-center justify-between'>
       <h1 className='text-2xl font-bold text-gray-900'>添加中医理疗产品</h1>
       <div className='flex space-x-2'>
         <Button variant='ghost' size='sm' className='text-gray-600'>
@@ -23,7 +23,7 @@ const ProductFormHeader = () => {
 
 const ProductFormUI = () => {
   return (
-    <Card className='w-full h-full max-w-7xl mx-auto p-6'>
+    <Card className='mx-auto h-full w-full max-w-7xl p-6'>
       <ProductFormHeader />
       {/* 产品类型选择 */}
       <div className='mb-8'>

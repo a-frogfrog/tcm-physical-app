@@ -7,10 +7,10 @@ interface PageTitleProps {
 
 const PageTitle = ({ title, desc, actions, className }: PageTitleProps) => {
   return (
-    <section className={`flex items-center justify-end flex-wrap ${className}`}>
+    <section className={`flex flex-wrap items-center justify-end ${className}`}>
       <article className='flex-1'>
         <h1 className='text-[clamp(1.25rem,3vw,1.75rem)] font-bold'>{title}</h1>
-        <p className='text-gray-500 mt-1'>{desc}</p>
+        <p className='mt-1 text-gray-500'>{desc}</p>
       </article>
       <div>{actions}</div>
     </section>

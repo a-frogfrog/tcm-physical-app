@@ -18,7 +18,7 @@ const ProductFormBasic = () => {
   return (
     <>
       {/* <TabsContent value='basic' className='mt-0 space-y-6'> */}
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         <div className='space-y-2'>
           <Label htmlFor='productName' className='text-base font-medium'>
             产品名称 <span className='text-red-500'>*</span>
@@ -77,7 +77,7 @@ const ProductFormBasic = () => {
               className='w-full pr-10'
               type='number'
             />
-            <span className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500'>
+            <span className='absolute top-1/2 right-3 -translate-y-1/2 text-gray-500'>
               分钟
             </span>
           </div>
@@ -96,13 +96,13 @@ const ProductFormBasic = () => {
 const ProductFormPricing = memo(() => {
   return (
     <>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         <div className='space-y-2'>
           <Label htmlFor='originalPrice' className='text-base font-medium'>
             原价 (元) <span className='text-red-500'>*</span>
           </Label>
           <div className='relative'>
-            <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>
+            <span className='absolute top-1/2 left-3 -translate-y-1/2 text-gray-500'>
               ¥
             </span>
             <Input
@@ -122,7 +122,7 @@ const ProductFormPricing = memo(() => {
             会员价 (元)
           </Label>
           <div className='relative'>
-            <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>
+            <span className='absolute top-1/2 left-3 -translate-y-1/2 text-gray-500'>
               ¥
             </span>
             <Input
@@ -187,7 +187,7 @@ const ProductFormDetails = () => {
         <Textarea
           id='productIntro'
           placeholder='简要介绍产品特点和功效...'
-          className='w-full min-h-[100px]'
+          className='min-h-[100px] w-full'
         />
         <p className='text-sm text-gray-500'>简短描述，将显示在产品列表页</p>
       </div>
@@ -196,9 +196,9 @@ const ProductFormDetails = () => {
         <Label htmlFor='detailedDescription' className='text-base font-medium'>
           详细说明
         </Label>
-        <div className='border rounded-md overflow-hidden'>
+        <div className='overflow-hidden rounded-md border'>
           {/* 富文本编辑器模拟 */}
-          <div className='border-b p-2 bg-gray-50 flex items-center space-x-2'>
+          <div className='flex items-center space-x-2 border-b bg-gray-50 p-2'>
             <Button variant='ghost' size='sm'>
               B
             </Button>
@@ -222,7 +222,7 @@ const ProductFormDetails = () => {
           <Textarea
             id='detailedDescription'
             placeholder='详细介绍产品的功效、适应症、操作流程、注意事项等...'
-            className='w-full min-h-[200px] border-0 focus-visible:ring-0 p-3'
+            className='min-h-[200px] w-full border-0 p-3 focus-visible:ring-0'
           />
         </div>
         <p className='text-sm text-gray-500'>
@@ -232,7 +232,7 @@ const ProductFormDetails = () => {
 
       <div className='space-y-3'>
         <Label className='text-base font-medium'>适合人群</Label>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3'>
+        <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3'>
           {[
             '亚健康人群',
             '中老年人群',
@@ -257,7 +257,7 @@ const ProductFormDetails = () => {
 const ProductFormSettings = () => {
   return (
     <>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         <div className='space-y-2'>
           <Label htmlFor='productStatus' className='text-base font-medium'>
             产品状态 <span className='text-red-500'>*</span>
@@ -299,7 +299,7 @@ const ProductFormSettings = () => {
         <Textarea
           id='reservationTip'
           placeholder='例如：请提前24小时预约，预约后如需取消请提前12小时通知...'
-          className='w-full min-h-[100px]'
+          className='min-h-[100px] w-full'
         />
         <p className='text-sm text-gray-500'>
           显示在预约页面，提醒客户注意事项
@@ -313,7 +313,7 @@ const ProductFormSettings = () => {
         <Textarea
           id='internalRemark'
           placeholder='填写内部管理备注信息...'
-          className='w-full min-h-[100px]'
+          className='min-h-[100px] w-full'
         />
       </div>
     </>

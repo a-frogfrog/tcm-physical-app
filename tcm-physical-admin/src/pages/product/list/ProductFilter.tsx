@@ -21,8 +21,8 @@ const ProductFilter = ({ className, children }: ProductFilterProps) => {
   const actions = useChildren(children, ProductFilterActions);
 
   return (
-    <form className={`bg-white my-4 p-4 rounded-md shadow  ${className}`}>
-      <article className='flex flex-wrap md:flex-nowrap justify-between gap-6'>
+    <form className={`my-4 rounded-md bg-white p-4 shadow ${className}`}>
+      <article className='flex flex-wrap justify-between gap-6 md:flex-nowrap'>
         {items}
       </article>
       {actions}
@@ -35,7 +35,7 @@ const ProductFilterActions = ({
   onApply,
 }: Partial<ProductFilterActionsProps>) => {
   return (
-    <section className='py-2 mt-5 flex justify-end gap-2'>
+    <section className='mt-5 flex justify-end gap-2 py-2'>
       <Button type='reset' variant='outline' onClick={onReset}>
         重置
       </Button>
@@ -82,7 +82,7 @@ const ProductFilterItem = ({
     <section className='w-full'>
       <label
         aria-label={name}
-        className='text-gray-700 px-1 py-1 font-inter text-sm'>
+        className='font-inter px-1 py-1 text-sm text-gray-700'>
         {name}
       </label>
       {element ? element : <SelectFilter />}

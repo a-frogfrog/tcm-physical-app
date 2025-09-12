@@ -51,7 +51,7 @@ const Layout = ({ className, children }: React.ComponentProps<'div'>) => {
     <div
       role='layout'
       aria-label='Layout'
-      className={`w-full max-h-screen overflow-auto relative ${className}`}
+      className={`relative max-h-screen w-full overflow-auto ${className}`}
       onScroll={(e) => debouncedHandleScroll(e.currentTarget.scrollTop)}>
       {children}
     </div>
@@ -65,7 +65,7 @@ const LayoutHeader = ({ children }: { children: React.ReactNode }) => {
     <header
       aria-label='Header'
       role='header'
-      className={clsx('top-0 sticky backdrop-blur-xl duration-150', {
+      className={clsx('sticky top-0 backdrop-blur-xl duration-150', {
         'shadow-md': headerShadow,
       })}>
       {children}

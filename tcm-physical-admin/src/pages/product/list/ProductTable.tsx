@@ -76,7 +76,7 @@ const ProductPagination = () => {
 
 export default function ProductTable({ data }: { data: Product[] }) {
   return (
-    <section className='bg-white p-4 rounded-md shadow-md mt-4'>
+    <section className='mt-4 rounded-md bg-white p-4 shadow-md'>
       <Table>
         <TableCaption>A list of your products.</TableCaption>
         <TableHeader>
@@ -101,7 +101,7 @@ export default function ProductTable({ data }: { data: Product[] }) {
               </TableCell>
               <TableCell>
                 <img
-                  className='w-16 h-16 rounded-md'
+                  className='h-16 w-16 rounded-md'
                   src={item.photo}
                   alt={item.productName}
                 />

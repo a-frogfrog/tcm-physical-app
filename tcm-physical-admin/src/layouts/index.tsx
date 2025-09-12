@@ -14,7 +14,7 @@ import { FOOTER } from '#/constants';
 
 const AppMain = () => {
   return (
-    <div className=' h-full p-4 transition-all transition-discrete duration-300'>
+    <div className='h-full p-4 transition-all transition-discrete duration-300'>
       <Outlet />
     </div>
   );
