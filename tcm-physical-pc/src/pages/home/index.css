@@ -1,4 +1,4 @@
-/* 首页样式 */
+/* 首页样式 - 中医理疗馆风格 */
 .home-container {
   padding: 0;
 }
@@ -38,6 +38,18 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  border: 1px solid #f5f2eb; /* 浅棕色边框，体现中医风格 */
+}
+
+/* 卡片标题样式优化 */
+.content-card .ant-card-head {
+  background-color: #fcfaf6; /* 淡米色背景 */
+  border-bottom: 1px solid #f0e8d9;
+}
+
+.content-card .ant-card-head-title {
+  color: #8B5A2B; /* 中医棕色标题 */
+  font-weight: 600;
 }
 
 .card-header-actions {
@@ -47,7 +59,7 @@
 }
 
 .view-all-link {
-  color: #8B5A2B;
+  color: #8B5A2B; /* 中医风格的棕色系 */
   padding: 0;
   height: auto;
   line-height: normal;
@@ -90,10 +102,144 @@
   font-size: 14px;
 }
 
-/* 订单表格样式 */
-.order-amount {
-  color: #fa8c16;
-  font-weight: 500;
+/* 科室医生空闲状况模块样式 - 中医理疗馆风格（优化版） */
+.department-item {
+  border-bottom: 1px dashed #e6d9c6; /* 保留中医风格虚线，微调色调更柔和 */
+  padding: 20px 16px; /* 增加左右内边距，避免内容贴边 */
+  margin: 0 -16px; /* 抵消卡片内边距，让 hover 背景全屏覆盖 */
+  transition: all 0.3s ease; /* 统一过渡效果，提升流畅度 */
+  border-radius: 4px; /* 轻微圆角，增强柔和感 */
+}
+
+.department-item:last-child {
+  border-bottom: none;
+  margin-bottom: 8px; /* 最后一项底部留空，避免贴底 */
+}
+
+/* 鼠标悬停效果优化 - 模拟宣纸质感 */
+.department-item:hover {
+  background-color: #fcfaf6; 
+  box-shadow: 0 2px 6px rgba(139, 90, 43, 0.05); /* 轻微阴影，增强层次感 */
+  transform: translateX(2px); /* 细微右移，提升交互反馈 */
+}
+
+.department-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px; /* 增加间距，区分科室与医生列表 */
+  padding-bottom: 4px; /* 底部留白，避免与医生列表拥挤 */
+}
+
+.department-name {
+  font-weight: 600;
+  color: #6d4c2f; /* 深棕色保持中医风格 */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 增加图标与文字间距，提升呼吸感 */
+  font-size: 16px; /* 字号微调，增强识别度 */
+  letter-spacing: 0.5px; /* 轻微字间距，符合中文阅读习惯 */
+}
+
+/* 科室图标样式优化 - 增强中医辨识度 */
+.department-name .anticon {
+  color: #8B5A2B;
+  font-size: 18px; /* 图标放大，增强视觉引导 */
+  background-color: #f5f2eb; /* 图标背景，模拟印章质感 */
+  width: 24px;
+  height: 24px;
+  border-radius: 50%; /* 圆形背景，更显精致 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 空闲医师徽章优化 - 突出核心信息 */
+.department-header .ant-badge {
+  font-size: 13px;
+  padding: 2px 8px;
+  background-color: #f5f2eb; /* 徽章背景与图标呼应 */
+  border: 1px solid #e6d9c6; /* 边框增强质感 */
+  border-radius: 12px; /* 圆角徽章，更显柔和 */
+}
+
+.department-header .ant-badge-status-text {
+  color: #6d4c2f !important; /* 徽章文字色统一深棕色 */
+}
+
+.department-header .ant-badge-count {
+  background-color: #8B5A2B !important; /* 数字背景色强化中医风格 */
+}
+
+.doctor-list {
+  padding-left: 34px; /* 增加缩进，强化层级关系 */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 用 gap 统一医生条目间距，比 margin 更稳定 */
+}
+
+.doctor-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  padding: 6px 0; /* 增加上下内边距，提升点击区域舒适度 */
+  color: #5d4037; /* 棕色调文字保持统一 */
+  transition: background-color 0.2s ease; /* 医生条目单独 hover 效果 */
+  border-radius: 2px;
+  padding-right: 4px; /* 右侧留白，避免文字贴边 */
+}
+
+/* 医生条目 hover 优化 - 细微反馈 */
+.doctor-item:hover {
+  background-color: #f0e8d933; /* 半透明背景，不干扰整体视觉 */
+}
+
+/* 医生图标样式优化 - 增强识别度 */
+.doctor-item .anticon {
+  color: #8B5A2B;
+  opacity: 0.9; /* 提升不透明度，更显清晰 */
+  margin-right: 6px; /* 增加图标与文字间距 */
+}
+
+/* 医生状态与时间样式优化 - 信息分层 */
+.doctor-status-time {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* 状态与时间间距增大，避免信息拥挤 */
+}
+
+/* 医生状态徽章优化 - 区分状态更清晰 */
+.doctor-item .ant-badge {
+  padding: 1px 6px;
+  border-radius: 12px; /* 圆角徽章更显柔和 */
+}
+
+/* 空闲状态样式 - 绿色系更显亲和 */
+.doctor-item .ant-badge-status-success {
+  background-color: #7ba678 !important; /* 柔和绿色，避免刺眼 */
+  border: 1px solid #d4e6d2;
+}
+
+/* 忙碌状态样式 - 橙色系更显温和 */
+.doctor-item .ant-badge-status-processing {
+  background-color: #eb3f2f !important; /* 柔和橙色，符合中医温暖调性 */
+  border: 1px solid #f3e5d8;
+}
+
+.doctor-item .ant-badge-status-text {
+  color: #5d4037 !important; /* 状态文字色统一，提升可读性 */
+  font-size: 12px; /* 状态文字缩小，突出医生姓名 */
+}
+
+/* 医生可用时间样式优化 - 弱化次要信息 */
+.doctor-time {
+  color: #6d4c2f;
+  font-size: 12px; /* 时间字号缩小，避免与主要信息冲突 */
+  opacity: 0.85; /* 降低不透明度，区分主次信息 */
+  background-color: #f5f2eb; /* 时间背景，增强信息块感 */
+  padding: 2px 6px;
+  border-radius: 4px; /* 圆角背景，更显精致 */
 }
 
 /* 响应式调整 */
@@ -109,5 +255,36 @@
   .card-header-actions {
     top: 12px;
     right: 12px;
+  }
+  
+  /* 科室模块响应式优化 */
+  .department-item {
+    padding: 16px 12px; /* 小屏幕减少内边距，节省空间 */
+    margin: 0 -12px;
+  }
+
+  .department-name {
+    font-size: 15px; /* 小屏幕字号缩小 */
+    gap: 8px;
+  }
+
+  .department-name .anticon {
+    font-size: 16px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .doctor-list {
+    padding-left: 28px; /* 小屏幕减少缩进 */
+    gap: 8px;
+  }
+
+  .doctor-status-time {
+    gap: 8px; /* 小屏幕缩小状态与时间间距 */
+  }
+
+  .doctor-time {
+    padding: 1px 4px;
+    font-size: 11px;
   }
 }
