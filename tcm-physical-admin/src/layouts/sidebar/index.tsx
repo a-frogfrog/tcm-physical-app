@@ -15,7 +15,7 @@ import React from 'react';
 export default function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const { logoItem, navMain, user } = useFetchSidebarData();
+  const { logoItem, sidebarMenu, user } = useFetchSidebarData();
 
   return (
     <Sidebar collapsible='icon' {...props}>
@@ -23,7 +23,7 @@ export default function AppSidebar({
         <NavLogo item={logoItem} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} />
+        <NavMain items={sidebarMenu} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />{' '}

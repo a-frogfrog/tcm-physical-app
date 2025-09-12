@@ -4,8 +4,8 @@ const scheduleRoutes = {
   path: 'schedule',
   children: [
     {
-      path: 'list',
-      Component: lazy(() => import('#/pages/schedule/list')),
+      path: 'arrange',
+      Component: lazy(() => import('#/pages/schedule/arrange')),
     },
   ],
 };

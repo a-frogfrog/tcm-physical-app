@@ -65,9 +65,12 @@ const LayoutHeader = ({ children }: { children: React.ReactNode }) => {
     <header
       aria-label='Header'
       role='header'
-      className={clsx('sticky top-0 backdrop-blur-xl duration-150', {
-        'shadow-md': headerShadow,
-      })}>
+      className={clsx(
+        'sticky top-0 bg-transparent transition-all duration-150',
+        {
+          'shadow-md backdrop-blur-md': headerShadow,
+        },
+      )}>
       {children}
     </header>
   );
