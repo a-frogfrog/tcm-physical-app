@@ -13,7 +13,6 @@ using Yuhetang.Infrastructure.IOC;
 using Yuhetang.Service.Interface;
 using Yuhetang.Infrastructure.EFCore.MySql;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,16 +32,17 @@ builder.Services.AddControllers();
 builder.Services.AddMemoryCache(); // 添加内存缓存
 
 
-//// 数据库配置
+//#region 数据库配置
 //builder.Services.AddDbContextPool<yuhetangContext>
 //    (options =>
 //    {
-//        options.UseSqlServer(builder.Configuration.GetConnectionString("Default"), provider =>
+//        options.UseMySQL(builder.Configuration.GetConnectionString("Default"), provider =>
 //        {
 //            provider.CommandTimeout(20);
 //        });
 //        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 //    }, poolSize: 64);
+//#endregion
 
 builder.Services.AddScoped(typeof(I_MySql_Repository<>), typeof(MySql_Repository<>));//默认仓储注入                                                         //services.AddScoped(typeof(IRepositoryPlus<>), typeof(Learning.Repository.SqlRepositoryPlus<>));//仓储注入
 builder.Services.AddScoped<DbContext, yuhetangContext>();//数据库注入
@@ -115,7 +115,36 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                  }
              }
 
+             if (url.ToLower() == "/api/mobile/check_login") //只有check_login接口做多端验证
+             {
+                 if (!StringValues.IsNullOrEmpty(context.Request.Headers["Authorization"]))
+                 {
+                     try
+                     {
+                         //todo 验证多app登陆
+                         var startLength = "Bearer ".Length;
+                         var tokenStr = context.Request.Headers["Authorization"].ToString();
+                         //验证权限
+                         var token = new JwtSecurityTokenHandler().ReadJwtToken(tokenStr.Substring(startLength, tokenStr.Length - startLength));
+                         //得到保存的code 验证code是否过期
+                         string code = token.Claims.ToList().First(o => o.Type == System.Security.Claims.ClaimTypes.Name).Value.ToString();
+                         string account = token.Claims.ToList().First(o => o.Type == System.Security.Claims.ClaimTypes.Actor).Value.ToString();
 
+
+                         var _loginService = provider.GetService<I_Admin_Service>();//必须不能new对象 一定要注入对象
+
+                         if (_loginService!.Check_Login(code, account) == null)
+                         {
+                             context.Request.Headers["Authorization"] = string.Empty;
+                         }
+
+                     }
+                     catch (System.Exception ex)
+                     {
+                         context.Request.Headers["Authorization"] = string.Empty;
+                     }
+                 }
+             }
 
              return Task.CompletedTask;
          }
@@ -124,7 +153,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
  });
 
 #endregion
-
 
 #region Cors跨域配置
 builder.Services.AddCors(c =>

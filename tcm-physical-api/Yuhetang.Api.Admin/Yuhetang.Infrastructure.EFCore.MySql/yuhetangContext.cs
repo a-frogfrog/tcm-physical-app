@@ -18,12 +18,14 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
         public virtual DbSet<AdminLoginLog> AdminLoginLogs { get; set; } = null!;
         public virtual DbSet<AdminUser> AdminUsers { get; set; } = null!;
+        public virtual DbSet<Appointment> Appointments { get; set; } = null!;
         public virtual DbSet<Custom> Customs { get; set; } = null!;
         public virtual DbSet<CustomFollow> CustomFollows { get; set; } = null!;
         public virtual DbSet<CustomerVipCpsCommission> CustomerVipCpsCommissions { get; set; } = null!;
         public virtual DbSet<CustomerVipRecord> CustomerVipRecords { get; set; } = null!;
         public virtual DbSet<CustomsVip> CustomsVips { get; set; } = null!;
         public virtual DbSet<CustomsVipCp> CustomsVipCps { get; set; } = null!;
+        public virtual DbSet<MembershipCard> MembershipCards { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
         public virtual DbSet<OrderPayment> OrderPayments { get; set; } = null!;
@@ -36,6 +38,12 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public virtual DbSet<SysDictionary> SysDictionaries { get; set; } = null!;
         public virtual DbSet<SysDuty> SysDuties { get; set; } = null!;
         public virtual DbSet<SysEmployee> SysEmployees { get; set; } = null!;
+        public virtual DbSet<SysEmployeeSchedule> SysEmployeeSchedules { get; set; } = null!;
+        public virtual DbSet<SysPeriodDay> SysPeriodDays { get; set; } = null!;
+        public virtual DbSet<SysPeriodSchedule> SysPeriodSchedules { get; set; } = null!;
+        public virtual DbSet<SysScheduleCycle> SysScheduleCycles { get; set; } = null!;
+        public virtual DbSet<SysShift> SysShifts { get; set; } = null!;
+        public virtual DbSet<Therapist> Therapists { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -206,6 +214,85 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("盐");
             });
 
+            modelBuilder.Entity<Appointment>(entity =>
+            {
+                entity.HasKey(e => e.AId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("appointment");
+
+                entity.HasComment("预约表");
+
+                entity.Property(e => e.AId)
+                    .HasMaxLength(32)
+                    .HasColumnName("A_ID")
+                    .HasComment("预约ID");
+
+                entity.Property(e => e.AAppointDate)
+                    .HasColumnName("A_AppointDate")
+                    .HasComment("预约日期");
+
+                entity.Property(e => e.ACreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("A_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.ACustomerId)
+                    .HasMaxLength(32)
+                    .HasColumnName("A_CustomerID")
+                    .HasComment("客户ID");
+
+                entity.Property(e => e.ADoctorId)
+                    .HasMaxLength(32)
+                    .HasColumnName("A_DoctorID")
+                    .HasComment("医师ID");
+
+                entity.Property(e => e.ADuration)
+                    .HasColumnName("A_Duration")
+                    .HasComment("预约时长（分钟）");
+
+                entity.Property(e => e.AEndTime)
+                    .HasColumnType("time")
+                    .HasColumnName("A_EndTime")
+                    .HasComment("结束时间");
+
+                entity.Property(e => e.AItemId)
+                    .HasMaxLength(32)
+                    .HasColumnName("A_ItemID")
+                    .HasComment("项目ID（服务ID或套餐ID）");
+
+                entity.Property(e => e.AItemType)
+                    .HasColumnName("A_ItemType")
+                    .HasComment("项目类型：1-服务项目，2-产品套餐");
+
+                entity.Property(e => e.ARemark)
+                    .HasColumnType("text")
+                    .HasColumnName("A_Remark")
+                    .HasComment("备注");
+
+                entity.Property(e => e.ASource)
+                    .HasColumnName("A_Source")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("预约来源：1-前台预约，2-微信预约，3-电话预约，4-医师推荐");
+
+                entity.Property(e => e.AStartTime)
+                    .HasColumnType("time")
+                    .HasColumnName("A_StartTime")
+                    .HasComment("开始时间");
+
+                entity.Property(e => e.AStatus)
+                    .HasColumnName("A_Status")
+                    .HasComment("状态：0-待确认，1-已确认，2-已完成，3-已取消，4-客户失约");
+
+                entity.Property(e => e.AUpdateTime)
+                    .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasColumnName("A_UpdateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("最后更新时间");
+            });
+
             modelBuilder.Entity<Custom>(entity =>
             {
                 entity.HasKey(e => e.CId)
@@ -263,7 +350,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.Property(e => e.CStatus)
                     .HasColumnName("C_Status")
-                    .HasDefaultValueSql("'1'")
                     .HasComment("状态：0-无效，1-有效");
 
                 entity.Property(e => e.IsConvert)
@@ -560,6 +646,55 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .WithMany(p => p.CustomsVipCps)
                     .HasForeignKey(d => d.CvcVipid)
                     .HasConstraintName("customs_vip_cps_ibfk_1");
+            });
+
+            modelBuilder.Entity<MembershipCard>(entity =>
+            {
+                entity.HasKey(e => e.CardId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("membership_card");
+
+                entity.HasComment("会员卡表");
+
+                entity.HasIndex(e => e.CId, "C_ID");
+
+                entity.Property(e => e.CardId)
+                    .HasMaxLength(32)
+                    .HasColumnName("Card_ID")
+                    .HasComment("会员卡ID");
+
+                entity.Property(e => e.Balance)
+                    .HasPrecision(10, 2)
+                    .HasComment("余额");
+
+                entity.Property(e => e.CId)
+                    .HasMaxLength(32)
+                    .HasColumnName("C_ID")
+                    .HasComment("客户ID");
+
+                entity.Property(e => e.CardStatus)
+                    .HasColumnName("Card_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("会员卡状态: 0-无效, 1-有效");
+
+                entity.Property(e => e.CreatedTime)
+                    .HasColumnType("datetime")
+                    .HasComment("会员卡创建时间");
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(255)
+                    .HasComment("支付密码(加密存储)");
+
+                entity.Property(e => e.Salt)
+                    .HasMaxLength(255)
+                    .HasComment("盐值");
+
+                entity.HasOne(d => d.CIdNavigation)
+                    .WithMany(p => p.MembershipCards)
+                    .HasForeignKey(d => d.CId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("membership_card_ibfk_1");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -987,11 +1122,13 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.HasOne(d => d.PpdPackage)
                     .WithMany(p => p.ProductPackageDetails)
                     .HasForeignKey(d => d.PpdPackageId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("product_package_details_ibfk_1");
 
                 entity.HasOne(d => d.PpdProduct)
                     .WithMany(p => p.ProductPackageDetails)
                     .HasForeignKey(d => d.PpdProductId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("product_package_details_ibfk_2");
             });
 
@@ -1240,6 +1377,304 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("E_Status")
                     .HasDefaultValueSql("'1'")
                     .HasComment("状态：0-离职，1-在职");
+            });
+
+            modelBuilder.Entity<SysEmployeeSchedule>(entity =>
+            {
+                entity.HasKey(e => e.SesId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_employee_schedule");
+
+                entity.HasComment("员工排班表");
+
+                entity.Property(e => e.SesId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SES_ID")
+                    .HasComment("排班记录ID");
+
+                entity.Property(e => e.ScId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SC_ID")
+                    .HasComment("规则ID");
+
+                entity.Property(e => e.SesCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("SES_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("排班创建时间");
+
+                entity.Property(e => e.SesCreatorId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SES_CreatorID")
+                    .HasComment("排班创建人ID");
+
+                entity.Property(e => e.SesDepartmentId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SES_DepartmentID")
+                    .HasComment("关联部门ID");
+
+                entity.Property(e => e.SesEmployeeId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SES_EmployeeID")
+                    .HasComment("关联员工ID");
+
+                entity.Property(e => e.SesRemark)
+                    .HasMaxLength(200)
+                    .HasColumnName("SES_Remark")
+                    .HasComment("排班备注");
+
+                entity.Property(e => e.SesScheduleDate)
+                    .HasColumnName("SES_ScheduleDate")
+                    .HasComment("排班日期");
+
+                entity.Property(e => e.SesShiftId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SES_ShiftID")
+                    .HasComment("关联班次ID");
+            });
+
+            modelBuilder.Entity<SysPeriodDay>(entity =>
+            {
+                entity.HasKey(e => e.SpdId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_period_day");
+
+                entity.HasComment("周期内天数排班详情表");
+
+                entity.Property(e => e.SpdId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SPD_ID")
+                    .HasComment("详情ID");
+
+                entity.Property(e => e.SpCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("SP_Create_Time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.SpDayNo)
+                    .HasColumnName("SP_Day_NO")
+                    .HasComment("周期内的第几天");
+
+                entity.Property(e => e.SpId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SP_ID")
+                    .HasComment("关联周期模板ID");
+
+                entity.Property(e => e.SpsId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SPS_ID")
+                    .HasComment("关联班次ID");
+            });
+
+            modelBuilder.Entity<SysPeriodSchedule>(entity =>
+            {
+                entity.HasKey(e => e.SpId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_period_schedule");
+
+                entity.HasComment("周期模版表");
+
+                entity.Property(e => e.SpId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SP_ID")
+                    .HasComment("周期ID");
+
+                entity.Property(e => e.ScCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("SC_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.SpDay)
+                    .HasColumnName("SP_Day")
+                    .HasComment("周期天数");
+
+                entity.Property(e => e.SpDeptId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SP_DeptID")
+                    .HasComment("适用部门ID");
+            });
+
+            modelBuilder.Entity<SysScheduleCycle>(entity =>
+            {
+                entity.HasKey(e => e.ScId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_schedule_cycle");
+
+                entity.HasComment("周期规则表");
+
+                entity.Property(e => e.ScId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SC_ID")
+                    .HasComment("周期规则ID");
+
+                entity.Property(e => e.ScCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("SC_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.ScCreatorId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SC_CreatorID")
+                    .HasComment("创建人ID");
+
+                entity.Property(e => e.ScDeptId)
+                    .HasMaxLength(32)
+                    .HasColumnName("SC_DeptID")
+                    .HasComment("部门ID");
+
+                entity.Property(e => e.ScEndTime)
+                    .HasColumnName("SC_EndTime")
+                    .HasComment("结束日期");
+
+                entity.Property(e => e.ScIsBan)
+                    .HasColumnName("SC_IsBan")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("是否启用：0-禁用，1-启用");
+
+                entity.Property(e => e.ScRemark)
+                    .HasMaxLength(200)
+                    .HasColumnName("SC_Remark")
+                    .HasComment("备注");
+
+                entity.Property(e => e.ScStartTime)
+                    .HasColumnName("SC_StartTime")
+                    .HasComment("开始日期");
+            });
+
+            modelBuilder.Entity<SysShift>(entity =>
+            {
+                entity.HasKey(e => e.SId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_shift");
+
+                entity.HasComment("班次模版表");
+
+                entity.Property(e => e.SId)
+                    .HasMaxLength(32)
+                    .HasColumnName("S_ID")
+                    .HasComment("班次ID");
+
+                entity.Property(e => e.SBreakEnd)
+                    .HasColumnType("time")
+                    .HasColumnName("S_BreakEnd")
+                    .HasComment("午休结束时间（可选）");
+
+                entity.Property(e => e.SBreakStart)
+                    .HasColumnType("time")
+                    .HasColumnName("S_BreakStart")
+                    .HasComment("午休开始时间（可选）");
+
+                entity.Property(e => e.SCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("S_Create_Time")
+                    .HasDefaultValueSql("'2000-00-01 00:00:00'")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.SEndTime)
+                    .HasColumnType("time")
+                    .HasColumnName("S_EndTime")
+                    .HasComment("班次结束时间");
+
+                entity.Property(e => e.SName)
+                    .HasMaxLength(50)
+                    .HasColumnName("S_Name")
+                    .HasComment("班次名称");
+
+                entity.Property(e => e.SStartTime)
+                    .HasColumnType("time")
+                    .HasColumnName("S_StartTime")
+                    .HasComment("班次开始时间");
+
+                entity.Property(e => e.SStatus)
+                    .HasColumnName("S_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-停用，1-启用");
+            });
+
+            modelBuilder.Entity<Therapist>(entity =>
+            {
+                entity.HasKey(e => e.TId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("therapist");
+
+                entity.HasComment("理疗师表");
+
+                entity.Property(e => e.TId)
+                    .HasMaxLength(32)
+                    .HasColumnName("T_ID")
+                    .HasComment("理疗师ID");
+
+                entity.Property(e => e.TCertificate)
+                    .HasMaxLength(100)
+                    .HasColumnName("T_Certificate")
+                    .HasComment("资格证书");
+
+                entity.Property(e => e.TCreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("T_CreateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.TGender)
+                    .HasMaxLength(2)
+                    .HasColumnName("T_Gender")
+                    .HasComment("性别");
+
+                entity.Property(e => e.TIntroduction)
+                    .HasColumnType("text")
+                    .HasColumnName("T_Introduction")
+                    .HasComment("理疗师介绍");
+
+                entity.Property(e => e.TIsAvailable)
+                    .HasColumnName("T_IsAvailable")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("是否可预约：0-否，1-是");
+
+                entity.Property(e => e.TName)
+                    .HasMaxLength(50)
+                    .HasColumnName("T_Name")
+                    .HasComment("理疗师姓名");
+
+                entity.Property(e => e.TPhoto)
+                    .HasMaxLength(255)
+                    .HasColumnName("T_Photo")
+                    .HasComment("照片");
+
+                entity.Property(e => e.TSkills)
+                    .HasColumnType("text")
+                    .HasColumnName("T_Skills")
+                    .HasComment("技术特长");
+
+                entity.Property(e => e.TSpecialty)
+                    .HasMaxLength(200)
+                    .HasColumnName("T_Specialty")
+                    .HasComment("擅长项目");
+
+                entity.Property(e => e.TStaffId)
+                    .HasMaxLength(32)
+                    .HasColumnName("T_StaffID")
+                    .HasComment("员工ID");
+
+                entity.Property(e => e.TStatus)
+                    .HasColumnName("T_Status")
+                    .HasDefaultValueSql("'1'")
+                    .HasComment("状态：0-离职，1-在职，2-休假");
+
+                entity.Property(e => e.TUpdateTime)
+                    .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasColumnName("T_UpdateTime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("最后更新时间");
             });
 
             OnModelCreatingPartial(modelBuilder);

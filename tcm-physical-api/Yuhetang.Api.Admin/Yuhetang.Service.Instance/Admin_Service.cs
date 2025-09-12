@@ -48,7 +48,7 @@ namespace Yuhetang.Service.EFCore
             }
 
 
-            var key = _configuration["Redis:Keys:Check_Login"];
+            var key = _configuration["Redis:Keys:Admin_Check_Login"];
             //如果在此处你查询了这个
             var jwt = _redisStringService.Get<string>(key + account);
             if (code == jwt)
@@ -123,8 +123,6 @@ namespace Yuhetang.Service.EFCore
             return Result(1, "登录成功");
         }
 
-
-        // <summary>
         /// 异步添加登录日志
         /// </summary>
         /// <param name="user">管理员信息（登录成功时为非空，失败时可为空）</param>

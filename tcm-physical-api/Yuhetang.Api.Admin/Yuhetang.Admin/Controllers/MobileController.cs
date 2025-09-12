@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Win32;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -25,7 +23,7 @@ namespace Yuhetang.Admin.Controllers
             _configuration = configuration;
         }
         /// <summary>
-        /// 客户登录/注册(如果没有账号就直接注册新账号)
+        /// 客户登录/注册(如果没有账号会自动注册新账号)
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
