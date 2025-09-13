@@ -51,7 +51,7 @@ const Layout = ({ className, children }: React.ComponentProps<'div'>) => {
     <div
       role='layout'
       aria-label='Layout'
-      className={`relative max-h-screen w-full overflow-auto ${className}`}
+      className={`scroll-bar-hide relative max-h-screen w-full overflow-auto ${className}`}
       onScroll={(e) => debouncedHandleScroll(e.currentTarget.scrollTop)}>
       {children}
     </div>

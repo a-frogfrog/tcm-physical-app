@@ -128,6 +128,15 @@
     font-family: Inter, sans-serif;
     font-variation-settings: normal; /* Chrome 140 以下版本需要 */
   }
+
+  .scroll-bar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scroll-bar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer utilities {
