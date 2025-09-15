@@ -11,12 +11,12 @@ using Yuhetang.Service.Interface;
 
 namespace Yuhetang.Admin.Controllers
 {
-    public class AdminController : BaseController
+    public class LoginsController : BaseController
     {
         private readonly IConfiguration _configuration;
-        private readonly I_Admin_Service _admin_Service;
+        private readonly I_Logins_Service _admin_Service;
 
-        public AdminController(IConfiguration configuration, I_Admin_Service admin_Service)
+        public LoginsController(IConfiguration configuration, I_Logins_Service admin_Service)
         {
             _admin_Service = admin_Service;
             _configuration = configuration;

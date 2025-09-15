@@ -13,7 +13,7 @@ namespace Yuhetang.Infrastructure.Dto.Request
         /// <summary>
         /// 性别
         /// </summary>
-        public int gender { get; set; }
+        public string? gender { get; set; }
         /// <summary>
         /// 手机号
         /// </summary>

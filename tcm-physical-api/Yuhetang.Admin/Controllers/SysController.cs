@@ -109,5 +109,41 @@ namespace Yuhetang.Admin.Controllers
 
             return Ok(result);
         }
+        /// <summary>
+        /// 修改班次
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Upd_Shift(Shift_Request_Dto dto)
+        {
+            var result = await _sys_Service.Upd_Shift(dto);
+
+            return Ok(result);
+        }
+        /// <summary>
+        /// 获取周期规则
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Get_Schedule_Cycle(int page = 1, int limit = 10)
+        {
+            var reslt = await _sys_Service.Get_Schedule_Cycle(page, limit);
+
+            return Ok(reslt);
+        }
+        /// <summary>
+        /// 新增周期规则
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Add_Schedule_Cycle(Schedule_Cycle_Request_Dto dto)
+        {
+            var result = await _sys_Service.Add_Schedule_Cycle(dto);
+
+            return Ok(result);
+        }
+
     }
 }

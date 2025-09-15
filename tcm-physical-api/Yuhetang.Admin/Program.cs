@@ -100,7 +100,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                          string account = token.Claims.ToList().First(o => o.Type == System.Security.Claims.ClaimTypes.Actor).Value.ToString();
 
 
-                         var _loginService = provider.GetService<I_Admin_Service>();//必须不能new对象 一定要注入对象
+                         var _loginService = provider.GetService<I_Logins_Service>();//必须不能new对象 一定要注入对象
 
                          if (_loginService!.Check_Login(code, account) == null)
                          {
@@ -131,7 +131,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                          string account = token.Claims.ToList().First(o => o.Type == System.Security.Claims.ClaimTypes.Actor).Value.ToString();
 
 
-                         var _loginService = provider.GetService<I_Admin_Service>();//必须不能new对象 一定要注入对象
+                         var _loginService = provider.GetService<I_Logins_Service>();//必须不能new对象 一定要注入对象
 
                          if (_loginService!.Check_Login(code, account) == null)
                          {

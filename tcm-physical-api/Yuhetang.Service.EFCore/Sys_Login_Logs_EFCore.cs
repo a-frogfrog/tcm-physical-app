@@ -10,9 +10,9 @@ using Yuhetang.Repository.Interface;
 namespace Yuhetang.Service.EFCore
 {
     [Provider_, Inject_]
-    public class Admin_Login_Logs_EFCore : Base_EFCore<AdminLoginLog>
+    public class Sys_Login_Logs_EFCore : Base_EFCore<SysLoginLog>
     {
-        public Admin_Login_Logs_EFCore(I_MySql_Repository<AdminLoginLog> repository) : base(repository)
+        public Sys_Login_Logs_EFCore(I_MySql_Repository<SysLoginLog> repository) : base(repository)
         {
         }
     }

@@ -21,13 +21,25 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string? EPassword { get; set; }
         /// <summary>
+        /// 盐
+        /// </summary>
+        public string? ESalt { get; set; }
+        /// <summary>
         /// 员工姓名
         /// </summary>
-        public string? EName { get; set; }
+        public string EName { get; set; } = null!;
         /// <summary>
-        /// 性别：0-女，1-男
+        /// 性别
         /// </summary>
-        public int? EGender { get; set; }
+        public string? EGender { get; set; }
+        /// <summary>
+        /// 头像url
+        /// </summary>
+        public string? EAvatar { get; set; }
+        /// <summary>
+        /// 邮箱
+        /// </summary>
+        public string? EEmail { get; set; }
         /// <summary>
         /// 联系电话
         /// </summary>
@@ -40,6 +52,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// 岗位ID
         /// </summary>
         public string? EDuty { get; set; }
+        /// <summary>
+        /// 0-正常,1-禁用,
+        /// </summary>
+        public int? EIsBan { get; set; }
         /// <summary>
         /// 状态：0-离职，1-在职
         /// </summary>

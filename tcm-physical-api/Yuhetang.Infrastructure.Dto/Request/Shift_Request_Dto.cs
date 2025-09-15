@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace Yuhetang.Infrastructure.Dto.Request
 {
     public class Shift_Request_Dto
-    { 
+    {
+        public string id { get; set; }
         /// <summary>
         /// 班次名称
         /// </summary>

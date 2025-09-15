@@ -13,6 +13,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string ScId { get; set; } = null!;
         /// <summary>
+        /// 规则名称
+        /// </summary>
+        public string? ScName { get; set; }
+        /// <summary>
         /// 部门ID
         /// </summary>
         public string? ScDeptId { get; set; }
@@ -27,7 +31,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 是否启用：0-禁用，1-启用
         /// </summary>
-        public bool? ScIsBan { get; set; }
+        public int? ScIsBan { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

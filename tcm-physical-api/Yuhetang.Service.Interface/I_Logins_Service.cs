@@ -5,10 +5,10 @@ using Yuhetang.Infrastructure.Dto.Response;
 namespace Yuhetang.Service.Interface
 {
     [Provider_]
-    public interface I_Admin_Service
+    public interface I_Logins_Service
     {
         /// <summary>
-        /// 管理员登录
+        /// 员工登录
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>

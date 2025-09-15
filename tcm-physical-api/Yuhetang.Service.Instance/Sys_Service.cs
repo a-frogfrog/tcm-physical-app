@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ServiceStack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
@@ -113,6 +108,69 @@ namespace Yuhetang.Service.Instance
 
 
         }
+        /// <summary>
+        /// 新增周期
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Add_Period_Schedule(Period_Schedule_Request_Dto dto)
+        {
+            var id = Config.GUID2();
+            SysPeriodSchedule sysPeriodSchedule = new SysPeriodSchedule()
+            {
+                SpId = id,
+                SpDay = dto.day,
+                SpDeptId = dto.deptID,
+                ScCreateTime = DateTime.Now
+            };
+            dto.period_day.ForEach(d =>
+            {
+                SysPeriodDay sysPeriodDay = new SysPeriodDay()
+                {
+                    SpdId = Config.GUID2(),
+                    SpId = id,
+                    SpDayNo = d.day_no,
+                    SpsId = d.sps_id,
+                    SpCreateTime = DateTime.Now
+                };
+                _sys_IOC._sys_Period_Day_EFCore.Add(sysPeriodDay);
+            });
+
+            _sys_IOC._sys_Period_Schedule_EFCore.Add(sysPeriodSchedule);
+            await _sys_IOC._sys_Period_Schedule_EFCore.SaveChangesAsync();
+            await _sys_IOC._sys_Period_Day_EFCore.SaveChangesAsync();
+
+            return Result(1, "新增成功");
+        }
+
+        /// <summary>
+        /// 新增周期规则
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Add_Schedule_Cycle(Schedule_Cycle_Request_Dto dto)
+        {
+            SysScheduleCycle sysScheduleCycle = new SysScheduleCycle()
+            {
+                ScId = Config.GUID2(),
+                ScName = dto.name,
+                ScDeptId = dto.deptID,
+                ScStartTime = DateOnly.Parse(dto.startTime),
+                ScEndTime = DateOnly.Parse(dto.endTime),
+                ScIsBan = dto.isBan,
+                ScCreatorId = dto.creatorID,
+                ScCreateTime = DateTime.Now
+            };
+
+            _sys_IOC._sys_Schedule_Cycle_EFCore.Add(sysScheduleCycle);
+            await _sys_IOC._sys_Schedule_Cycle_EFCore.SaveChangesAsync();
+
+            return Result(1,"新增成功");
+
+        }
+
         /// <summary>
         /// 新增班次
         /// </summary>
@@ -234,7 +292,7 @@ namespace Yuhetang.Service.Instance
                     id = d.EId,
                     account = d.EAccount,
                     name = d.EName,
-                    gender = d.EGender == 0 ? "女":"男",
+                    gender = d.EGender,
                     phone = d.EPhone,
                     dept = depts.GetValueOrDefault(d.EDept), // 使用字典获取单个值
                     duty = duties.GetValueOrDefault(d.EDuty), // 使用字典获取单个值
@@ -255,6 +313,43 @@ namespace Yuhetang.Service.Instance
                 return Result(0, "获取员工列表失败: " + ex.Message, null);
             }
         }
+        /// <summary>
+        /// 获取排班规则
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Get_Schedule_Cycle(int page = 1, int limit = 10)
+        {
+            var iq = await _sys_IOC._sys_Schedule_Cycle_EFCore.QueryAll(out int total, page, limit, false, o => o.ScCreateTime).ToListAsync();
+
+            if(iq == null)
+            {
+                return Result(1, "还没有规则");
+            }
+
+            List<Schedule_Cycle_Response_Dto> data = new List<Schedule_Cycle_Response_Dto>();
+
+            iq.ForEach(d =>
+            {
+                data.Add(new Schedule_Cycle_Response_Dto
+                {
+                    id = d.ScId,
+                    name = d.ScName,
+                    startTime = d.ScStartTime.ToString(),
+                    endTime = d.ScEndTime.ToString(),
+                    isBan = d.ScIsBan,
+                    remark = d.ScRemark,
+                    creatorName = _sys_IOC._sys_Employees_EFCore.QueryAll(e=>e.EId == d.ScCreatorId).Select(e=>e.EName).SingleOrDefault(),
+                    creatorID = d.ScCreatorId,
+                    time = d.ScCreateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            });
+
+            return Result(1, "ok", data);
+        }
+
         /// <summary>
         /// 获取班次
         /// </summary>
@@ -290,11 +385,26 @@ namespace Yuhetang.Service.Instance
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<Api_Response_Dto> Upd_Shift(Shift_Request_Dto dto)
+        public async Task<Api_Response_Dto> Upd_Shift(Shift_Request_Dto dto)
         {
-            throw new NotImplementedException();
-        }
+            var iq = await _sys_IOC._sys_Shift_EFCore.QueryAll(d => d.SId == dto.id).SingleOrDefaultAsync();
+            if (iq == null)
+            {
+                return Result(0, "没有找到");
+            }
+            iq.SName = dto.name;
+            iq.SStartTime = dto.startTime == "" || dto.startTime == null ? null: TimeOnly.Parse(dto.startTime);
+            iq.SEndTime = dto.endTime == "" || dto.endTime == null ? null : TimeOnly.Parse(dto.endTime);
+            iq.SBreakStart = dto.breakStart == "" || dto.breakStart == null ? null : TimeOnly.Parse(dto.breakStart);
+            iq.SBreakEnd = dto.breakEnd == "" || dto.breakEnd == null ? null : TimeOnly.Parse(dto.breakEnd);
+            iq.SStatus = dto.status;
 
+            _sys_IOC._sys_Shift_EFCore.Update(iq);
+            await _sys_IOC._sys_Shift_EFCore.SaveChangesAsync();
+
+            return Result(1,"修改成功");
+        }
+         
         /// <summary>
         /// 获取子部门
         /// </summary>

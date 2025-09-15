@@ -66,5 +66,25 @@ namespace Yuhetang.Service.Interface
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> Upd_Shift(Shift_Request_Dto dto);
+        /// <summary>
+        /// 获取周期规则
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Get_Schedule_Cycle(int page = 1, int limit = 10);
+        /// <summary>
+        /// 新增周期规则
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Add_Schedule_Cycle(Schedule_Cycle_Request_Dto dto);
+        /// <summary>
+        /// 新增周期
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Add_Period_Schedule(Period_Schedule_Request_Dto dto);
     }
 }

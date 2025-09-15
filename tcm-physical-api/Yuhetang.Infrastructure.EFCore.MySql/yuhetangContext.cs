@@ -16,8 +16,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         {
         }
 
-        public virtual DbSet<AdminLoginLog> AdminLoginLogs { get; set; } = null!;
-        public virtual DbSet<AdminUser> AdminUsers { get; set; } = null!;
         public virtual DbSet<Appointment> Appointments { get; set; } = null!;
         public virtual DbSet<Custom> Customs { get; set; } = null!;
         public virtual DbSet<CustomFollow> CustomFollows { get; set; } = null!;
@@ -39,11 +37,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public virtual DbSet<SysDuty> SysDuties { get; set; } = null!;
         public virtual DbSet<SysEmployee> SysEmployees { get; set; } = null!;
         public virtual DbSet<SysEmployeeSchedule> SysEmployeeSchedules { get; set; } = null!;
+        public virtual DbSet<SysLoginLog> SysLoginLogs { get; set; } = null!;
         public virtual DbSet<SysPeriodDay> SysPeriodDays { get; set; } = null!;
         public virtual DbSet<SysPeriodSchedule> SysPeriodSchedules { get; set; } = null!;
         public virtual DbSet<SysScheduleCycle> SysScheduleCycles { get; set; } = null!;
         public virtual DbSet<SysShift> SysShifts { get; set; } = null!;
-        public virtual DbSet<Therapist> Therapists { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -58,161 +56,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         {
             modelBuilder.UseCollation("utf8mb4_0900_ai_ci")
                 .HasCharSet("utf8mb4");
-
-            modelBuilder.Entity<AdminLoginLog>(entity =>
-            {
-                entity.HasKey(e => e.Allid)
-                    .HasName("PRIMARY");
-
-                entity.ToTable("admin_login_logs");
-
-                entity.HasComment("管理员登录日志表")
-                    .UseCollation("utf8mb4_unicode_ci");
-
-                entity.HasIndex(e => e.Auid, "AUId");
-
-                entity.Property(e => e.Allid)
-                    .HasMaxLength(32)
-                    .HasColumnName("ALLId")
-                    .HasComment("日志ID");
-
-                entity.Property(e => e.Allbrowser)
-                    .HasMaxLength(50)
-                    .HasColumnName("ALLBrowser")
-                    .HasComment("浏览器");
-
-                entity.Property(e => e.Allcode)
-                    .HasMaxLength(32)
-                    .HasColumnName("ALLCode")
-                    .HasComment("登录凭据");
-
-                entity.Property(e => e.AllcreateTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ALLCreate_Time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("创建时间");
-
-                entity.Property(e => e.AlldeviceType)
-                    .HasMaxLength(20)
-                    .HasColumnName("ALLDevice_Type")
-                    .HasComment("设备类型: pc, mobile,tablet");
-
-                entity.Property(e => e.AllfailureReason)
-                    .HasMaxLength(200)
-                    .HasColumnName("ALLFailure_Reason")
-                    .HasComment("失败原因");
-
-                entity.Property(e => e.Alllocation)
-                    .HasMaxLength(100)
-                    .HasColumnName("ALLLocation")
-                    .HasComment("登录地点");
-
-                entity.Property(e => e.AllloginIp)
-                    .HasMaxLength(45)
-                    .HasColumnName("ALLLogin_Ip")
-                    .HasComment("登录IP");
-
-                entity.Property(e => e.AllloginResult)
-                    .HasColumnName("ALLLogin_Result")
-                    .HasComment("登录结果: 1-成功, 0-失败");
-
-                entity.Property(e => e.AllloginTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ALLLogin_Time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("登录时间");
-
-                entity.Property(e => e.Auid)
-                    .HasMaxLength(32)
-                    .HasColumnName("AUId")
-                    .HasComment("管理员ID");
-
-                entity.Property(e => e.Auname)
-                    .HasMaxLength(50)
-                    .HasColumnName("AUName")
-                    .HasComment("用户名");
-
-                entity.HasOne(d => d.Au)
-                    .WithMany(p => p.AdminLoginLogs)
-                    .HasForeignKey(d => d.Auid)
-                    .HasConstraintName("admin_login_logs_ibfk_1");
-            });
-
-            modelBuilder.Entity<AdminUser>(entity =>
-            {
-                entity.HasKey(e => e.Auid)
-                    .HasName("PRIMARY");
-
-                entity.ToTable("admin_users");
-
-                entity.HasComment("管理员用户表")
-                    .UseCollation("utf8mb4_unicode_ci");
-
-                entity.HasIndex(e => e.Auaccount, "AUAccount")
-                    .IsUnique();
-
-                entity.Property(e => e.Auid)
-                    .HasMaxLength(32)
-                    .HasColumnName("AUId")
-                    .HasComment("管理员ID");
-
-                entity.Property(e => e.Auaccount)
-                    .HasMaxLength(32)
-                    .HasColumnName("AUAccount")
-                    .HasComment("用户名");
-
-                entity.Property(e => e.Auavatar)
-                    .HasMaxLength(255)
-                    .HasColumnName("AUAvatar")
-                    .HasComment("头像URL");
-
-                entity.Property(e => e.AucreateTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("AUCreate_Time")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("创建时间");
-
-                entity.Property(e => e.Auemail)
-                    .HasMaxLength(100)
-                    .HasColumnName("AUEmail")
-                    .HasComment("邮箱");
-
-                entity.Property(e => e.AuisBan)
-                    .HasColumnName("AUIsBan")
-                    .HasDefaultValueSql("'1'")
-                    .HasComment("状态: 1-正常, 0-禁用");
-
-                entity.Property(e => e.Aupassword)
-                    .HasMaxLength(255)
-                    .HasColumnName("AUPassword")
-                    .HasComment("密码");
-
-                entity.Property(e => e.Auphone)
-                    .HasMaxLength(20)
-                    .HasColumnName("AUPhone")
-                    .HasComment("手机号");
-
-                entity.Property(e => e.AurealName)
-                    .HasMaxLength(50)
-                    .HasColumnName("AUReal_Name")
-                    .HasComment("真实姓名");
-
-                entity.Property(e => e.Auremark)
-                    .HasMaxLength(500)
-                    .HasColumnName("AURemark")
-                    .HasComment("备注");
-
-                entity.Property(e => e.Aurole)
-                    .HasMaxLength(20)
-                    .HasColumnName("AURole")
-                    .HasDefaultValueSql("'admin'")
-                    .HasComment("角色: super_admin-超级管理员, admin-普通管理员");
-
-                entity.Property(e => e.Ausalt)
-                    .HasMaxLength(50)
-                    .HasColumnName("AUSalt")
-                    .HasComment("盐");
-            });
 
             modelBuilder.Entity<Appointment>(entity =>
             {
@@ -1338,6 +1181,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("E_Account")
                     .HasComment("员工登录账号");
 
+                entity.Property(e => e.EAvatar)
+                    .HasMaxLength(255)
+                    .HasColumnName("E_Avatar")
+                    .HasComment("头像url");
+
                 entity.Property(e => e.ECreateTime)
                     .HasColumnType("datetime")
                     .HasColumnName("E_CreateTime")
@@ -1354,9 +1202,19 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("E_Duty")
                     .HasComment("岗位ID");
 
+                entity.Property(e => e.EEmail)
+                    .HasMaxLength(255)
+                    .HasColumnName("E_Email")
+                    .HasComment("邮箱");
+
                 entity.Property(e => e.EGender)
+                    .HasMaxLength(2)
                     .HasColumnName("E_Gender")
-                    .HasComment("性别：0-女，1-男");
+                    .HasComment("性别");
+
+                entity.Property(e => e.EIsBan)
+                    .HasColumnName("E_IsBan")
+                    .HasComment("0-正常,1-禁用,");
 
                 entity.Property(e => e.EName)
                     .HasMaxLength(50)
@@ -1372,6 +1230,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasMaxLength(20)
                     .HasColumnName("E_Phone")
                     .HasComment("联系电话");
+
+                entity.Property(e => e.ESalt)
+                    .HasMaxLength(32)
+                    .HasColumnName("E_Salt")
+                    .HasComment("盐");
 
                 entity.Property(e => e.EStatus)
                     .HasColumnName("E_Status")
@@ -1432,6 +1295,71 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasMaxLength(32)
                     .HasColumnName("SES_ShiftID")
                     .HasComment("关联班次ID");
+            });
+
+            modelBuilder.Entity<SysLoginLog>(entity =>
+            {
+                entity.HasKey(e => e.Llid)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("sys_login_logs");
+
+                entity.HasComment("登录日志表")
+                    .UseCollation("utf8mb4_unicode_ci");
+
+                entity.Property(e => e.Llid)
+                    .HasMaxLength(32)
+                    .HasColumnName("LLId")
+                    .HasComment("日志ID");
+
+                entity.Property(e => e.LlEid)
+                    .HasMaxLength(32)
+                    .HasColumnName("LL_EId")
+                    .HasComment("员工ID");
+
+                entity.Property(e => e.LlEname)
+                    .HasMaxLength(50)
+                    .HasColumnName("LL_EName")
+                    .HasComment("员工名");
+
+                entity.Property(e => e.Llbrowser)
+                    .HasMaxLength(50)
+                    .HasColumnName("LLBrowser")
+                    .HasComment("浏览器");
+
+                entity.Property(e => e.Llcode)
+                    .HasMaxLength(32)
+                    .HasColumnName("LLCode")
+                    .HasComment("登录凭据");
+
+                entity.Property(e => e.LlcreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LLCreate_Time")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.LldeviceType)
+                    .HasMaxLength(20)
+                    .HasColumnName("LLDevice_Type")
+                    .HasComment("设备类型: pc, mobile,tablet");
+
+                entity.Property(e => e.LlfailureReason)
+                    .HasMaxLength(200)
+                    .HasColumnName("LLFailure_Reason")
+                    .HasComment("失败原因");
+
+                entity.Property(e => e.Lllocation)
+                    .HasMaxLength(100)
+                    .HasColumnName("LLLocation")
+                    .HasComment("登录地点");
+
+                entity.Property(e => e.LlloginIp)
+                    .HasMaxLength(45)
+                    .HasColumnName("LLLogin_Ip")
+                    .HasComment("登录IP");
+
+                entity.Property(e => e.LlloginResult)
+                    .HasColumnName("LLLogin_Result")
+                    .HasComment("登录结果: 1-成功, 0-失败");
             });
 
             modelBuilder.Entity<SysPeriodDay>(entity =>
@@ -1538,6 +1466,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasDefaultValueSql("'1'")
                     .HasComment("是否启用：0-禁用，1-启用");
 
+                entity.Property(e => e.ScName)
+                    .HasMaxLength(255)
+                    .HasColumnName("SC_Name")
+                    .HasComment("规则名称");
+
                 entity.Property(e => e.ScRemark)
                     .HasMaxLength(200)
                     .HasColumnName("SC_Remark")
@@ -1597,84 +1530,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("S_Status")
                     .HasDefaultValueSql("'1'")
                     .HasComment("状态：0-停用，1-启用");
-            });
-
-            modelBuilder.Entity<Therapist>(entity =>
-            {
-                entity.HasKey(e => e.TId)
-                    .HasName("PRIMARY");
-
-                entity.ToTable("therapist");
-
-                entity.HasComment("理疗师表");
-
-                entity.Property(e => e.TId)
-                    .HasMaxLength(32)
-                    .HasColumnName("T_ID")
-                    .HasComment("理疗师ID");
-
-                entity.Property(e => e.TCertificate)
-                    .HasMaxLength(100)
-                    .HasColumnName("T_Certificate")
-                    .HasComment("资格证书");
-
-                entity.Property(e => e.TCreateTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("T_CreateTime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("创建时间");
-
-                entity.Property(e => e.TGender)
-                    .HasMaxLength(2)
-                    .HasColumnName("T_Gender")
-                    .HasComment("性别");
-
-                entity.Property(e => e.TIntroduction)
-                    .HasColumnType("text")
-                    .HasColumnName("T_Introduction")
-                    .HasComment("理疗师介绍");
-
-                entity.Property(e => e.TIsAvailable)
-                    .HasColumnName("T_IsAvailable")
-                    .HasDefaultValueSql("'1'")
-                    .HasComment("是否可预约：0-否，1-是");
-
-                entity.Property(e => e.TName)
-                    .HasMaxLength(50)
-                    .HasColumnName("T_Name")
-                    .HasComment("理疗师姓名");
-
-                entity.Property(e => e.TPhoto)
-                    .HasMaxLength(255)
-                    .HasColumnName("T_Photo")
-                    .HasComment("照片");
-
-                entity.Property(e => e.TSkills)
-                    .HasColumnType("text")
-                    .HasColumnName("T_Skills")
-                    .HasComment("技术特长");
-
-                entity.Property(e => e.TSpecialty)
-                    .HasMaxLength(200)
-                    .HasColumnName("T_Specialty")
-                    .HasComment("擅长项目");
-
-                entity.Property(e => e.TStaffId)
-                    .HasMaxLength(32)
-                    .HasColumnName("T_StaffID")
-                    .HasComment("员工ID");
-
-                entity.Property(e => e.TStatus)
-                    .HasColumnName("T_Status")
-                    .HasDefaultValueSql("'1'")
-                    .HasComment("状态：0-离职，1-在职，2-休假");
-
-                entity.Property(e => e.TUpdateTime)
-                    .HasColumnType("datetime")
-                    .ValueGeneratedOnAddOrUpdate()
-                    .HasColumnName("T_UpdateTime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("最后更新时间");
             });
 
             OnModelCreatingPartial(modelBuilder);
