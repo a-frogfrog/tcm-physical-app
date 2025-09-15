@@ -1,53 +1,12 @@
 import { PageTitle, StatCard } from '#/components/common';
-import { Bike, Bubbles, Calculator, CloudDrizzle } from 'lucide-react';
-
-const cardItems = [
-  {
-    title: '套餐总数',
-    value: 120,
-    trend: {
-      percentage: 10,
-      isIncrease: true,
-      compareText: '较上月增加',
-    },
-    icon: Bike,
-    iconColor: 'bg-amber-00',
-  },
-  {
-    title: '本月销量',
-    value: 522,
-    trend: {
-      percentage: 10,
-      isIncrease: true,
-      compareText: '较上月增加',
-    },
-    icon: Bubbles,
-  },
-  {
-    title: '热门套餐',
-    value: 4,
-    trend: {
-      percentage: 10,
-      isIncrease: true,
-      compareText: '较上月增加',
-    },
-    icon: Calculator,
-  },
-  {
-    title: '待更新套餐',
-    value: 2,
-    trend: {
-      percentage: 11,
-      isIncrease: true,
-      compareText: '较上月增加',
-    },
-    icon: CloudDrizzle,
-  },
-];
+import OrderTrendChart from './OrderTrendChart';
+import OrderTable from './OrderTable';
+import { useOrderList } from './useOrderList';
 
 export default function OrderListPage() {
+  const { cardItems } = useOrderList();
   return (
-    <div>
+    <>
       <PageTitle
         title='订单列表'
         desc='查看和管理所有中医理疗订单，处理预约确认、服务完成等操作'
@@ -68,6 +27,8 @@ export default function OrderListPage() {
           />
         ))}
       </section>
-    </div>
+      <OrderTrendChart />
+      <OrderTable className='my-6' />
+    </>
   );
 }
