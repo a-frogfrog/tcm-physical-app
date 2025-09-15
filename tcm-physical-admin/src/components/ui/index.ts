@@ -17,3 +17,5 @@ export * from './card';
 export * from './separator';
 export * from './tooltip';
 export * from './alert';
+export * from './popover';
+export * from './calendar';
