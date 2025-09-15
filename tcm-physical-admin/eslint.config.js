@@ -15,6 +15,7 @@ export default tseslint.config([
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],
+    // 关闭 react-refresh 插件的 only-export-components 规则
     rules: {
       'react-refresh/only-export-components': 'off',
     },
