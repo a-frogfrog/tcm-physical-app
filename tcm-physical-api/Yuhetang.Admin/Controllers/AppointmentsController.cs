@@ -12,7 +12,7 @@ namespace Yuhetang.Admin.Controllers
     {
         private readonly I_Appointments_Service _appointments_Service;
 
-        public AppointmentsController(I_Appointments_Service appointments_Service)
+        public AppointmentsController(I_Appointments_Service appointments_Service,I_Logins_Service logins_Service):base(logins_Service)
         {
             _appointments_Service = appointments_Service;
         }

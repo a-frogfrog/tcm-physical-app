@@ -13,13 +13,17 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string SpId { get; set; } = null!;
         /// <summary>
+        /// 周期名称
+        /// </summary>
+        public string? SpName { get; set; }
+        /// <summary>
         /// 周期天数
         /// </summary>
         public int? SpDay { get; set; }
         /// <summary>
         /// 适用部门ID
         /// </summary>
-        public string SpDeptId { get; set; } = null!;
+        public string? SpDeptId { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>

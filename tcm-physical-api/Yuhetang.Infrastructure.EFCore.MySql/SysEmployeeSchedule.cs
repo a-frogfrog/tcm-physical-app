@@ -15,7 +15,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 关联员工ID
         /// </summary>
-        public string SesEmployeeId { get; set; } = null!;
+        public string? SesEmployeeId { get; set; }
         /// <summary>
         /// 关联部门ID
         /// </summary>
@@ -27,7 +27,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 排班日期
         /// </summary>
-        public DateOnly SesScheduleDate { get; set; }
+        public DateOnly? SesScheduleDate { get; set; }
         /// <summary>
         /// 关联班次ID
         /// </summary>
@@ -43,6 +43,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 排班创建时间
         /// </summary>
-        public DateTime SesCreateTime { get; set; }
+        public DateTime? SesCreateTime { get; set; }
     }
 }

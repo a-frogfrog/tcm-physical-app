@@ -86,5 +86,24 @@ namespace Yuhetang.Service.Interface
         /// <param name="dto"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> Add_Period_Schedule(Period_Schedule_Request_Dto dto);
+        /// <summary>
+        /// 获取周期排班
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Get_Period_Schedule(int page = 1, int limit = 10);
+        /// <summary>
+        /// 新增排班
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Add_Employee_Schedule(Employee_Schedult_Request_Dto dto);
+        /// <summary>
+        /// 获取排班
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Get_Employee_Schedule(int page = 1, int limit = 10);
+
     }
 }

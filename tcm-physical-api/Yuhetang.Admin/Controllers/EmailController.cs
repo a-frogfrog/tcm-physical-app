@@ -11,10 +11,12 @@ namespace Yuhetang.Admin.Controllers
     public class EmailController : BaseController
     {
         private readonly I_Verification_Code_Service _verificationCodeService;
+        private readonly I_Logins_Service _logins_Service;
 
-        public EmailController(I_Verification_Code_Service verificationCodeService)
+        public EmailController(I_Verification_Code_Service verificationCodeService,I_Logins_Service logins_Service):base(logins_Service)
         {
             _verificationCodeService = verificationCodeService;
+            _logins_Service = logins_Service;
         }
         /// <summary>
         /// 发送验证码
