@@ -7,6 +7,7 @@ using System.Text;
 using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
 using Yuhetang.Infrastructure.Tools;
+using Yuhetang.Service.EFCore;
 using Yuhetang.Service.Interface;
 
 namespace Yuhetang.Admin.Controllers
@@ -15,12 +16,14 @@ namespace Yuhetang.Admin.Controllers
     public class MobileController : BaseController
     {
         private readonly IConfiguration _configuration;
+        private readonly I_Logins_Service _logins_Service;
         private readonly I_Mobile_Service _mobile_Service;
 
-        public MobileController(IConfiguration configuration, I_Mobile_Service mobile_Service)
+        public MobileController(IConfiguration configuration, I_Mobile_Service mobile_Service, I_Logins_Service logins_Service) : base(logins_Service)
         {
             _mobile_Service = mobile_Service;
             _configuration = configuration;
+            _logins_Service = logins_Service;
         }
         /// <summary>
         /// 客户登录/注册(如果没有账号会自动注册新账号)

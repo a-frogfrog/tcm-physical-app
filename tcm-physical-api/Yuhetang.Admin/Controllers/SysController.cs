@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Yuhetang.Infrastructure.Dto.Request;
+using Yuhetang.Service.EFCore;
 using Yuhetang.Service.Interface;
 
 namespace Yuhetang.Admin.Controllers
@@ -11,10 +12,12 @@ namespace Yuhetang.Admin.Controllers
     public class SysController : BaseController
     {
         private readonly I_Sys_Service _sys_Service;
+        private readonly I_Logins_Service _logins_Service;
 
-        public SysController(I_Sys_Service sys_Service)
+        public SysController(I_Sys_Service sys_Service,I_Logins_Service logins_Service) : base(logins_Service)
         {
             _sys_Service = sys_Service;
+            _logins_Service = logins_Service;
         }
         /// <summary>
         /// 获取部门
@@ -145,5 +148,58 @@ namespace Yuhetang.Admin.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// 新增周期
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Add_Period_Schedule(Period_Schedule_Request_Dto dto)
+        {
+            var result = await _sys_Service.Add_Period_Schedule(dto);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 获取周期排班
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Get_Period_Schedule(int page = 1, int limit = 10)
+        {
+            var reslt = await _sys_Service.Get_Period_Schedule(page, limit);
+
+            return Ok(reslt);
+        }
+
+        /// <summary>
+        /// 新增排班
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Add_Employee_Schedule(Employee_Schedult_Request_Dto dto)
+        {
+            var user = this.Get_Current_User();
+            dto.CreatorID = user.id;
+            var result = await _sys_Service.Add_Employee_Schedule(dto);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 获取排班
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Get_Employee_Schedule(int page = 1, int limit = 10)
+        {
+            var reslt = await _sys_Service.Get_Employee_Schedule(page, limit);
+
+            return Ok(reslt);
+        }
     }
 }

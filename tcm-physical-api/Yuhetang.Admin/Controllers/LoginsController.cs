@@ -7,6 +7,7 @@ using System.Text;
 using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
 using Yuhetang.Infrastructure.Tools;
+using Yuhetang.Service.EFCore;
 using Yuhetang.Service.Interface;
 
 namespace Yuhetang.Admin.Controllers
@@ -14,15 +15,15 @@ namespace Yuhetang.Admin.Controllers
     public class LoginsController : BaseController
     {
         private readonly IConfiguration _configuration;
-        private readonly I_Logins_Service _admin_Service;
+        private readonly I_Logins_Service _logins_Service;
 
-        public LoginsController(IConfiguration configuration, I_Logins_Service admin_Service)
+        public LoginsController(IConfiguration configuration, I_Logins_Service logins_Service) : base(logins_Service)
         {
-            _admin_Service = admin_Service;
+            _logins_Service = logins_Service;
             _configuration = configuration;
         }
         /// <summary>
-        /// 管理员登录
+        /// 管理员登录(密码：123456)
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -32,7 +33,7 @@ namespace Yuhetang.Admin.Controllers
 
 
             dto.code = Config.GUID();
-            var result = await _admin_Service.Logins(dto);
+            var result = await _logins_Service.Logins(dto);
 
             if (result.code == Api_Code.ok)
             {
@@ -62,7 +63,7 @@ namespace Yuhetang.Admin.Controllers
         }
 
         /// <summary>
-        /// 获取当前登录的商户
+        /// 获取当前登录
         /// </summary>
         /// <returns></returns>
         private User_Response_Dto? Get_Current_Admin()
@@ -70,7 +71,7 @@ namespace Yuhetang.Admin.Controllers
             var code = Response.HttpContext.User.Identity?.Name;
             var actorClaim = Response.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Actor);
             string account = actorClaim!.Value;
-            var merchant = _admin_Service.Check_Login(code, account!);
+            var merchant = _logins_Service.Check_Login(code, account!);
             if (merchant == null)
             {
                 throw new Exception("登录已过期");

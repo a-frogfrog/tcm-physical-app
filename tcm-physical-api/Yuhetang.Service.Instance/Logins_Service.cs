@@ -58,7 +58,8 @@ namespace Yuhetang.Service.EFCore
                 {
                     id = d.EId,
                     name = d.EName,
-                    account = d.EName,
+                    account = d.EAccount,
+                    gender = d.EGender,
                     isBan = d.EIsBan,
                     time = d.ECreateTime!.Value.ToString("yyyy-MM-dd HH:mm:ss")
                 }).Single();

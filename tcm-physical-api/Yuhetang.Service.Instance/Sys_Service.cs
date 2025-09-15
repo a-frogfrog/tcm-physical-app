@@ -109,6 +109,35 @@ namespace Yuhetang.Service.Instance
 
         }
         /// <summary>
+        /// 新增排班
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Add_Employee_Schedule(Employee_Schedult_Request_Dto dto)
+        {
+            SysEmployeeSchedule sysEmployeeSchedule = new SysEmployeeSchedule()
+            {
+                SesId = Config.GUID2(),
+
+                SesEmployeeId = dto.employeeID,
+                SesDepartmentId = dto.departmentID,
+                ScId = dto.rulesID,
+                SesScheduleDate = DateOnly.Parse(dto.scheduleDate),
+                SesShiftId = dto.shiftID,
+                SesRemark = dto.remark,
+                SesCreatorId = dto.CreatorID,
+
+                SesCreateTime = DateTime.Now
+            };
+
+            _sys_IOC._sys_Employee_Schedule_EFCore.Add(sysEmployeeSchedule);
+            await _sys_IOC._sys_Employee_Schedule_EFCore.SaveChangesAsync();
+
+            return Result(1,"ok");
+        }
+
+        /// <summary>
         /// 新增周期
         /// </summary>
         /// <param name="dto"></param>
@@ -313,6 +342,158 @@ namespace Yuhetang.Service.Instance
                 return Result(0, "获取员工列表失败: " + ex.Message, null);
             }
         }
+        /// <summary>
+        /// 获取排班
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Get_Employee_Schedule(int page = 1, int limit = 10)
+        {
+            var iq = _sys_IOC._sys_Employee_Schedule_EFCore.QueryAll(out int total, page, limit, false, o => o.SesCreateTime);
+            if(!await iq.AnyAsync())
+            {
+                return Result(0, "没有排班记录");
+            }
+
+            var list = await iq.ToListAsync();
+            List<Employee_Schedule_Response_Dto> data = new List<Employee_Schedule_Response_Dto>();
+
+            list.ForEach(d =>
+            {
+                data.Add(new Employee_Schedule_Response_Dto
+                {
+                    id = d.SesId,
+                    employeeID = d.SesEmployeeId,
+                    employeeName = _sys_IOC._sys_Employees_EFCore.QueryAll(e=>e.EId == d.SesEmployeeId).Select(e=>e.EName).SingleOrDefault(),
+                    departmentID = d.SesDepartmentId,
+                    departmentName = _sys_IOC._sys_Department_EFCore.QueryAll(e => e.DId == d.SesDepartmentId).Select(e => e.DName).SingleOrDefault(),
+                    rulesID = d.ScId,
+                    rulesName = _sys_IOC._sys_Schedule_Cycle_EFCore.QueryAll(e => e.ScId == d.ScId).Select(e => e.ScName).SingleOrDefault(),
+                    scheduleDate = d.SesScheduleDate.ToString(),
+                    shiftID = d.SesShiftId,
+
+                    shiftName = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SName).SingleOrDefault(),
+                    startTime = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SStartTime).SingleOrDefault().ToString(),
+                    endTime = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SEndTime).SingleOrDefault().ToString(),
+                    breakStart = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SBreakStart).SingleOrDefault().ToString(),
+                    breakEnd = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SBreakEnd).SingleOrDefault().ToString(),
+
+                    remark = d.SesRemark,
+                    createID = d.SesCreatorId,
+                    creater = _sys_IOC._sys_Employees_EFCore.QueryAll(e => e.EId == d.SesEmployeeId).Select(e => e.EName).SingleOrDefault(),
+                    time = d.SesCreateTime!.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            });
+
+            return Result(1, "ok", new
+            {
+                data,
+                total
+            });
+        }
+
+        /// <summary>
+        /// 获取周期排班
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Get_Period_Schedule(int page = 1, int limit = 10)
+        {
+            try
+            {
+                // 1. 获取分期的排班列表
+                var periodSchedules = await _sys_IOC._sys_Period_Schedule_EFCore
+                    .QueryAll(out int total, page, limit, false, o => o.ScCreateTime)
+                    .Select(d => new
+                    {
+                        sp_id = d.SpId,
+                        name = d.SpName,
+                        deptID = d.SpDeptId,
+                        day = d.SpDay,
+                        time = d.ScCreateTime
+                    })
+                    .ToListAsync(); // 先执行查询，获取到内存中
+
+                if (!periodSchedules.Any())
+                {
+                    return Result(1, "没有数据");
+                }
+
+                // 2. 批量获取相关数据（在内存中处理）
+                var spIds = periodSchedules.Select(d => d.sp_id).ToList();
+
+                // 获取所有相关的Period_Day数据
+                var allPeriodDays = await _sys_IOC._sys_Period_Day_EFCore
+                    .QueryAll() // 先获取所有数据
+                    .Where(d => spIds.Contains(d.SpId))
+                    .ToListAsync();
+
+                // 获取所有相关的班次ID
+                var shiftIds = allPeriodDays.Select(d => d.SpsId).Distinct().ToList();
+
+                // 批量获取班次信息
+                var allShifts = await _sys_IOC._sys_Shift_EFCore
+                    .QueryAll() // 先获取所有数据
+                    .Where(s => shiftIds.Contains(s.SId))
+                    .ToListAsync();
+
+                // 转换为字典，方便快速查找
+                var shiftsDict = allShifts.ToDictionary(s => s.SId, s => new
+                {
+                    s.SName,
+                    s.SStartTime,
+                    s.SEndTime
+                });
+
+                // 3. 构建响应数据（在内存中处理）
+                var data = periodSchedules.Select(ps =>
+                {
+                    // 获取当前排班对应的Period_Day
+                    var periodDays = allPeriodDays
+                        .Where(pd => pd.SpId == ps.sp_id)
+                        .OrderBy(pd => pd.SpDayNo)
+                        .ToList();
+
+                    // 构建子项
+                    var children = periodDays.Select(pd =>
+                    {
+                        var shift = shiftsDict.ContainsKey(pd.SpsId) ? shiftsDict[pd.SpsId] : null;
+                        return new Period_Day_Reponse_Dto
+                        {
+                            id = pd.SpdId,
+                            sp_id = pd.SpId,
+                            day_no = pd.SpDayNo,
+                            sps_id = pd.SpsId,
+                            name = shift?.SName ?? "",
+                            startTime = shift?.SStartTime.ToString() ?? "",
+                            endTime = shift?.SEndTime.ToString() ?? "",
+                            time = pd.SpCreateTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? ""
+                        };
+                    }).ToList();
+
+                    return new Period_Schedule_Reponse_Dto
+                    {
+                        sp_id = ps.sp_id,
+                        name = ps.name,
+                        deptID = ps.deptID,
+                        day = ps.day,
+                        time = ps.time?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+                        chidren = children
+                    };
+                }).ToList();
+
+                return Result(1, "ok", new { data, total });
+            }
+            catch (Exception ex)
+            {
+                // 记录日志
+                return Result(0, "获取排班数据失败: " + ex.Message, null);
+            }
+        }
+
         /// <summary>
         /// 获取排班规则
         /// </summary>

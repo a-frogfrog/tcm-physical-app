@@ -1425,6 +1425,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasMaxLength(32)
                     .HasColumnName("SP_DeptID")
                     .HasComment("适用部门ID");
+
+                entity.Property(e => e.SpName)
+                    .HasMaxLength(255)
+                    .HasColumnName("SP_Name")
+                    .HasComment("周期名称");
             });
 
             modelBuilder.Entity<SysScheduleCycle>(entity =>
