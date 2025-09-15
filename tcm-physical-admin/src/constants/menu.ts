@@ -102,8 +102,8 @@ export const sidebarMenu = [
     icon: Building2,
     items: [
       {
-        title: '用户',
-        url: '/org/user',
+        title: '管理',
+        url: '/org/manager',
       },
     ],
   },
