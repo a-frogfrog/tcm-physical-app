@@ -1,25 +1,31 @@
 import { lazy } from 'react';
+import { Navigate } from 'react-router-dom';
 
 const routes = [
   {
     path: '/',
     Component: lazy(() => import('#/layouts')),
     children: [
+      { index: true, element: <Navigate to='/home' replace /> }, // 重定向到/home
       {
-        path: '/home',
+        path: 'home',
         Component: lazy(() => import('#/pages/home')),
       },
       {
-        path: '/promotion',
+        path: 'promotion',
         Component: lazy(() => import('#/pages/promotion')),
       },
       {
-        path: '/user',
+        path: 'user',
         Component: lazy(() => import('#/pages/user')),
       },
       {
-        path: '/commission',
+        path: 'commission',
         Component: lazy(() => import('#/pages/commission')),
+      },
+      {
+        path: '*',
+        element: lazy(() => import('#/pages/error/NotFound')),
       },
     ],
   },
