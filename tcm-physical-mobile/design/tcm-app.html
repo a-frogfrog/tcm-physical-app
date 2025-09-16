@@ -1,953 +1,1419 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>仁心堂 - 中医理疗App</title>
-    <!-- 引入Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>本草堂 - 中医推广平台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入Font Awesome -->
     <link
       href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
     <!-- 配置Tailwind自定义颜色和字体 -->
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              primary: "#8B4513", // 棕色作为主色调，体现中医传统感
-              secondary: "#D2B48C", // 棕褐色作为辅助色
-              accent: "#2E8B57", // 绿色作为强调色，代表健康
-              light: "#F5F5DC", // 米色作为浅色背景
-              dark: "#3E2723", // 深棕色作为深色文本
-              tab1: "#E53E3E", // 首页标签颜色-红色
-              tab2: "#ED8936", // 看诊记录标签颜色-橙色
-              tab3: "#38A169", // 推广标签颜色-绿色
-              tab4: "#3182CE", // 个人中心标签颜色-蓝色
+              primary: '#2D6A4F', // 中医绿 - 主色
+              secondary: '#D9AE6C', // 金色 - 辅助色
+              accent: '#E9F5EE', // 淡绿色 - 强调色
+              neutral: '#F8F9FA', // 浅灰 - 背景色
+              dark: '#333333', // 深灰 - 文字
             },
             fontFamily: {
-              sans: ["Noto Sans SC", "sans-serif"],
-              serif: ["Noto Serif SC", "serif"],
+              sans: ['Inter', 'system-ui', 'sans-serif'],
             },
           },
         },
       };
     </script>
-    <!-- 自定义工具类 -->
+
     <style type="text/tailwindcss">
       @layer utilities {
         .content-auto {
           content-visibility: auto;
         }
+        .text-shadow {
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .card-hover {
+          transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+          transform: translateY(-5px);
+        }
         .tab-active {
-          @apply text-white;
+          color: theme('colors.primary');
         }
-        .tab-inactive {
-          @apply text-gray-500;
-        }
-        .card-shadow {
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-      }
-    </style>
-    <!-- 引入Google字体 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      .page-container {
-        flex: 1;
-        overflow-y: auto;
-      }
-      .tab-page {
-        display: none;
-      }
-      .tab-page.active {
-        display: block;
-      }
-      /* 滚动条美化 */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #ddd;
-        border-radius: 3px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #bbb;
       }
     </style>
   </head>
-  <body class="bg-gray-50 font-sans text-dark">
-    <!-- 页面容器 -->
-    <div class="page-container">
-      <!-- 首页 -->
-      <div id="home-page" class="tab-page active">
-        <!-- 顶部导航 -->
-        <header class="bg-primary text-white p-4 shadow-md">
-          <div class="flex justify-between items-center">
-            <h1 class="text-xl font-serif font-bold">仁心堂</h1>
-            <div class="flex space-x-4">
-              <button class="text-white hover:text-secondary transition-colors">
-                <i class="fa fa-bell-o text-lg"></i>
-              </button>
-              <button class="text-white hover:text-secondary transition-colors">
-                <i class="fa fa-search text-lg"></i>
-              </button>
-            </div>
-          </div>
-        </header>
 
-        <!-- 轮播图 -->
-        <div class="relative h-48 overflow-hidden">
-          <div
-            class="flex transition-transform duration-500"
-            style="transform: translateX(0)"
-          >
-            <div class="min-w-full h-full">
-              <img
-                src="https://picsum.photos/id/177/800/400"
-                alt="中医理疗优惠活动"
-                class="w-full h-full object-cover"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
-              >
-                <div class="p-4 text-white">
-                  <h3 class="font-semibold text-lg">
-                    新用户专享：首次理疗8折优惠
-                  </h3>
-                  <p class="text-sm text-gray-100">
-                    即日起至本月底，新用户可享首次理疗8折
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="min-w-full h-full">
-              <img
-                src="https://picsum.photos/id/116/800/400"
-                alt="夏季养生套餐"
-                class="w-full h-full object-cover"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"
-              >
-                <div class="p-4 text-white">
-                  <h3 class="font-semibold text-lg">夏季养生套餐：祛湿排毒</h3>
-                  <p class="text-sm text-gray-100">
-                    专为夏季设计的中医养生套餐
-                  </p>
-                </div>
-              </div>
-            </div>
+  <body class="bg-neutral text-dark font-sans">
+    <!-- 顶部导航栏 -->
+    <header class="fixed left-0 right-0 top-0 z-30 bg-white shadow-sm">
+      <div class="container mx-auto px-4">
+        <div class="flex h-16 items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <i class="fa fa-leaf text-primary text-2xl"></i>
+            <h1 class="text-primary text-xl font-bold">本草堂</h1>
           </div>
-          <!-- 轮播指示器 -->
-          <div class="absolute bottom-2 right-2 flex space-x-1">
-            <span class="w-2 h-2 rounded-full bg-white"></span>
-            <span class="w-2 h-2 rounded-full bg-white/50"></span>
-          </div>
-        </div>
 
-        <!-- 快捷服务 -->
-        <div class="bg-white p-4">
-          <div class="grid grid-cols-4 gap-2">
-            <div class="flex flex-col items-center p-2">
-              <div
-                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
-              >
-                <i class="fa fa-calendar-plus-o"></i>
-              </div>
-              <span class="text-xs">在线预约</span>
-            </div>
-            <div class="flex flex-col items-center p-2">
-              <div
-                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
-              >
-                <i class="fa fa-user-md"></i>
-              </div>
-              <span class="text-xs">找医师</span>
-            </div>
-            <div class="flex flex-col items-center p-2">
-              <div
-                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
-              >
-                <i class="fa fa-stethoscope"></i>
-              </div>
-              <span class="text-xs">理疗项目</span>
-            </div>
-            <div class="flex flex-col items-center p-2">
-              <div
-                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
-              >
-                <i class="fa fa-book"></i>
-              </div>
-              <span class="text-xs">养生知识</span>
-            </div>
-            <div class="flex flex-col items-center p-2">
-              <div
-                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
-              >
-                <i class="fa fa-map-marker"></i>
-              </div>
-              <span class="text-xs">门店地址</span>
-            </div>
-            <div class="flex flex-col items-center p-2">
-              <div
-                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
-              >
-                <i class="fa fa-comments-o"></i>
-              </div>
-              <span class="text-xs">在线咨询</span>
-            </div>
-            <div class="flex flex-col items-center p-2">
-              <div
-                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
-              >
-                <i class="fa fa-trophy"></i>
-              </div>
-              <span class="text-xs">会员福利</span>
-            </div>
-            <div class="flex flex-col items-center p-2">
-              <div
-                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1"
-              >
-                <i class="fa fa-ellipsis-h"></i>
-              </div>
-              <span class="text-xs">更多</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 推荐服务 -->
-        <div class="bg-white mt-4 p-4">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">推荐服务</h2>
-            <a href="#" class="text-primary text-sm">查看全部</a>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="rounded-lg overflow-hidden card-shadow">
-              <img
-                src="https://picsum.photos/id/237/400/300"
-                alt="推拿按摩"
-                class="w-full h-32 object-cover"
-              />
-              <div class="p-3">
-                <h3 class="font-medium">推拿按摩</h3>
-                <p class="text-xs text-gray-500 mt-1">
-                  缓解肌肉疲劳，改善血液循环
-                </p>
-                <div class="flex justify-between items-center mt-2">
-                  <span class="text-primary font-semibold">¥168</span>
-                  <button
-                    class="text-xs bg-primary/10 text-primary px-2 py-1 rounded"
-                  >
-                    预约
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="rounded-lg overflow-hidden card-shadow">
-              <img
-                src="https://picsum.photos/id/238/400/300"
-                alt="针灸疗法"
-                class="w-full h-32 object-cover"
-              />
-              <div class="p-3">
-                <h3 class="font-medium">针灸疗法</h3>
-                <p class="text-xs text-gray-500 mt-1">调节气血，平衡阴阳</p>
-                <div class="flex justify-between items-center mt-2">
-                  <span class="text-primary font-semibold">¥218</span>
-                  <button
-                    class="text-xs bg-primary/10 text-primary px-2 py-1 rounded"
-                  >
-                    预约
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 推荐专家 -->
-        <div class="bg-white mt-4 p-4">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">推荐专家</h2>
-            <a href="#" class="text-primary text-sm">查看全部</a>
-          </div>
-          <div class="flex space-x-4 overflow-x-auto pb-2">
-            <div class="flex-shrink-0 w-32 text-center">
-              <img
-                src="https://picsum.photos/id/1005/200/200"
-                alt="张医师"
-                class="w-20 h-20 rounded-full object-cover mx-auto"
-              />
-              <h3 class="font-medium mt-2">张医师</h3>
-              <p class="text-xs text-gray-500">推拿按摩专家</p>
-              <button
-                class="text-xs bg-primary/10 text-primary px-3 py-1 rounded mt-2"
-              >
-                预约
-              </button>
-            </div>
-            <div class="flex-shrink-0 w-32 text-center">
-              <img
-                src="https://picsum.photos/id/1006/200/200"
-                alt="李医师"
-                class="w-20 h-20 rounded-full object-cover mx-auto"
-              />
-              <h3 class="font-medium mt-2">李医师</h3>
-              <p class="text-xs text-gray-500">针灸专家</p>
-              <button
-                class="text-xs bg-primary/10 text-primary px-3 py-1 rounded mt-2"
-              >
-                预约
-              </button>
-            </div>
-            <div class="flex-shrink-0 w-32 text-center">
-              <img
-                src="https://picsum.photos/id/1012/200/200"
-                alt="王医师"
-                class="w-20 h-20 rounded-full object-cover mx-auto"
-              />
-              <h3 class="font-medium mt-2">王医师</h3>
-              <p class="text-xs text-gray-500">艾灸理疗师</p>
-              <button
-                class="text-xs bg-primary/10 text-primary px-3 py-1 rounded mt-2"
-              >
-                预约
-              </button>
-            </div>
-            <div class="flex-shrink-0 w-32 text-center">
-              <img
-                src="https://picsum.photos/id/1027/200/200"
-                alt="刘医师"
-                class="w-20 h-20 rounded-full object-cover mx-auto"
-              />
-              <h3 class="font-medium mt-2">刘医师</h3>
-              <p class="text-xs text-gray-500">体质调理专家</p>
-              <button
-                class="text-xs bg-primary/10 text-primary px-3 py-1 rounded mt-2"
-              >
-                预约
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 养生知识 -->
-        <div class="bg-white mt-4 p-4 mb-20">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">养生知识</h2>
-            <a href="#" class="text-primary text-sm">查看全部</a>
-          </div>
-          <div class="space-y-3">
-            <div
-              class="flex gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+          <!-- 桌面端导航 -->
+          <nav class="hidden items-center space-x-8 md:flex">
+            <a
+              href="#home"
+              class="tab-link tab-active flex h-full items-center font-medium transition"
+              >首页</a
             >
-              <img
-                src="https://picsum.photos/id/292/120/120"
-                alt="四季养生"
-                class="w-20 h-20 rounded object-cover flex-shrink-0"
-              />
-              <div>
-                <h3 class="font-medium line-clamp-2">
-                  中医四季养生要点，顺应自然保健康
-                </h3>
-                <p class="text-xs text-gray-500 mt-1">
-                  中医认为，人与自然是一个统一的整体，四季气候变化直接影响人体健康...
-                </p>
-                <div class="flex items-center text-xs text-gray-400 mt-1">
-                  <span><i class="fa fa-calendar-o mr-1"></i> 2023-06-15</span>
-                  <span class="mx-2">|</span>
-                  <span><i class="fa fa-eye mr-1"></i> 1248</span>
-                </div>
-              </div>
-            </div>
-            <div
-              class="flex gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+            <a
+              href="#promotion"
+              class="tab-link flex h-full items-center font-medium transition"
+              >我的推广</a
             >
-              <img
-                src="https://picsum.photos/id/293/120/120"
-                alt="穴位按摩"
-                class="w-20 h-20 rounded object-cover flex-shrink-0"
-              />
-              <div>
-                <h3 class="font-medium line-clamp-2">
-                  日常穴位按摩，缓解常见不适
-                </h3>
-                <p class="text-xs text-gray-500 mt-1">
-                  身体上的许多穴位对应着不同的脏腑和功能，掌握简单的穴位按摩方法...
-                </p>
-                <div class="flex items-center text-xs text-gray-400 mt-1">
-                  <span><i class="fa fa-calendar-o mr-1"></i> 2023-06-08</span>
-                  <span class="mx-2">|</span>
-                  <span><i class="fa fa-eye mr-1"></i> 986</span>
-                </div>
-              </div>
-            </div>
-          </div>
+            <a
+              href="#commission"
+              class="tab-link flex h-full items-center font-medium transition"
+              >佣金中心</a
+            >
+            <a
+              href="#profile"
+              class="tab-link flex h-full items-center font-medium transition"
+              >个人中心</a
+            >
+          </nav>
+
+          <!-- 移动端菜单按钮 - 仅在大屏幕显示，小屏幕使用底部tabar -->
+          <button class="text-dark hidden text-xl md:hidden" id="menuToggle">
+            <i class="fa fa-bars"></i>
+          </button>
         </div>
       </div>
+    </header>
 
-      <!-- 看诊记录 -->
-      <div id="records-page" class="tab-page">
-        <header class="bg-tab2 text-white p-4 shadow-md">
-          <h1 class="text-xl font-serif font-bold">看诊记录</h1>
-        </header>
-
-        <div class="p-4">
-          <!-- 搜索栏 -->
-          <div class="relative mb-4">
-            <input
-              type="text"
-              placeholder="搜索看诊记录..."
-              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-tab2"
-            />
+    <!-- 主内容区域 -->
+    <main class="pb-20 pt-16">
+      <!-- 底部留出tabar空间 -->
+      <!-- 1. 首页 -->
+      <section id="home" class="page-section">
+        <!-- 英雄区域 -->
+        <div
+          class="from-primary to-primary/80 relative bg-gradient-to-br py-16 text-white md:py-24">
+          <div class="absolute inset-0 overflow-hidden opacity-10">
             <i
-              class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            ></i>
+              class="fa fa-leaf absolute left-1/4 top-1/4 -translate-x-1/2 -translate-y-1/2 transform text-[200px]"></i>
+            <i
+              class="fa fa-heartbeat absolute bottom-1/4 right-1/4 -translate-x-1/2 -translate-y-1/2 transform text-[200px]"></i>
+          </div>
+          <div class="container relative z-10 mx-auto px-4">
+            <div class="max-w-2xl">
+              <h2
+                class="text-shadow mb-4 text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight">
+                传承中医智慧<br />推广健康赚佣金
+              </h2>
+              <p class="mb-8 text-lg text-white/90 md:text-xl">
+                分享专业中医服务，帮助他人获得健康，同时轻松赚取丰厚佣金
+              </p>
+              <div class="flex flex-col gap-4 sm:flex-row">
+                <a
+                  href="#promotion"
+                  class="bg-secondary transform rounded-full px-8 py-3 text-center font-medium text-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
+                  开始推广
+                </a>
+                <a
+                  href="#appointment"
+                  class="text-primary transform rounded-full bg-white px-8 py-3 text-center font-medium shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
+                  预约服务
+                </a>
+              </div>
+            </div>
           </div>
 
-          <!-- 记录筛选 -->
-          <div class="flex border-b border-gray-200 mb-4">
-            <button
-              class="py-2 px-4 text-tab2 border-b-2 border-tab2 font-medium"
-            >
-              全部
-            </button>
-            <button class="py-2 px-4 text-gray-500">推拿</button>
-            <button class="py-2 px-4 text-gray-500">针灸</button>
-            <button class="py-2 px-4 text-gray-500">艾灸</button>
-          </div>
-
-          <!-- 看诊记录列表 -->
-          <div class="space-y-4">
-            <!-- 记录1 -->
-            <div class="bg-white rounded-lg p-4 card-shadow">
-              <div class="flex justify-between items-start mb-3">
-                <div>
-                  <h3 class="font-semibold">推拿按摩</h3>
-                  <p class="text-xs text-gray-500">张医师</p>
-                </div>
-                <span
-                  class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"
-                  >已完成</span
-                >
-              </div>
-              <div class="flex justify-between text-sm">
-                <div>
-                  <span class="text-gray-500">日期：</span>
-                  <span>2023-06-15</span>
-                </div>
-                <div>
-                  <span class="text-gray-500">时间：</span>
-                  <span>10:00-11:30</span>
-                </div>
-              </div>
-              <div class="mt-3 pt-3 border-t border-gray-100">
-                <p class="text-sm mb-2">诊疗结果：</p>
-                <p class="text-sm text-gray-600 text-sm">
-                  患者主诉颈肩酸痛，给予推拿按摩治疗，重点放松肩颈肌肉，疏通经络。建议避免长时间低头，适当运动。
-                </p>
-                <button class="mt-3 text-tab2 text-sm hover:underline">
-                  查看详情
-                </button>
-              </div>
-            </div>
-
-            <!-- 记录2 -->
-            <div class="bg-white rounded-lg p-4 card-shadow">
-              <div class="flex justify-between items-start mb-3">
-                <div>
-                  <h3 class="font-semibold">针灸疗法</h3>
-                  <p class="text-xs text-gray-500">李医师</p>
-                </div>
-                <span
-                  class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"
-                  >已完成</span
-                >
-              </div>
-              <div class="flex justify-between text-sm">
-                <div>
-                  <span class="text-gray-500">日期：</span>
-                  <span>2023-06-08</span>
-                </div>
-                <div>
-                  <span class="text-gray-500">时间：</span>
-                  <span>15:00-16:00</span>
-                </div>
-              </div>
-              <div class="mt-3 pt-3 border-t border-gray-100">
-                <p class="text-sm mb-2">诊疗结果：</p>
-                <p class="text-sm text-gray-600 text-sm">
-                  患者失眠多梦，给予针灸治疗，选取百会、神门、三阴交等穴位。建议规律作息，睡前避免使用电子产品。
-                </p>
-                <button class="mt-3 text-tab2 text-sm hover:underline">
-                  查看详情
-                </button>
-              </div>
-            </div>
-
-            <!-- 记录3 -->
-            <div class="bg-white rounded-lg p-4 card-shadow">
-              <div class="flex justify-between items-start mb-3">
-                <div>
-                  <h3 class="font-semibold">艾灸养生</h3>
-                  <p class="text-xs text-gray-500">王医师</p>
-                </div>
-                <span
-                  class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"
-                  >待复诊</span
-                >
-              </div>
-              <div class="flex justify-between text-sm">
-                <div>
-                  <span class="text-gray-500">日期：</span>
-                  <span>2023-06-01</span>
-                </div>
-                <div>
-                  <span class="text-gray-500">时间：</span>
-                  <span>14:00-15:30</span>
-                </div>
-              </div>
-              <div class="mt-3 pt-3 border-t border-gray-100">
-                <p class="text-sm mb-2">诊疗结果：</p>
-                <p class="text-sm text-gray-600 text-sm">
-                  患者体寒，给予艾灸治疗，选取关元、气海、足三里等穴位。建议注意保暖，避免生冷食物。
-                </p>
-                <button class="mt-3 text-tab2 text-sm hover:underline">
-                  查看详情
-                </button>
-              </div>
-            </div>
+          <!-- 波浪装饰 -->
+          <div class="absolute bottom-0 left-0 right-0">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 1440 100"
+              class="h-auto w-full">
+              <path
+                fill="#F8F9FA"
+                fill-opacity="1"
+                d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+            </svg>
           </div>
         </div>
-      </div>
 
-      <!-- 推广 -->
-      <div id="promotion-page" class="tab-page">
-        <header class="bg-tab3 text-white p-4 shadow-md">
-          <h1 class="text-xl font-serif font-bold">推广活动</h1>
-        </header>
+        <!-- 数据概览 -->
+        <section class="bg-white py-10">
+          <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 gap-6 text-center md:grid-cols-4">
+              <div class="p-4">
+                <div class="text-primary mb-2 text-3xl font-bold md:text-4xl">
+                  ¥12,580
+                </div>
+                <div class="text-gray-600">累计佣金</div>
+              </div>
+              <div class="p-4">
+                <div class="text-primary mb-2 text-3xl font-bold md:text-4xl">
+                  328
+                </div>
+                <div class="text-gray-600">推广订单</div>
+              </div>
+              <div class="p-4">
+                <div class="text-primary mb-2 text-3xl font-bold md:text-4xl">
+                  86
+                </div>
+                <div class="text-gray-600">本月新增</div>
+              </div>
+              <div class="p-4">
+                <div class="text-primary mb-2 text-3xl font-bold md:text-4xl">
+                  156
+                </div>
+                <div class="text-gray-600">我的团队</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <div class="p-4">
-          <!-- 平台活动 -->
-          <div class="mb-6">
-            <h2 class="text-lg font-semibold mb-4">平台活动</h2>
-            <div class="space-y-4">
-              <!-- 活动1 -->
-              <div class="bg-white rounded-lg overflow-hidden card-shadow">
-                <div class="relative h-40">
+        <!-- 推广商品 -->
+        <section class="py-12">
+          <div class="container mx-auto px-4">
+            <div class="mb-8 flex items-center justify-between">
+              <h2 class="text-primary text-2xl font-bold">热门推广商品</h2>
+              <a href="#" class="text-primary flex items-center font-medium">
+                查看全部 <i class="fa fa-angle-right ml-1"></i>
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <!-- 商品1 -->
+              <div
+                class="card-hover overflow-hidden rounded-xl bg-white shadow-md">
+                <div class="relative">
                   <img
-                    src="https://picsum.photos/id/239/800/400"
-                    alt="夏季养生套餐"
-                    class="w-full h-full object-cover"
-                  />
+                    src="https://picsum.photos/id/237/400/300"
+                    alt="中医问诊套餐"
+                    class="h-48 w-full object-cover" />
                   <div
-                    class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full"
-                  >
-                    限时优惠
+                    class="bg-secondary absolute right-3 top-3 rounded-full px-2 py-1 text-xs text-white">
+                    佣金 ¥39
                   </div>
                 </div>
-                <div class="p-4">
-                  <h3 class="font-semibold text-lg mb-2">夏季祛湿排毒套餐</h3>
-                  <p class="text-gray-600 text-sm mb-3">
-                    包含三次艾灸+两次中药熏蒸，专为夏季祛湿排毒设计，改善体湿、疲劳等症状。
+                <div class="p-5">
+                  <h3 class="mb-2 text-lg font-bold">中医问诊套餐</h3>
+                  <p class="mb-4 line-clamp-2 text-sm text-gray-600">
+                    专业中医师辨证问诊、体质分析、健康评估及个性化调理建议
                   </p>
-                  <div class="flex items-center mb-3">
-                    <span class="text-red-500 font-bold text-xl">¥598</span>
-                    <span class="text-gray-400 line-through text-sm ml-2"
-                      >¥798</span
-                    >
-                    <span
-                      class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded"
-                      >立减200元</span
-                    >
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-xs text-gray-500"
-                      ><i class="fa fa-clock-o mr-1"></i>
-                      活动截止：2023-07-31</span
-                    >
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <span class="text-primary text-xl font-bold">¥199</span>
+                    </div>
                     <button
-                      class="bg-tab3 text-white text-sm px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
-                    >
-                      立即购买
+                      class="bg-primary/10 hover:bg-primary/20 text-primary rounded-lg px-4 py-2 font-medium transition">
+                      推广商品
                     </button>
                   </div>
                 </div>
               </div>
 
-              <!-- 活动2 -->
-              <div class="bg-white rounded-lg overflow-hidden card-shadow">
-                <div class="relative h-40">
+              <!-- 商品2 -->
+              <div
+                class="card-hover overflow-hidden rounded-xl bg-white shadow-md">
+                <div class="relative">
                   <img
-                    src="https://picsum.photos/id/240/800/400"
-                    alt="新用户福利"
-                    class="w-full h-full object-cover"
-                  />
+                    src="https://picsum.photos/id/238/400/300"
+                    alt="针灸理疗套餐"
+                    class="h-48 w-full object-cover" />
                   <div
-                    class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full"
-                  >
-                    新用户专享
+                    class="bg-secondary absolute right-3 top-3 rounded-full px-2 py-1 text-xs text-white">
+                    佣金 ¥79
                   </div>
                 </div>
-                <div class="p-4">
-                  <h3 class="font-semibold text-lg mb-2">新用户首次体验</h3>
-                  <p class="text-gray-600 text-sm mb-3">
-                    新用户首次到店体验任意理疗项目，均可享受8折优惠，另赠送养生茶一杯。
+                <div class="p-5">
+                  <h3 class="mb-2 text-lg font-bold">针灸理疗套餐</h3>
+                  <p class="mb-4 line-clamp-2 text-sm text-gray-600">
+                    专业针灸治疗，针对颈肩腰腿痛、失眠、亚健康等问题
                   </p>
-                  <div class="flex justify-between items-center mt-3">
-                    <span class="text-xs text-gray-500"
-                      ><i class="fa fa-clock-o mr-1"></i>
-                      活动截止：2023-12-31</span
-                    >
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <span class="text-primary text-xl font-bold">¥399</span>
+                    </div>
                     <button
-                      class="bg-tab3 text-white text-sm px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
-                    >
-                      领取优惠
+                      class="bg-primary/10 hover:bg-primary/20 text-primary rounded-lg px-4 py-2 font-medium transition">
+                      推广商品
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 商品3 -->
+              <div
+                class="card-hover overflow-hidden rounded-xl bg-white shadow-md">
+                <div class="relative">
+                  <img
+                    src="https://picsum.photos/id/239/400/300"
+                    alt="中药调理套餐"
+                    class="h-48 w-full object-cover" />
+                  <div
+                    class="bg-secondary absolute right-3 top-3 rounded-full px-2 py-1 text-xs text-white">
+                    佣金 ¥119
+                  </div>
+                </div>
+                <div class="p-5">
+                  <h3 class="mb-2 text-lg font-bold">中药调理套餐</h3>
+                  <p class="mb-4 line-clamp-2 text-sm text-gray-600">
+                    根据个人体质定制中药方剂，包含2周中药用量及复诊调整
+                  </p>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <span class="text-primary text-xl font-bold">¥599</span>
+                    </div>
+                    <button
+                      class="bg-primary/10 hover:bg-primary/20 text-primary rounded-lg px-4 py-2 font-medium transition">
+                      推广商品
                     </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </section>
 
-          <!-- 分享赚积分 -->
-          <div>
-            <h2 class="text-lg font-semibold mb-4">分享赚积分</h2>
-            <div class="bg-white rounded-lg p-4 card-shadow">
-              <div class="flex items-center mb-4">
+        <!-- 快速入口 -->
+        <section class="bg-accent py-12">
+          <div class="container mx-auto px-4">
+            <h2 class="text-primary mb-8 text-center text-2xl font-bold">
+              快速功能入口
+            </h2>
+
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <a
+                href="#promotion"
+                class="rounded-xl bg-white p-5 text-center shadow-sm transition hover:shadow-md">
                 <div
-                  class="w-12 h-12 rounded-full bg-tab3/10 flex items-center justify-center text-tab3 mr-3"
-                >
-                  <i class="fa fa-share-alt text-xl"></i>
+                  class="bg-primary/10 mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">
+                  <i class="fa fa-share-alt text-primary text-xl"></i>
                 </div>
-                <div>
-                  <h3 class="font-semibold">邀请好友，双方得积分</h3>
-                  <p class="text-xs text-gray-500">
-                    邀请好友注册并消费，您和好友都能获得积分奖励
-                  </p>
+                <div class="text-sm font-medium">我的推广</div>
+              </a>
+              <a
+                href="#commission"
+                class="rounded-xl bg-white p-5 text-center shadow-sm transition hover:shadow-md">
+                <div
+                  class="bg-primary/10 mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">
+                  <i class="fa fa-money text-primary text-xl"></i>
                 </div>
+                <div class="text-sm font-medium">佣金中心</div>
+              </a>
+              <a
+                href="#appointment"
+                class="rounded-xl bg-white p-5 text-center shadow-sm transition hover:shadow-md">
+                <div
+                  class="bg-primary/10 mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">
+                  <i class="fa fa-calendar text-primary text-xl"></i>
+                </div>
+                <div class="text-sm font-medium">预约服务</div>
+              </a>
+              <a
+                href="#profile"
+                class="rounded-xl bg-white p-5 text-center shadow-sm transition hover:shadow-md">
+                <div
+                  class="bg-primary/10 mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">
+                  <i class="fa fa-user text-primary text-xl"></i>
+                </div>
+                <div class="text-sm font-medium">个人中心</div>
+              </a>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 2. 我的推广 -->
+      <section id="promotion" class="page-section hidden">
+        <div class="bg-accent py-8">
+          <div class="container mx-auto px-4">
+            <h2 class="text-primary mb-2 text-2xl font-bold">我的推广</h2>
+            <p class="text-gray-600">分享优质中医服务，赚取丰厚佣金</p>
+          </div>
+        </div>
+
+        <!-- 推广数据 -->
+        <section class="bg-white py-8">
+          <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 gap-6 text-center md:grid-cols-4">
+              <div class="rounded-lg border border-gray-100 p-4 shadow-sm">
+                <div class="text-primary mb-1 text-2xl font-bold md:text-3xl">
+                  128
+                </div>
+                <div class="text-sm text-gray-600">推广订单</div>
+              </div>
+              <div class="rounded-lg border border-gray-100 p-4 shadow-sm">
+                <div class="text-primary mb-1 text-2xl font-bold md:text-3xl">
+                  ¥4,580
+                </div>
+                <div class="text-sm text-gray-600">推广收益</div>
+              </div>
+              <div class="rounded-lg border border-gray-100 p-4 shadow-sm">
+                <div class="text-primary mb-1 text-2xl font-bold md:text-3xl">
+                  36
+                </div>
+                <div class="text-sm text-gray-600">本月推广</div>
+              </div>
+              <div class="rounded-lg border border-gray-100 p-4 shadow-sm">
+                <div class="text-primary mb-1 text-2xl font-bold md:text-3xl">
+                  156
+                </div>
+                <div class="text-sm text-gray-600">团队人数</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 推广方式 -->
+        <section class="py-10">
+          <div class="container mx-auto px-4">
+            <h3 class="mb-6 text-center text-xl font-bold">推广方式</h3>
+
+            <div
+              class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
+              <!-- 推广二维码 -->
+              <div class="rounded-xl bg-white p-6 text-center shadow-md">
+                <div class="mx-auto mb-4 h-48 w-48 rounded-xl bg-gray-100 p-2">
+                  <img
+                    src="https://picsum.photos/id/1/200/200"
+                    alt="推广二维码"
+                    class="h-full w-full object-cover" />
+                </div>
+                <h4 class="mb-2 font-bold">我的推广二维码</h4>
+                <p class="mb-4 text-sm text-gray-600">保存图片分享给好友</p>
+                <button
+                  class="bg-primary/10 hover:bg-primary/20 text-primary rounded-lg px-4 py-2 font-medium transition">
+                  保存图片
+                </button>
               </div>
 
-              <div class="grid grid-cols-2 gap-3 mb-4">
-                <div class="bg-gray-50 p-3 rounded-lg text-center">
-                  <p class="text-xs text-gray-500 mb-1">您将获得</p>
-                  <p class="text-tab3 font-bold">200积分</p>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-lg text-center">
-                  <p class="text-xs text-gray-500 mb-1">好友将获得</p>
-                  <p class="text-tab3 font-bold">100积分 + 8折券</p>
-                </div>
-              </div>
-
-              <div
-                class="bg-gray-50 p-3 rounded-lg mb-4 flex items-center justify-between"
-              >
-                <span class="text-sm">您的邀请码</span>
-                <div class="flex items-center">
-                  <span class="font-mono font-semibold mr-2">RX887766</span>
-                  <button class="text-tab3 text-sm hover:underline">
+              <!-- 推广链接 -->
+              <div class="rounded-xl bg-white p-6 shadow-md">
+                <h4 class="mb-4 font-bold">我的推广链接</h4>
+                <div class="mb-4 flex">
+                  <input
+                    type="text"
+                    value="https://bencaotang.com/share/abc123456789"
+                    class="focus:ring-primary/50 focus:border-primary flex-1 rounded-l-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2"
+                    readonly />
+                  <button
+                    class="bg-primary hover:bg-primary/90 rounded-r-lg px-4 py-2 text-white transition">
                     复制
                   </button>
                 </div>
-              </div>
 
-              <div class="flex space-x-3">
-                <button
-                  class="flex-1 bg-tab3 text-white text-sm py-2 rounded-lg hover:bg-opacity-90 transition-colors flex items-center justify-center"
-                >
-                  <i class="fa fa-weixin mr-1"></i> 微信分享
-                </button>
-                <button
-                  class="flex-1 bg-gray-200 text-gray-700 text-sm py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center"
-                >
-                  <i class="fa fa-qrcode mr-1"></i> 生成海报
-                </button>
-              </div>
-
-              <div class="mt-4 pt-4 border-t border-gray-100">
-                <h4 class="font-medium mb-2 text-sm">我的邀请记录</h4>
-                <div class="space-y-2">
-                  <div class="flex justify-between text-sm">
-                    <span>已邀请好友：3人</span>
-                    <span>获得积分：600分</span>
-                  </div>
+                <h4 class="mb-3 font-bold">分享到</h4>
+                <div class="flex space-x-4">
                   <button
-                    class="text-tab3 text-sm hover:underline w-full text-center"
-                  >
-                    查看详情
+                    class="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-[#07C160]/10 text-[#07C160] transition hover:bg-[#07C160]/20">
+                    <i class="fa fa-weixin mb-1 text-xl"></i>
+                    <span class="text-xs">微信</span>
+                  </button>
+                  <button
+                    class="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-[#E6162D]/10 text-[#E6162D] transition hover:bg-[#E6162D]/20">
+                    <i class="fa fa-weibo mb-1 text-xl"></i>
+                    <span class="text-xs">微博</span>
+                  </button>
+                  <button
+                    class="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-[#1296DB]/10 text-[#1296DB] transition hover:bg-[#1296DB]/20">
+                    <i class="fa fa-qq mb-1 text-xl"></i>
+                    <span class="text-xs">QQ</span>
+                  </button>
+                  <button
+                    class="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition hover:bg-gray-200">
+                    <i class="fa fa-link mb-1 text-xl"></i>
+                    <span class="text-xs">更多</span>
                   </button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <!-- 个人中心 -->
-      <div id="profile-page" class="tab-page">
-        <header class="bg-tab4 text-white p-4 shadow-md">
-          <h1 class="text-xl font-serif font-bold">个人中心</h1>
-        </header>
+        <!-- 推广商品 -->
+        <section class="bg-white py-10">
+          <div class="container mx-auto px-4">
+            <div class="mb-6 flex items-center justify-between">
+              <h3 class="text-xl font-bold">推广商品</h3>
+              <a href="#" class="text-primary text-sm font-medium">查看全部</a>
+            </div>
+
+            <div class="space-y-4">
+              <!-- 商品1 -->
+              <div
+                class="overflow-hidden rounded-xl border border-gray-100 shadow-sm transition hover:shadow-md">
+                <div class="md:flex">
+                  <div class="md:w-1/4">
+                    <img
+                      src="https://picsum.photos/id/237/300/300"
+                      alt="中医问诊套餐"
+                      class="h-full w-full object-cover" />
+                  </div>
+                  <div class="p-4 md:w-3/4">
+                    <div class="flex flex-wrap items-start justify-between">
+                      <h4 class="mb-2 font-bold">中医问诊套餐</h4>
+                      <div class="flex items-center">
+                        <span class="text-primary mr-3 font-bold">¥199</span>
+                        <span
+                          class="bg-secondary/10 text-secondary rounded-full px-2 py-1 text-xs"
+                          >佣金 ¥39</span
+                        >
+                      </div>
+                    </div>
+                    <p class="mb-4 text-sm text-gray-600">
+                      专业中医师辨证问诊、体质分析、健康评估及个性化调理建议
+                    </p>
+                    <div class="flex items-center justify-between">
+                      <div class="text-sm text-gray-500">已推广: 28 单</div>
+                      <button
+                        class="bg-primary hover:bg-primary/90 rounded-lg px-4 py-1.5 text-sm font-medium text-white transition">
+                        分享推广
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 商品2 -->
+              <div
+                class="overflow-hidden rounded-xl border border-gray-100 shadow-sm transition hover:shadow-md">
+                <div class="md:flex">
+                  <div class="md:w-1/4">
+                    <img
+                      src="https://picsum.photos/id/238/300/300"
+                      alt="针灸理疗套餐"
+                      class="h-full w-full object-cover" />
+                  </div>
+                  <div class="p-4 md:w-3/4">
+                    <div class="flex flex-wrap items-start justify-between">
+                      <h4 class="mb-2 font-bold">针灸理疗套餐</h4>
+                      <div class="flex items-center">
+                        <span class="text-primary mr-3 font-bold">¥399</span>
+                        <span
+                          class="bg-secondary/10 text-secondary rounded-full px-2 py-1 text-xs"
+                          >佣金 ¥79</span
+                        >
+                      </div>
+                    </div>
+                    <p class="mb-4 text-sm text-gray-600">
+                      专业针灸治疗，针对颈肩腰腿痛、失眠、亚健康等问题
+                    </p>
+                    <div class="flex items-center justify-between">
+                      <div class="text-sm text-gray-500">已推广: 45 单</div>
+                      <button
+                        class="bg-primary hover:bg-primary/90 rounded-lg px-4 py-1.5 text-sm font-medium text-white transition">
+                        分享推广
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 商品3 -->
+              <div
+                class="overflow-hidden rounded-xl border border-gray-100 shadow-sm transition hover:shadow-md">
+                <div class="md:flex">
+                  <div class="md:w-1/4">
+                    <img
+                      src="https://picsum.photos/id/239/300/300"
+                      alt="中药调理套餐"
+                      class="h-full w-full object-cover" />
+                  </div>
+                  <div class="p-4 md:w-3/4">
+                    <div class="flex flex-wrap items-start justify-between">
+                      <h4 class="mb-2 font-bold">中药调理套餐</h4>
+                      <div class="flex items-center">
+                        <span class="text-primary mr-3 font-bold">¥599</span>
+                        <span
+                          class="bg-secondary/10 text-secondary rounded-full px-2 py-1 text-xs"
+                          >佣金 ¥119</span
+                        >
+                      </div>
+                    </div>
+                    <p class="mb-4 text-sm text-gray-600">
+                      根据个人体质定制中药方剂，包含2周中药用量及复诊调整
+                    </p>
+                    <div class="flex items-center justify-between">
+                      <div class="text-sm text-gray-500">已推广: 55 单</div>
+                      <button
+                        class="bg-primary hover:bg-primary/90 rounded-lg px-4 py-1.5 text-sm font-medium text-white transition">
+                        分享推广
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 推广教程 -->
+        <section class="py-10">
+          <div class="container mx-auto px-4">
+            <h3 class="mb-6 text-center text-xl font-bold">推广教程</h3>
+
+            <div class="mx-auto max-w-2xl rounded-xl bg-white p-6 shadow-md">
+              <div class="space-y-6">
+                <div class="flex">
+                  <div
+                    class="bg-primary/10 mr-4 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                    <span class="text-primary font-bold">1</span>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 font-bold">选择要推广的商品</h4>
+                    <p class="text-sm text-gray-600">
+                      从推广商品列表中选择您想推广的中医服务套餐
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex">
+                  <div
+                    class="bg-primary/10 mr-4 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                    <span class="text-primary font-bold">2</span>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 font-bold">获取推广链接或二维码</h4>
+                    <p class="text-sm text-gray-600">
+                      点击"分享推广"按钮，获取您的专属推广链接或二维码
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex">
+                  <div
+                    class="bg-primary/10 mr-4 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                    <span class="text-primary font-bold">3</span>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 font-bold">分享给潜在客户</h4>
+                    <p class="text-sm text-gray-600">
+                      将推广链接或二维码分享给亲友或社交平台上的潜在客户
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex">
+                  <div
+                    class="bg-primary/10 mr-4 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                    <span class="text-primary font-bold">4</span>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 font-bold">赚取佣金</h4>
+                    <p class="text-sm text-gray-600">
+                      当客户通过您的链接或二维码成功购买服务后，您将获得相应佣金
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 3. 佣金中心 -->
+      <section id="commission" class="page-section hidden">
+        <div class="bg-accent py-8">
+          <div class="container mx-auto px-4">
+            <h2 class="text-primary mb-2 text-2xl font-bold">佣金中心</h2>
+            <p class="text-gray-600">查看您的佣金明细和收益情况</p>
+          </div>
+        </div>
+
+        <!-- 佣金概览 -->
+        <section class="bg-white py-8">
+          <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+              <div class="bg-primary rounded-xl p-6 text-center text-white">
+                <div class="mb-1 text-sm opacity-80">累计佣金</div>
+                <div class="mb-2 text-3xl font-bold">¥12,580</div>
+                <div class="text-xs opacity-80">已结算 + 待结算</div>
+              </div>
+              <div class="bg-accent rounded-xl p-6 text-center">
+                <div class="mb-1 text-sm text-gray-600">可提现佣金</div>
+                <div class="text-primary mb-2 text-3xl font-bold">¥3,250</div>
+                <button class="text-primary text-xs font-medium">
+                  立即提现 <i class="fa fa-arrow-right ml-1"></i>
+                </button>
+              </div>
+              <div class="rounded-xl bg-gray-50 p-6 text-center">
+                <div class="mb-1 text-sm text-gray-600">待结算佣金</div>
+                <div class="text-primary mb-2 text-3xl font-bold">¥1,280</div>
+                <div class="text-xs text-gray-500">预计7个工作日后可提现</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 收益趋势 -->
+        <section class="py-8">
+          <div class="container mx-auto px-4">
+            <h3 class="mb-6 text-xl font-bold">收益趋势</h3>
+
+            <div class="rounded-xl bg-white p-6 shadow-md">
+              <div class="mb-6 flex items-center justify-between">
+                <div class="flex space-x-2">
+                  <button
+                    class="bg-primary rounded-lg px-4 py-1.5 text-sm font-medium text-white">
+                    月度
+                  </button>
+                  <button
+                    class="rounded-lg bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-200">
+                    季度
+                  </button>
+                  <button
+                    class="rounded-lg bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-200">
+                    年度
+                  </button>
+                </div>
+                <select
+                  class="focus:ring-primary/50 focus:border-primary rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2">
+                  <option>2023年</option>
+                  <option>2022年</option>
+                </select>
+              </div>
+
+              <div class="h-64">
+                <canvas id="commissionChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 佣金明细 -->
+        <section class="bg-white py-8">
+          <div class="container mx-auto px-4">
+            <div class="mb-6 flex items-center justify-between">
+              <h3 class="text-xl font-bold">佣金明细</h3>
+              <select
+                class="focus:ring-primary/50 focus:border-primary rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2">
+                <option>全部状态</option>
+                <option>已结算</option>
+                <option>待结算</option>
+                <option>已提现</option>
+              </select>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-gray-200">
+                    <th
+                      class="py-3 text-left text-sm font-medium text-gray-500">
+                      日期
+                    </th>
+                    <th
+                      class="py-3 text-left text-sm font-medium text-gray-500">
+                      推广商品
+                    </th>
+                    <th
+                      class="py-3 text-left text-sm font-medium text-gray-500">
+                      订单号
+                    </th>
+                    <th
+                      class="py-3 text-left text-sm font-medium text-gray-500">
+                      佣金金额
+                    </th>
+                    <th
+                      class="py-3 text-left text-sm font-medium text-gray-500">
+                      状态
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-gray-100">
+                    <td class="py-3 text-sm text-gray-600">2023-06-18</td>
+                    <td class="py-3 text-sm text-gray-600">中医问诊套餐</td>
+                    <td class="py-3 text-sm text-gray-600">TCM20230618001</td>
+                    <td class="text-primary py-3 text-sm font-medium">¥39</td>
+                    <td class="py-3">
+                      <span
+                        class="rounded-full bg-yellow-100 px-2 py-1 text-xs text-yellow-800"
+                        >待结算</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="border-b border-gray-100">
+                    <td class="py-3 text-sm text-gray-600">2023-06-17</td>
+                    <td class="py-3 text-sm text-gray-600">针灸理疗套餐</td>
+                    <td class="py-3 text-sm text-gray-600">TCM20230617025</td>
+                    <td class="text-primary py-3 text-sm font-medium">¥79</td>
+                    <td class="py-3">
+                      <span
+                        class="rounded-full bg-yellow-100 px-2 py-1 text-xs text-yellow-800"
+                        >待结算</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="border-b border-gray-100">
+                    <td class="py-3 text-sm text-gray-600">2023-06-15</td>
+                    <td class="py-3 text-sm text-gray-600">中药调理套餐</td>
+                    <td class="py-3 text-sm text-gray-600">TCM20230615018</td>
+                    <td class="text-primary py-3 text-sm font-medium">¥119</td>
+                    <td class="py-3">
+                      <span
+                        class="rounded-full bg-green-100 px-2 py-1 text-xs text-green-800"
+                        >已结算</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="border-b border-gray-100">
+                    <td class="py-3 text-sm text-gray-600">2023-06-12</td>
+                    <td class="py-3 text-sm text-gray-600">中医问诊套餐</td>
+                    <td class="py-3 text-sm text-gray-600">TCM20230612009</td>
+                    <td class="text-primary py-3 text-sm font-medium">¥39</td>
+                    <td class="py-3">
+                      <span
+                        class="rounded-full bg-green-100 px-2 py-1 text-xs text-green-800"
+                        >已结算</span
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 text-sm text-gray-600">2023-06-10</td>
+                    <td class="py-3 text-sm text-gray-600">针灸理疗套餐</td>
+                    <td class="py-3 text-sm text-gray-600">TCM20230610056</td>
+                    <td class="text-primary py-3 text-sm font-medium">¥79</td>
+                    <td class="py-3">
+                      <span
+                        class="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800"
+                        >已提现</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-6 text-center">
+              <button
+                class="rounded-lg border border-gray-300 bg-white px-6 py-2 font-medium text-gray-700 transition hover:bg-gray-50">
+                加载更多
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 提现记录 -->
+        <section class="py-8">
+          <div class="container mx-auto px-4">
+            <h3 class="mb-6 text-xl font-bold">提现记录</h3>
+
+            <div class="overflow-hidden rounded-xl bg-white shadow-md">
+              <div class="divide-y divide-gray-100">
+                <!-- 提现记录1 -->
+                <div class="p-4 md:p-6">
+                  <div class="mb-3 flex flex-wrap items-start justify-between">
+                    <h4 class="font-bold">提现至微信钱包</h4>
+                    <span class="font-medium text-green-600">¥1,500</span>
+                  </div>
+                  <div
+                    class="flex flex-wrap justify-between text-sm text-gray-500">
+                    <div>提现时间: 2023-06-01</div>
+                    <div>状态: 已到账</div>
+                  </div>
+                </div>
+
+                <!-- 提现记录2 -->
+                <div class="p-4 md:p-6">
+                  <div class="mb-3 flex flex-wrap items-start justify-between">
+                    <h4 class="font-bold">提现至支付宝</h4>
+                    <span class="font-medium text-green-600">¥2,000</span>
+                  </div>
+                  <div
+                    class="flex flex-wrap justify-between text-sm text-gray-500">
+                    <div>提现时间: 2023-05-15</div>
+                    <div>状态: 已到账</div>
+                  </div>
+                </div>
+
+                <!-- 提现记录3 -->
+                <div class="p-4 md:p-6">
+                  <div class="mb-3 flex flex-wrap items-start justify-between">
+                    <h4 class="font-bold">提现至银行卡</h4>
+                    <span class="font-medium text-green-600">¥1,200</span>
+                  </div>
+                  <div
+                    class="flex flex-wrap justify-between text-sm text-gray-500">
+                    <div>提现时间: 2023-04-28</div>
+                    <div>状态: 已到账</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 4. 个人中心 -->
+      <section id="profile" class="page-section hidden">
+        <div class="bg-accent py-8">
+          <div class="container mx-auto px-4">
+            <h2 class="text-primary mb-2 text-2xl font-bold">个人中心</h2>
+            <p class="text-gray-600">管理您的账户信息和设置</p>
+          </div>
+        </div>
 
         <!-- 用户信息 -->
-        <div class="bg-white p-4 mb-4">
-          <div class="flex items-center">
-            <img
-              src="https://picsum.photos/id/1001/100/100"
-              alt="用户头像"
-              class="w-16 h-16 rounded-full object-cover mr-4"
-            />
-            <div class="flex-1">
-              <div class="flex items-center">
-                <h2 class="font-semibold text-lg">陈健康</h2>
-                <span
-                  class="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full"
-                  >白银会员</span
-                >
+        <section class="bg-white py-8">
+          <div class="container mx-auto px-4">
+            <div class="flex flex-col items-center md:flex-row">
+              <div
+                class="mb-4 h-24 w-24 overflow-hidden rounded-full bg-gray-200 md:mb-0 md:mr-6">
+                <img
+                  src="https://picsum.photos/id/64/200/200"
+                  alt="用户头像"
+                  class="h-full w-full object-cover" />
               </div>
-              <p class="text-sm text-gray-500">健康卡号：JK12345678</p>
-              <div class="flex mt-2">
-                <div class="mr-4">
-                  <p class="text-sm font-medium">1200</p>
-                  <p class="text-xs text-gray-500">我的积分</p>
+              <div class="text-center md:text-left">
+                <h3 class="mb-1 text-xl font-bold">张健康</h3>
+                <p class="mb-3 text-gray-500">推广等级: 黄金会员</p>
+                <div class="flex justify-center space-x-3 md:justify-start">
+                  <span
+                    class="bg-primary/10 text-primary rounded-full px-3 py-1 text-xs"
+                    >累计推广: 328 单</span
+                  >
+                  <span
+                    class="bg-primary/10 text-primary rounded-full px-3 py-1 text-xs"
+                    >团队人数: 156 人</span
+                  >
                 </div>
-                <div>
-                  <p class="text-sm font-medium">3</p>
-                  <p class="text-xs text-gray-500">待使用券</p>
-                </div>
+              </div>
+              <div class="ml-auto mt-4 md:mt-0">
+                <button
+                  class="border-primary text-primary hover:bg-primary/5 rounded-lg border bg-white px-5 py-2 font-medium transition">
+                  编辑资料
+                </button>
               </div>
             </div>
-            <button class="text-tab4">
-              <i class="fa fa-angle-right text-xl"></i>
-            </button>
           </div>
-        </div>
+        </section>
 
         <!-- 功能菜单 -->
-        <div class="bg-white mb-4">
-          <div class="p-3 border-b border-gray-100">
-            <h3 class="text-sm font-medium text-gray-500">我的服务</h3>
+        <section class="py-6">
+          <div class="container mx-auto px-4">
+            <div class="rounded-xl bg-white shadow-md">
+              <div class="grid grid-cols-2 gap-0 md:grid-cols-4">
+                <a
+                  href="#promotion"
+                  class="flex flex-col items-center justify-center border-b border-gray-100 p-5 transition hover:bg-gray-50 md:border-b-0 md:border-r">
+                  <div
+                    class="bg-primary/10 mb-2 flex h-10 w-10 items-center justify-center rounded-full">
+                    <i class="fa fa-share-alt text-primary"></i>
+                  </div>
+                  <div class="text-sm font-medium">我的推广</div>
+                </a>
+                <a
+                  href="#commission"
+                  class="flex flex-col items-center justify-center border-b border-gray-100 p-5 transition hover:bg-gray-50 md:border-b-0 md:border-r">
+                  <div
+                    class="bg-primary/10 mb-2 flex h-10 w-10 items-center justify-center rounded-full">
+                    <i class="fa fa-money text-primary"></i>
+                  </div>
+                  <div class="text-sm font-medium">佣金中心</div>
+                </a>
+                <a
+                  href="#"
+                  class="flex flex-col items-center justify-center border-b border-gray-100 p-5 transition hover:bg-gray-50 md:border-b-0 md:border-r">
+                  <div
+                    class="bg-primary/10 mb-2 flex h-10 w-10 items-center justify-center rounded-full">
+                    <i class="fa fa-calendar-check-o text-primary"></i>
+                  </div>
+                  <div class="text-sm font-medium">我的订单</div>
+                </a>
+                <a
+                  href="#"
+                  class="flex flex-col items-center justify-center border-b border-gray-100 p-5 transition hover:bg-gray-50 md:border-b-0">
+                  <div
+                    class="bg-primary/10 mb-2 flex h-10 w-10 items-center justify-center rounded-full">
+                    <i class="fa fa-users text-primary"></i>
+                  </div>
+                  <div class="text-sm font-medium">我的团队</div>
+                </a>
+              </div>
+            </div>
           </div>
-          <div class="grid grid-cols-3">
-            <div
-              class="flex flex-col items-center p-4 border-b border-r border-gray-100"
-            >
-              <i class="fa fa-calendar text-tab4 text-xl mb-2"></i>
-              <span class="text-sm">我的预约</span>
+        </section>
+
+        <!-- 个人设置 -->
+        <section class="bg-white py-6">
+          <div class="container mx-auto px-4">
+            <h3 class="mb-4 text-lg font-bold">账户设置</h3>
+
+            <div class="space-y-1">
+              <a
+                href="#"
+                class="flex items-center justify-between border-b border-gray-100 p-4 transition hover:bg-gray-50">
+                <div class="flex items-center">
+                  <div
+                    class="bg-primary/10 mr-3 flex h-8 w-8 items-center justify-center rounded-full">
+                    <i class="fa fa-user-o text-primary"></i>
+                  </div>
+                  <span>个人资料</span>
+                </div>
+                <i class="fa fa-angle-right text-gray-400"></i>
+              </a>
+
+              <a
+                href="#"
+                class="flex items-center justify-between border-b border-gray-100 p-4 transition hover:bg-gray-50">
+                <div class="flex items-center">
+                  <div
+                    class="bg-primary/10 mr-3 flex h-8 w-8 items-center justify-center rounded-full">
+                    <i class="fa fa-credit-card text-primary"></i>
+                  </div>
+                  <span>银行卡管理</span>
+                </div>
+                <i class="fa fa-angle-right text-gray-400"></i>
+              </a>
+
+              <a
+                href="#"
+                class="flex items-center justify-between border-b border-gray-100 p-4 transition hover:bg-gray-50">
+                <div class="flex items-center">
+                  <div
+                    class="bg-primary/10 mr-3 flex h-8 w-8 items-center justify-center rounded-full">
+                    <i class="fa fa-bell-o text-primary"></i>
+                  </div>
+                  <span>消息通知</span>
+                </div>
+                <i class="fa fa-angle-right text-gray-400"></i>
+              </a>
+
+              <a
+                href="#"
+                class="flex items-center justify-between border-b border-gray-100 p-4 transition hover:bg-gray-50">
+                <div class="flex items-center">
+                  <div
+                    class="bg-primary/10 mr-3 flex h-8 w-8 items-center justify-center rounded-full">
+                    <i class="fa fa-question-circle-o text-primary"></i>
+                  </div>
+                  <span>帮助中心</span>
+                </div>
+                <i class="fa fa-angle-right text-gray-400"></i>
+              </a>
+
+              <a
+                href="#"
+                class="flex items-center justify-between border-b border-gray-100 p-4 transition hover:bg-gray-50">
+                <div class="flex items-center">
+                  <div
+                    class="bg-primary/10 mr-3 flex h-8 w-8 items-center justify-center rounded-full">
+                    <i class="fa fa-shield text-primary"></i>
+                  </div>
+                  <span>关于我们</span>
+                </div>
+                <i class="fa fa-angle-right text-gray-400"></i>
+              </a>
+
+              <button
+                class="flex w-full items-center justify-between p-4 text-red-500 transition hover:bg-gray-50">
+                <div class="flex items-center">
+                  <div
+                    class="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-red-50">
+                    <i class="fa fa-sign-out text-red-500"></i>
+                  </div>
+                  <span>退出登录</span>
+                </div>
+                <i class="fa fa-angle-right"></i>
+              </button>
             </div>
-            <div
-              class="flex flex-col items-center p-4 border-b border-r border-gray-100"
-            >
-              <i class="fa fa-ticket text-tab4 text-xl mb-2"></i>
-              <span class="text-sm">我的优惠券</span>
+          </div>
+        </section>
+
+        <!-- 推广等级 -->
+        <section class="py-8">
+          <div class="container mx-auto px-4">
+            <h3 class="mb-4 text-lg font-bold">我的推广等级</h3>
+
+            <div class="rounded-xl bg-white p-6 shadow-md">
+              <div
+                class="mb-6 flex flex-col items-center justify-between md:flex-row">
+                <div class="mb-4 text-center md:mb-0 md:text-left">
+                  <div class="mb-1 text-sm text-gray-500">当前等级</div>
+                  <div
+                    class="flex items-center justify-center md:justify-start">
+                    <span class="text-primary mr-2 text-xl font-bold"
+                      >黄金会员</span
+                    >
+                    <span
+                      class="bg-primary/10 text-primary rounded-full px-2 py-1 text-xs"
+                      >下一级: 钻石会员</span
+                    >
+                  </div>
+                </div>
+                <div class="text-center md:text-right">
+                  <div class="mb-1 text-sm text-gray-500">距离升级还需</div>
+                  <div class="text-primary text-xl font-bold">72 单</div>
+                </div>
+              </div>
+
+              <div class="mb-2">
+                <div class="mb-1 flex justify-between text-sm">
+                  <span>当前进度: 128/200 单</span>
+                  <span>64%</span>
+                </div>
+                <div class="h-2.5 w-full rounded-full bg-gray-200">
+                  <div
+                    class="bg-primary h-2.5 rounded-full"
+                    style="width: 64%"></div>
+                </div>
+              </div>
+
+              <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div class="rounded-lg border border-gray-100 p-4 text-center">
+                  <div class="mb-1 text-sm text-gray-500">青铜会员</div>
+                  <div class="text-primary mb-2 font-bold">0-50 单</div>
+                  <div class="text-xs text-gray-500">佣金比例: 10%</div>
+                </div>
+                <div
+                  class="border-primary bg-primary/5 rounded-lg border-2 p-4 text-center">
+                  <div class="mb-1 text-sm text-gray-500">黄金会员</div>
+                  <div class="text-primary mb-2 font-bold">51-200 单</div>
+                  <div class="text-xs text-gray-500">佣金比例: 15%</div>
+                </div>
+                <div class="rounded-lg border border-gray-100 p-4 text-center">
+                  <div class="mb-1 text-sm text-gray-500">钻石会员</div>
+                  <div class="text-primary mb-2 font-bold">201+ 单</div>
+                  <div class="text-xs text-gray-500">佣金比例: 20%</div>
+                </div>
+              </div>
             </div>
-            <div
-              class="flex flex-col items-center p-4 border-b border-gray-100"
-            >
-              <i class="fa fa-credit-card text-tab4 text-xl mb-2"></i>
-              <span class="text-sm">我的订单</span>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <!-- 底部Tabar导航 -->
+    <nav
+      class="fixed bottom-0 left-0 right-0 z-40 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] md:hidden">
+      <div class="flex justify-around">
+        <a
+          href="#home"
+          class="tab-item tab-active flex flex-1 flex-col items-center justify-center py-3">
+          <i class="fa fa-home mb-1 text-lg"></i>
+          <span class="text-xs">首页</span>
+        </a>
+        <a
+          href="#promotion"
+          class="tab-item flex flex-1 flex-col items-center justify-center py-3">
+          <i class="fa fa-share-alt mb-1 text-lg"></i>
+          <span class="text-xs">我的推广</span>
+        </a>
+        <a
+          href="#commission"
+          class="tab-item flex flex-1 flex-col items-center justify-center py-3">
+          <i class="fa fa-money mb-1 text-lg"></i>
+          <span class="text-xs">佣金中心</span>
+        </a>
+        <a
+          href="#profile"
+          class="tab-item flex flex-1 flex-col items-center justify-center py-3">
+          <i class="fa fa-user mb-1 text-lg"></i>
+          <span class="text-xs">个人中心</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- 页脚 - 仅在大屏幕显示 -->
+    <footer class="bg-dark hidden py-8 text-white md:block">
+      <div class="container mx-auto px-4">
+        <div class="mb-6 grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div>
+            <div class="mb-4 flex items-center space-x-2">
+              <i class="fa fa-leaf text-secondary text-2xl"></i>
+              <h3 class="text-xl font-bold">本草堂</h3>
             </div>
-            <div
-              class="flex flex-col items-center p-4 border-b border-r border-gray-100"
-            >
-              <i class="fa fa-star text-tab4 text-xl mb-2"></i>
-              <span class="text-sm">我的收藏</span>
-            </div>
-            <div
-              class="flex flex-col items-center p-4 border-b border-r border-gray-100"
-            >
-              <i class="fa fa-gift text-tab4 text-xl mb-2"></i>
-              <span class="text-sm">会员福利</span>
-            </div>
-            <div
-              class="flex flex-col items-center p-4 border-b border-gray-100"
-            >
-              <i class="fa fa-heartbeat text-tab4 text-xl mb-2"></i>
-              <span class="text-sm">健康档案</span>
-            </div>
+            <p class="text-sm text-gray-400">
+              传承中医智慧，守护全家健康，让中医走进生活
+            </p>
+          </div>
+
+          <div>
+            <h4 class="mb-4 text-lg font-bold">联系我们</h4>
+            <ul class="space-y-2 text-sm text-gray-400">
+              <li class="flex items-center">
+                <i class="fa fa-phone text-secondary mr-3"></i>
+                <span>400-123-4567</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa fa-envelope text-secondary mr-3"></i>
+                <span>service@bencaotang.com</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa fa-clock-o text-secondary mr-3"></i>
+                <span>周一至周日 8:00-20:00</span>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <!-- 其他功能 -->
-        <div class="bg-white mb-20">
-          <div class="p-3 border-b border-gray-100">
-            <h3 class="text-sm font-medium text-gray-500">其他功能</h3>
-          </div>
-          <div class="divide-y divide-gray-100">
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center">
-                <i class="fa fa-cog text-tab4 mr-3"></i>
-                <span>设置</span>
-              </div>
-              <i class="fa fa-angle-right text-gray-400"></i>
-            </div>
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center">
-                <i class="fa fa-question-circle text-tab4 mr-3"></i>
-                <span>帮助中心</span>
-              </div>
-              <i class="fa fa-angle-right text-gray-400"></i>
-            </div>
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center">
-                <i class="fa fa-phone text-tab4 mr-3"></i>
-                <span>联系客服</span>
-              </div>
-              <i class="fa fa-angle-right text-gray-400"></i>
-            </div>
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center">
-                <i class="fa fa-info-circle text-tab4 mr-3"></i>
-                <span>关于我们</span>
-              </div>
-              <i class="fa fa-angle-right text-gray-400"></i>
-            </div>
-          </div>
-          <div class="p-4 mt-4">
-            <button
-              class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors"
-            >
-              退出登录
-            </button>
-          </div>
+        <div
+          class="border-t border-gray-800 pt-6 text-center text-sm text-gray-500">
+          <p>© 2023 本草堂中医平台 版权所有 | 京ICP备12345678号</p>
         </div>
+      </div>
+    </footer>
+
+    <!-- 预约服务弹窗 -->
+    <div
+      id="appointmentModal"
+      class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50">
+      <div
+        class="mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl bg-white p-6">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-primary text-xl font-bold">预约服务</h3>
+          <button
+            id="closeAppointmentModal"
+            class="text-gray-400 hover:text-gray-600">
+            <i class="fa fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <form id="appointmentForm">
+          <div class="mb-4">
+            <label
+              class="mb-2 block text-sm font-medium text-gray-700"
+              for="serviceTypeModal">
+              服务类型
+            </label>
+            <select
+              id="serviceTypeModal"
+              class="focus:ring-primary/50 focus:border-primary w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2">
+              <option value="">请选择服务类型</option>
+              <option value="consultation">中医问诊</option>
+              <option value="acupuncture">针灸理疗</option>
+              <option value="massage">推拿按摩</option>
+              <option value="prescription">中药调理</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label
+              class="mb-2 block text-sm font-medium text-gray-700"
+              for="doctorModal">
+              选择医师
+            </label>
+            <select
+              id="doctorModal"
+              class="focus:ring-primary/50 focus:border-primary w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2">
+              <option value="">请选择医师</option>
+              <option value="1">陈医师 - 内科</option>
+              <option value="2">林医师 - 针灸科</option>
+              <option value="3">王医师 - 推拿科</option>
+              <option value="4">张医师 - 妇科</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label
+              class="mb-2 block text-sm font-medium text-gray-700"
+              for="dateModal">
+              预约日期
+            </label>
+            <input
+              type="date"
+              id="dateModal"
+              class="focus:ring-primary/50 focus:border-primary w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2" />
+          </div>
+
+          <div class="mb-6">
+            <label
+              class="mb-2 block text-sm font-medium text-gray-700"
+              for="timeModal">
+              预约时间
+            </label>
+            <select
+              id="timeModal"
+              class="focus:ring-primary/50 focus:border-primary w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2">
+              <option value="">请选择时间</option>
+              <option value="09:00">09:00 - 10:00</option>
+              <option value="10:00">10:00 - 11:00</option>
+              <option value="14:00">14:00 - 15:00</option>
+              <option value="15:00">15:00 - 16:00</option>
+              <option value="16:00">16:00 - 17:00</option>
+            </select>
+          </div>
+
+          <button
+            type="button"
+            id="submitAppointmentModal"
+            class="bg-primary hover:bg-primary/90 w-full rounded-lg px-6 py-3 font-medium text-white transition">
+            确认预约
+          </button>
+        </form>
       </div>
     </div>
 
-    <!-- 底部TabBar -->
+    <!-- 预约成功弹窗 -->
     <div
-      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10"
-    >
-      <div class="flex justify-around">
-        <!-- 首页 -->
-        <button
-          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-tab1"
-          data-tab="home-page"
-        >
-          <i class="fa fa-home text-xl mb-1"></i>
-          <span class="text-xs">首页</span>
-        </button>
-        <!-- 看诊记录 -->
-        <button
-          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
-          data-tab="records-page"
-        >
-          <i class="fa fa-file-text-o text-xl mb-1"></i>
-          <span class="text-xs">看诊记录</span>
-        </button>
-        <!-- 推广 -->
-        <button
-          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
-          data-tab="promotion-page"
-        >
-          <i class="fa fa-bullhorn text-xl mb-1"></i>
-          <span class="text-xs">推广</span>
-        </button>
-        <!-- 个人中心 -->
-        <button
-          class="tab-button flex-1 py-2 flex flex-col items-center justify-center text-gray-500"
-          data-tab="profile-page"
-        >
-          <i class="fa fa-user-o text-xl mb-1"></i>
-          <span class="text-xs">我的</span>
-        </button>
+      id="successModal"
+      class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50">
+      <div class="mx-4 w-full max-w-md rounded-xl bg-white p-8">
+        <div class="text-center">
+          <div
+            class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+            <i class="fa fa-check text-2xl text-green-500"></i>
+          </div>
+          <h3 class="mb-2 text-xl font-bold">预约成功！</h3>
+          <p class="mb-6 text-gray-600">您的预约已提交，我们将尽快与您确认</p>
+          <div class="mb-6 rounded-lg bg-gray-100 p-4 text-left">
+            <div class="mb-2 flex justify-between">
+              <span class="text-gray-500">预约编号：</span>
+              <span class="font-medium">YC20230618001</span>
+            </div>
+            <div class="mb-2 flex justify-between">
+              <span class="text-gray-500">预约时间：</span>
+              <span class="font-medium">2023-06-20 10:00</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">医师：</span>
+              <span class="font-medium">陈医师</span>
+            </div>
+          </div>
+          <button
+            id="closeSuccessModal"
+            class="bg-primary hover:bg-primary/90 w-full rounded-lg px-6 py-3 font-medium text-white transition">
+            确认
+          </button>
+        </div>
       </div>
     </div>
 
     <script>
-      // Tab切换功能
-      const tabButtons = document.querySelectorAll(".tab-button");
-      const tabPages = document.querySelectorAll(".tab-page");
+      // 页面切换功能
+      document.addEventListener('DOMContentLoaded', function () {
+        // 导航链接点击事件
+        const tabLinks = document.querySelectorAll('.tab-link');
+        const tabItems = document.querySelectorAll('.tab-item');
+        const pageSections = document.querySelectorAll('.page-section');
 
-      tabButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          // 移除所有激活状态
-          tabButtons.forEach((btn) => {
-            btn.classList.remove(
-              "text-tab1",
-              "text-tab2",
-              "text-tab3",
-              "text-tab4"
-            );
-            btn.classList.add("text-gray-500");
+        // 处理所有导航元素的通用函数
+        function setupNavElements(elements) {
+          elements.forEach((element) => {
+            element.addEventListener('click', function (e) {
+              e.preventDefault();
+
+              // 移除所有导航的活跃状态
+              tabLinks.forEach((nav) => nav.classList.remove('tab-active'));
+              tabItems.forEach((item) => item.classList.remove('tab-active'));
+
+              // 添加当前导航的活跃状态
+              this.classList.add('tab-active');
+
+              // 获取目标页面ID
+              const targetId = this.getAttribute('href');
+
+              // 隐藏所有页面
+              pageSections.forEach((section) =>
+                section.classList.add('hidden'),
+              );
+              // 显示目标页面
+              document.querySelector(targetId).classList.remove('hidden');
+
+              // 滚动到页面顶部
+              window.scrollTo(0, 0);
+            });
           });
+        }
 
-          tabPages.forEach((page) => {
-            page.classList.remove("active");
+        // 设置桌面端和移动端导航
+        setupNavElements(tabLinks);
+        setupNavElements(tabItems);
+
+        // 佣金图表
+        const ctx = document.getElementById('commissionChart').getContext('2d');
+        const commissionChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+            datasets: [
+              {
+                label: '佣金收益',
+                data: [1250, 1800, 1500, 2100, 2450, 3480],
+                backgroundColor: 'rgba(45, 106, 79, 0.7)',
+                borderRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return '¥' + value;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // 预约服务相关
+        const appointmentLinks = document.querySelectorAll(
+          'a[href="#appointment"]',
+        );
+        const appointmentModal = document.getElementById('appointmentModal');
+        const closeAppointmentModal = document.getElementById(
+          'closeAppointmentModal',
+        );
+        const successModal = document.getElementById('successModal');
+        const closeSuccessModal = document.getElementById('closeSuccessModal');
+        const submitAppointmentModal = document.getElementById(
+          'submitAppointmentModal',
+        );
+
+        // 打开预约弹窗
+        appointmentLinks.forEach((link) => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            appointmentModal.classList.remove('hidden');
           });
+        });
 
-          // 设置当前激活状态
-          const tabId = button.getAttribute("data-tab");
-          button.classList.remove("text-gray-500");
+        // 关闭预约弹窗
+        closeAppointmentModal.addEventListener('click', function () {
+          appointmentModal.classList.add('hidden');
+        });
 
-          // 根据不同的tab设置不同的颜色
-          if (tabId === "home-page") {
-            button.classList.add("text-tab1");
-          } else if (tabId === "records-page") {
-            button.classList.add("text-tab2");
-          } else if (tabId === "promotion-page") {
-            button.classList.add("text-tab3");
-          } else if (tabId === "profile-page") {
-            button.classList.add("text-tab4");
+        // 关闭成功弹窗
+        closeSuccessModal.addEventListener('click', function () {
+          successModal.classList.add('hidden');
+        });
+
+        // 提交预约
+        submitAppointmentModal.addEventListener('click', function () {
+          // 简单验证
+          const serviceType = document.getElementById('serviceTypeModal').value;
+          const doctor = document.getElementById('doctorModal').value;
+          const date = document.getElementById('dateModal').value;
+          const time = document.getElementById('timeModal').value;
+
+          if (!serviceType || !doctor || !date || !time) {
+            alert('请填写完整的预约信息');
+            return;
           }
 
-          document.getElementById(tabId).classList.add("active");
+          // 关闭预约弹窗，显示成功弹窗
+          appointmentModal.classList.add('hidden');
+          successModal.classList.remove('hidden');
         });
       });
-
-      // 轮播图功能
-      let currentSlide = 0;
-      const slidesContainer = document.querySelector(
-        ".flex.transition-transform"
-      );
-      const slides = document.querySelectorAll(".min-w-full.h-full");
-      const indicators = document.querySelectorAll(
-        ".absolute.bottom-2.right-2 span"
-      );
-
-      function showSlide(index) {
-        if (index >= slides.length) currentSlide = 0;
-        if (index < 0) currentSlide = slides.length - 1;
-
-        slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-
-        // 更新指示器
-        indicators.forEach((indicator, i) => {
-          if (i === currentSlide) {
-            indicator.classList.add("bg-white");
-            indicator.classList.remove("bg-white/50");
-          } else {
-            indicator.classList.remove("bg-white");
-            indicator.classList.add("bg-white/50");
-          }
-        });
-      }
-
-      // 自动轮播
-      setInterval(() => {
-        currentSlide++;
-        showSlide(currentSlide);
-      }, 5000);
     </script>
   </body>
 </html>
