@@ -1,3 +1,7 @@
 if git diff --cached --name-only | grep -q "^tcm-physical-admin/"; then
   cd tcm-physical-admin && pnpm exec lint-staged
 fi
+
+if git diff --cached --name-only | grep -q "^tcm-physical-mobile/"; then
+  cd tcm-physical-mobile && pnpm exec lint-staged
+fi
