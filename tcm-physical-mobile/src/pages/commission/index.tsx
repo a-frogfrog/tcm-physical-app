@@ -1,7 +1,13 @@
+import { PageTitle } from '#/components/common';
+import CommissionCenter from './modules/CommissionCenter';
+import RevenueChart from './modules/RevenueChart';
+
 export default function CommissionPage() {
   return (
-    <div>
-      <h1 className='p-2 text-xl'>TCM Physical Mobile - 佣金</h1>
-    </div>
+    <>
+      <PageTitle title='佣金中心' description='查看您的佣金明细和收益情况' />
+      <CommissionCenter />
+      <RevenueChart />
+    </>
   );
 }

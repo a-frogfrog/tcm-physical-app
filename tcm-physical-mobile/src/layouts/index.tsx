@@ -5,9 +5,11 @@ export default function Layout() {
   return (
     <>
       <header>
-        <h1 className='p-2 text-xl'>TCM Physical Mobile</h1>
+        <h1 className='p-2 px-4 font-sans text-xl font-bold text-[#008236]'>
+          御合堂
+        </h1>
       </header>
-      <main className='h-[calc(100vh-50px)]'>
+      <main className='scroll-bar-hide h-[calc(100vh-80px)] overflow-auto'>
         <Outlet />
       </main>
       <footer className='fixed -bottom-1 left-0 right-0 py-2'>

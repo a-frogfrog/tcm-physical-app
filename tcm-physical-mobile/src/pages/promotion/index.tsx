@@ -1,7 +1,20 @@
+import { PageTitle } from '#/components/common';
+import PromotionLink from './modules/PromotionLink';
+import PromotionMethod from './modules/PromotionMethod';
+import PromotionStats from './modules/PromotionStats';
+import PromotionTutorial from './modules/PromotionTutorial';
+
 export default function PromotionPage() {
   return (
-    <div>
-      <h1 className='p-2 text-xl'>TCM Physical Mobile - 推广</h1>
-    </div>
+    <>
+      <PageTitle
+        title='我的推广'
+        description='分享优质中医服务，赚取丰厚佣金'
+      />
+      <PromotionStats />
+      <PromotionMethod />
+      <PromotionLink />
+      <PromotionTutorial />
+    </>
   );
 }

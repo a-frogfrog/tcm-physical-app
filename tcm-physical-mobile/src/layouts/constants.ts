@@ -1,4 +1,4 @@
-import { Home, MessageCircle, User } from 'lucide-react';
+import { CircleDollarSign, Home, MessageCircle, User } from 'lucide-react';
 import { createElement } from 'react';
 
 export const tabs = [
@@ -15,7 +15,7 @@ export const tabs = [
   {
     to: '/commission',
     label: '佣金',
-    icon: createElement(User, { size: 20 }),
+    icon: createElement(CircleDollarSign, { size: 20 }),
   },
   {
     to: '/user',

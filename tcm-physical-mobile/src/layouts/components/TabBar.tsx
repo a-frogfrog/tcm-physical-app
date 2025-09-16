@@ -20,7 +20,7 @@ const TabBar = ({ tabs }: TabBarProps) => {
           to={tab.to}
           className={({ isActive }) =>
             `flex flex-col items-center text-xs ${
-              isActive ? 'text-blue-500' : 'text-gray-500'
+              isActive ? 'text-[#2D6A4F]' : 'text-gray-500'
             }`
           }>
           {({ isActive }) => (
