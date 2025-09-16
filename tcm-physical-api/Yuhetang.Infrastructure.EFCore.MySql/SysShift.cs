@@ -19,19 +19,19 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 班次开始时间
         /// </summary>
-        public TimeOnly? SStartTime { get; set; }
+        public DateTime? SStartTime { get; set; }
         /// <summary>
         /// 班次结束时间
         /// </summary>
-        public TimeOnly? SEndTime { get; set; }
+        public DateTime? SEndTime { get; set; }
         /// <summary>
         /// 午休开始时间（可选）
         /// </summary>
-        public TimeOnly? SBreakStart { get; set; }
+        public DateTime? SBreakStart { get; set; }
         /// <summary>
         /// 午休结束时间（可选）
         /// </summary>
-        public TimeOnly? SBreakEnd { get; set; }
+        public DateTime? SBreakEnd { get; set; }
         /// <summary>
         /// 状态：0-停用，1-启用
         /// </summary>

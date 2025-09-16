@@ -27,7 +27,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 排班日期
         /// </summary>
-        public DateOnly? SesScheduleDate { get; set; }
+        public DateTime? SesScheduleDate { get; set; }
         /// <summary>
         /// 关联班次ID
         /// </summary>
