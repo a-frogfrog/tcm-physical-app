@@ -31,15 +31,15 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 预约日期
         /// </summary>
-        public DateOnly AAppointDate { get; set; }
+        public DateTime AAppointDate { get; set; }
         /// <summary>
         /// 开始时间
         /// </summary>
-        public TimeOnly AStartTime { get; set; }
+        public DateTime AStartTime { get; set; }
         /// <summary>
         /// 结束时间
         /// </summary>
-        public TimeOnly AEndTime { get; set; }
+        public DateTime AEndTime { get; set; }
         /// <summary>
         /// 预约时长（分钟）
         /// </summary>

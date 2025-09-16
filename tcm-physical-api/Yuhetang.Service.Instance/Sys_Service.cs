@@ -123,7 +123,7 @@ namespace Yuhetang.Service.Instance
                 SesEmployeeId = dto.employeeID,
                 SesDepartmentId = dto.departmentID,
                 ScId = dto.rulesID,
-                SesScheduleDate = DateOnly.Parse(dto.scheduleDate),
+                SesScheduleDate = DateTime.Parse(dto.scheduleDate),
                 SesShiftId = dto.shiftID,
                 SesRemark = dto.remark,
                 SesCreatorId = dto.CreatorID,
@@ -186,8 +186,8 @@ namespace Yuhetang.Service.Instance
                 ScId = Config.GUID2(),
                 ScName = dto.name,
                 ScDeptId = dto.deptID,
-                ScStartTime = DateOnly.Parse(dto.startTime),
-                ScEndTime = DateOnly.Parse(dto.endTime),
+                ScStartTime = DateTime.Parse(dto.startTime),
+                ScEndTime = DateTime.Parse(dto.endTime),
                 ScIsBan = dto.isBan,
                 ScCreatorId = dto.creatorID,
                 ScCreateTime = DateTime.Now
@@ -212,10 +212,10 @@ namespace Yuhetang.Service.Instance
             {
                 SId = Config.GUID2(),
                 SName = dto.name,
-                SStartTime = dto.startTime == "" ? null : TimeOnly.Parse(dto.startTime),
-                SEndTime = dto.endTime == "" ? null : TimeOnly.Parse(dto.endTime),
-                SBreakStart = dto.breakEnd == "" ? null : TimeOnly.Parse(dto.breakStart),
-                SBreakEnd = dto.breakEnd == ""? null :TimeOnly.Parse(dto.breakEnd),
+                SStartTime = dto.startTime == "" ? null : DateTime.Parse(dto.startTime),
+                SEndTime = dto.endTime == "" ? null : DateTime.Parse(dto.endTime),
+                SBreakStart = dto.breakEnd == "" ? null : DateTime.Parse(dto.breakStart),
+                SBreakEnd = dto.breakEnd == ""? null : DateTime.Parse(dto.breakEnd),
                 SStatus = dto.status,
                 SCreateTime = DateTime.Now
             };
@@ -574,10 +574,10 @@ namespace Yuhetang.Service.Instance
                 return Result(0, "没有找到");
             }
             iq.SName = dto.name;
-            iq.SStartTime = dto.startTime == "" || dto.startTime == null ? null: TimeOnly.Parse(dto.startTime);
-            iq.SEndTime = dto.endTime == "" || dto.endTime == null ? null : TimeOnly.Parse(dto.endTime);
-            iq.SBreakStart = dto.breakStart == "" || dto.breakStart == null ? null : TimeOnly.Parse(dto.breakStart);
-            iq.SBreakEnd = dto.breakEnd == "" || dto.breakEnd == null ? null : TimeOnly.Parse(dto.breakEnd);
+            iq.SStartTime = dto.startTime == "" || dto.startTime == null ? null: DateTime.Parse(dto.startTime);
+            iq.SEndTime = dto.endTime == "" || dto.endTime == null ? null : DateTime.Parse(dto.endTime);
+            iq.SBreakStart = dto.breakStart == "" || dto.breakStart == null ? null : DateTime.Parse(dto.breakStart);
+            iq.SBreakEnd = dto.breakEnd == "" || dto.breakEnd == null ? null : DateTime.Parse(dto.breakEnd);
             iq.SStatus = dto.status;
 
             _sys_IOC._sys_Shift_EFCore.Update(iq);

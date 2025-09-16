@@ -31,19 +31,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddMemoryCache(); // 添加内存缓存
 
-
-//#region 数据库配置
-//builder.Services.AddDbContextPool<yuhetangContext>
-//    (options =>
-//    {
-//        options.UseMySQL(builder.Configuration.GetConnectionString("Default"), provider =>
-//        {
-//            provider.CommandTimeout(20);
-//        });
-//        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-//    }, poolSize: 64);
-//#endregion
-
 builder.Services.AddScoped(typeof(I_MySql_Repository<>), typeof(MySql_Repository<>));//默认仓储注入                                                         //services.AddScoped(typeof(IRepositoryPlus<>), typeof(Learning.Repository.SqlRepositoryPlus<>));//仓储注入
 builder.Services.AddScoped<DbContext, yuhetangContext>();//数据库注入
 
@@ -60,6 +47,20 @@ builder.Services.AddScoped(Assembly.Load("Yuhetang.Service.EFCore"),
 builder.Services.AddScoped(Assembly.Load("Yuhetang.Infrastructure.IOC"),
     Assembly.Load("Yuhetang.Infrastructure.IOC"));
 var provider = builder.Services.BuildServiceProvider();//手动注入
+
+
+
+#region 数据库配置
+builder.Services.AddDbContextPool<yuhetangContext>
+    (options =>
+    {
+        options.UseMySQL(builder.Configuration.GetConnectionString("Default"), provider =>
+        {
+            provider.CommandTimeout(20);
+        });
+        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    }, poolSize: 64);
+#endregion
 
 #region JWT Auth
 string jwtKey = builder.Configuration["JWT:issuer"];

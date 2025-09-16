@@ -43,14 +43,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public virtual DbSet<SysScheduleCycle> SysScheduleCycles { get; set; } = null!;
         public virtual DbSet<SysShift> SysShifts { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=localhost;database=yuhetang;uid=root;pwd=123456", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.41-mysql"));
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -72,6 +64,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("预约ID");
 
                 entity.Property(e => e.AAppointDate)
+                    .HasColumnType("datetime")
                     .HasColumnName("A_AppointDate")
                     .HasComment("预约日期");
 
@@ -96,7 +89,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("预约时长（分钟）");
 
                 entity.Property(e => e.AEndTime)
-                    .HasColumnType("time")
+                    .HasColumnType("datetime")
                     .HasColumnName("A_EndTime")
                     .HasComment("结束时间");
 
@@ -120,7 +113,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("预约来源：1-前台预约，2-微信预约，3-电话预约，4-医师推荐");
 
                 entity.Property(e => e.AStartTime)
-                    .HasColumnType("time")
+                    .HasColumnType("datetime")
                     .HasColumnName("A_StartTime")
                     .HasComment("开始时间");
 
@@ -1501,12 +1494,12 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("班次ID");
 
                 entity.Property(e => e.SBreakEnd)
-                    .HasColumnType("time")
+                    .HasColumnType("datetime")
                     .HasColumnName("S_BreakEnd")
                     .HasComment("午休结束时间（可选）");
 
                 entity.Property(e => e.SBreakStart)
-                    .HasColumnType("time")
+                    .HasColumnType("datetime")
                     .HasColumnName("S_BreakStart")
                     .HasComment("午休开始时间（可选）");
 
@@ -1517,7 +1510,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("创建时间");
 
                 entity.Property(e => e.SEndTime)
-                    .HasColumnType("time")
+                    .HasColumnType("datetime")
                     .HasColumnName("S_EndTime")
                     .HasComment("班次结束时间");
 
@@ -1527,7 +1520,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("班次名称");
 
                 entity.Property(e => e.SStartTime)
-                    .HasColumnType("time")
+                    .HasColumnType("datetime")
                     .HasColumnName("S_StartTime")
                     .HasComment("班次开始时间");
 

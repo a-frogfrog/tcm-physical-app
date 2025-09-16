@@ -23,11 +23,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 开始日期
         /// </summary>
-        public DateOnly? ScStartTime { get; set; }
+        public DateTime? ScStartTime { get; set; }
         /// <summary>
         /// 结束日期
         /// </summary>
-        public DateOnly? ScEndTime { get; set; }
+        public DateTime? ScEndTime { get; set; }
         /// <summary>
         /// 是否启用：0-禁用，1-启用
         /// </summary>
