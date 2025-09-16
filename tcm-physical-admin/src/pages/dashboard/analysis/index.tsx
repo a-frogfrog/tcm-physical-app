@@ -5,7 +5,7 @@ export default function Analysis() {
     <div>
       Dashboard Analysis Page
       <Wave
-        fill='#f79902'
+        fill='#2B7FFF'
         paused={false}
         style={{ display: 'flex' }}
         options={{
