@@ -2,6 +2,10 @@ import { PageTitle } from '#/components/common';
 import CommissionCenter from './modules/CommissionCenter';
 import RevenueChart from './modules/RevenueChart';
 
+/**
+ *
+ * @returns 佣金页面
+ */
 export default function CommissionPage() {
   return (
     <>

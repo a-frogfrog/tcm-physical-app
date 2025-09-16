@@ -3,6 +3,10 @@ import AccountSettings from './modules/AccountSettings';
 import UserMenu from './modules/UserMenu';
 import UserProfileCard from './modules/UserProfileCard';
 
+/**
+ *
+ * @returns 个人中心页面
+ */
 export default function UserPage() {
   return (
     <>

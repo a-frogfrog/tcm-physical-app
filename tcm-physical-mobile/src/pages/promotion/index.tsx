@@ -4,6 +4,10 @@ import PromotionMethod from './modules/PromotionMethod';
 import PromotionStats from './modules/PromotionStats';
 import PromotionTutorial from './modules/PromotionTutorial';
 
+/**
+ *
+ * @returns 推广页面
+ */
 export default function PromotionPage() {
   return (
     <>
