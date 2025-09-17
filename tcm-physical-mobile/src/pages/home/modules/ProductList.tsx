@@ -49,7 +49,7 @@ const ProductList = () => {
                 className='h-40 w-full rounded-lg object-cover'
               />
               {/* 佣金角标 */}
-              <span className='absolute right-2 top-2 rounded-full bg-yellow-500 px-2 py-1 text-xs text-white'>
+              <span className='absolute top-2 right-2 rounded-full bg-yellow-500 px-2 py-1 text-xs text-white'>
                 佣金 ¥{item.commission}
               </span>
             </div>

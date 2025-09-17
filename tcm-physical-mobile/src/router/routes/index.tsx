@@ -22,8 +22,7 @@ const routes = [
       {
         path: 'commission',
         Component: lazy(() => import('#/pages/commission')),
-      }
-      ,
+      },
       {
         //404错误路由.
         path: '*',

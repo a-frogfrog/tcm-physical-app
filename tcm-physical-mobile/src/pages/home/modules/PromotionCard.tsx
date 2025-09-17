@@ -11,7 +11,7 @@ const PromotionCard = () => {
         transition={{ duration: 0.6 }}
         className='relative overflow-hidden rounded-b-3xl bg-green-700 px-6 py-8 text-white'>
         {/* 标题 */}
-        <h2 className='text-2xl font-bold leading-snug'>
+        <h2 className='text-2xl leading-snug font-bold'>
           传承中医智慧
           <br />
           推广健康赚佣金

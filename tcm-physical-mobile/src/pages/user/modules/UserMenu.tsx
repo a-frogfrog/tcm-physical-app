@@ -10,7 +10,7 @@ const menus = [
 
 export default function UserMenu() {
   return (
-    <Card className='p-4 my-4'>
+    <Card className='my-4 p-4'>
       <div className='grid grid-cols-2 gap-4'>
         {menus.map((menu, idx) => (
           <div

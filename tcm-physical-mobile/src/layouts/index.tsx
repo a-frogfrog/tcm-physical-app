@@ -12,7 +12,7 @@ export default function Layout() {
       <main className='scroll-bar-hide h-[calc(100vh-80px)] overflow-auto'>
         <Outlet />
       </main>
-      <footer className='fixed -bottom-1 left-0 right-0 py-2'>
+      <footer className='fixed right-0 -bottom-1 left-0 py-2'>
         <AppTabBar />
       </footer>
     </>
