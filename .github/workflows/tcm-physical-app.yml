@@ -21,8 +21,10 @@ jobs:
           cache: 'pnpm'
 
       # 安装 pnpm
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.0 # 你项目里用的 pnpm 版本
 
         # 安装依赖
       - name: Install dependencies
