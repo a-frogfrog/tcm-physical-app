@@ -160,13 +160,13 @@ builder.Services.AddCors(c =>
 {
     c.AddPolicy("AllRequests", policy =>
     {
-        //policy.WithOrigins(
-        //    "http://129.204.152.86:5173",
-        //    "http://localhost:5173",
-        //    "https://lq.wsxdaye.cn:5173",
-        //    "http://lq.wsxdaye.cn:5173"
-        //    
-        policy.WithOrigins("*")
+        policy.WithOrigins(
+            "http://129.204.152.86:5173",
+            "http://localhost:5173",
+           "https://lq.wsxdaye.cn:5173",
+           "http://lq.wsxdaye.cn:5173"
+           
+       )
         .AllowAnyMethod()
         .AllowAnyHeader();
     });
@@ -231,7 +231,9 @@ app.UseKnife4UI(d =>
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
-
+app.UseRouting();
+app.UseCors("AllRequests");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

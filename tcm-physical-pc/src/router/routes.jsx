@@ -9,7 +9,6 @@ import LoginPage from '../pages/login';
 import HomePage from '../pages/home';
 import MainLayout from '../pages/layout';
 import AppointmentPage from '../pages/appointment';
-import DiagnosisPage from '../pages/diagnosis';
 import OrderPage from '../pages/order';
 import SchedulePage from '../pages/schedule';
 import CustomerPage from '../pages/customer';
@@ -52,18 +51,6 @@ const AppRoutes = () => {
             <PrivateRoute>
               <MainLayout>
                 <AppointmentPage />
-              </MainLayout>
-            </PrivateRoute>
-          }
-        />
-
-        {/* 接诊页 */}
-        <Route
-          path='/diagnosis'
-          element={
-            <PrivateRoute>
-              <MainLayout>
-                <DiagnosisPage />
               </MainLayout>
             </PrivateRoute>
           }

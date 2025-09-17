@@ -139,12 +139,11 @@ const MainLayout = ({ children }) => {
     },
   ];
 
-  // 顶部导航菜单配置（核心功能入口）
+  // 顶部导航菜单配置（核心功能入口）- 已移除“接诊”项
   const topNavItems = [
     { key: '/home', icon: <HomeOutlined />, label: '首页' },
     { key: '/appointment', icon: <CalendarOutlined />, label: '预约' },
-    { key: '/diagnosis', icon: <FileTextOutlined />, label: '接诊' },
-    { key: '/order', icon: <FileTextOutlined />, label: '订单' },
+    { key: '/order', icon: <FileTextOutlined />, label: '订单' }, // 移除“接诊”项后，调整顺序
     { key: '/schedule', icon: <ScheduleOutlined />, label: '排班' },
     { key: '/customer', icon: <CustomerServiceOutlined />, label: '客户' },
   ];
@@ -180,7 +179,7 @@ const MainLayout = ({ children }) => {
           <div className='logo-container'>
             <div className='logo-text'>
               <h1>御和堂</h1>
-              <p>中医馆收银管理系统</p>
+              <p>中医馆收银系统</p>
             </div>
           </div>
         </div>

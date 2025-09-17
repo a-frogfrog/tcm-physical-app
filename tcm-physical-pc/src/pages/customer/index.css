@@ -1,4 +1,4 @@
-/* 客户管理页面样式 */
+/* 客户管理页面样式（无需额外修改，表格列删除后自动适配） */
 .customer-page {
   padding: 0;
 }
@@ -46,7 +46,7 @@
   color: #8b5a2b;
 }
 
-/* 客户表单样式 */
+/* 客户表单样式（适配新增/编辑弹窗宽度） */
 .customer-form .ant-form-item {
   margin-bottom: 16px;
 }

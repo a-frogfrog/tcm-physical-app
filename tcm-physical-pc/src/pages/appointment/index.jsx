@@ -39,18 +39,18 @@ const AppointmentPage = () => {
       id: 'A1001',
       customerName: '张三',
       customerPhone: '13800138000',
-      doctor: '李医生',
-      department: '内科',
+      doctor: '李深',
+      department: '按摩科',
       date: '2023-05-12',
       time: '09:30',
       status: '已确认',
-      notes: '咳嗽、乏力',
+      notes: '劳累',
     },
     {
       id: 'A1002',
       customerName: '李四',
       customerPhone: '13900139000',
-      doctor: '王医生',
+      doctor: '王龙',
       department: '针灸科',
       date: '2023-05-12',
       time: '10:15',
@@ -59,10 +59,10 @@ const AppointmentPage = () => {
     },
     {
       id: 'A1003',
-      customerName: '王五',
+      customerName: '王里',
       customerPhone: '13700137000',
-      doctor: '张医生',
-      department: '中医科',
+      doctor: '张格',
+      department: '针灸科',
       date: '2023-05-12',
       time: '14:00',
       status: '待确认',
@@ -72,18 +72,18 @@ const AppointmentPage = () => {
       id: 'A1004',
       customerName: '赵六',
       customerPhone: '13600136000',
-      doctor: '李医生',
-      department: '内科',
+      doctor: '李力',
+      department: '按摩科',
       date: '2023-05-12',
       time: '15:30',
       status: '已确认',
-      notes: '消化不良',
+      notes: '劳累',
     },
     {
       id: 'A1005',
       customerName: '钱七',
       customerPhone: '13500135000',
-      doctor: '刘医生',
+      doctor: '刘工',
       department: '推拿科',
       date: '2023-05-13',
       time: '10:00',
@@ -94,17 +94,13 @@ const AppointmentPage = () => {
 
   // 科室列表
   const departments = [
-    '内科',
-    '外科',
     '中医科',
     '针灸科',
-    '推拿科',
-    '儿科',
-    '妇科',
+    '推拿科'
   ];
 
   // 医生列表
-  const doctors = ['李医生', '王医生', '张医生', '刘医生', '陈医生', '杨医生'];
+  const doctors = ['李深', '王龙', '张格', '李力', '刘工'];
 
   // 表格列定义
   const columns = [
@@ -127,13 +123,13 @@ const AppointmentPage = () => {
       ),
     },
     {
-      title: '科室',
+      title: '类型',
       dataIndex: 'department',
       key: 'department',
       width: '10%',
     },
     {
-      title: '医生',
+      title: '员工',
       dataIndex: 'doctor',
       key: 'doctor',
       width: '10%',
@@ -308,14 +304,14 @@ const AppointmentPage = () => {
                 placeholder={['开始日期', '结束日期']}
                 className='date-filter'
               />
-              <Select placeholder='选择科室' style={{ width: 150 }}>
+              <Select placeholder='选择房间' style={{ width: 150 }}>
                 {departments.map((dept) => (
                   <Option key={dept} value={dept}>
                     {dept}
                   </Option>
                 ))}
               </Select>
-              <Select placeholder='选择医生' style={{ width: 150 }}>
+              <Select placeholder='选择员工' style={{ width: 150 }}>
                 {doctors.map((doctor) => (
                   <Option key={doctor} value={doctor}>
                     {doctor}
@@ -377,9 +373,9 @@ const AppointmentPage = () => {
 
           <Form.Item
             name='department'
-            label='科室'
-            rules={[{ required: true, message: '请选择科室' }]}>
-            <Select placeholder='请选择科室'>
+            label='房间'
+            rules={[{ required: true, message: '请选择房间' }]}>
+            <Select placeholder='请选择房间'>
               {departments.map((dept) => (
                 <Option key={dept} value={dept}>
                   {dept}
@@ -390,9 +386,9 @@ const AppointmentPage = () => {
 
           <Form.Item
             name='doctor'
-            label='医生'
-            rules={[{ required: true, message: '请选择医生' }]}>
-            <Select placeholder='请选择医生'>
+            label='员工'
+            rules={[{ required: true, message: '请选择员工' }]}>
+            <Select placeholder='请选择员工'>
               {doctors.map((doctor) => (
                 <Option key={doctor} value={doctor}>
                   {doctor}
@@ -446,10 +442,6 @@ const AppointmentPage = () => {
               </Select>
             </Form.Item>
           )}
-
-          <Form.Item name='notes' label='症状描述'>
-            <TextArea rows={3} placeholder='请输入客户症状描述' />
-          </Form.Item>
         </Form>
       </Modal>
     </div>
