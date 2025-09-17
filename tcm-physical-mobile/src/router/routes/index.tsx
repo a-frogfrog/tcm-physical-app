@@ -1,7 +1,7 @@
 import { lazy } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, type RouteObject } from 'react-router-dom';
 
-const routes = [
+const routes: RouteObject[] = [
   {
     path: '/',
     Component: lazy(() => import('#/layouts')),
@@ -26,7 +26,7 @@ const routes = [
       {
         //404错误路由.
         path: '*',
-        element: lazy(() => import('#/pages/error/NotFound')),
+        Component: lazy(() => import('#/pages/error/NotFound')),
       },
     ],
   },
