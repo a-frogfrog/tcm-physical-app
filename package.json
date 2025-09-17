@@ -16,7 +16,8 @@
     "prepare": "husky",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "build": "pnpm  --filter tcm-physical-admin build"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
