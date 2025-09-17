@@ -12,7 +12,7 @@ export default function LoginForm({
     <form className={cn('flex flex-col gap-6', className)} {...props}>
       <div className='flex flex-col items-center gap-2 text-center'>
         <h1 className='text-2xl font-bold'>登录你的账号</h1>
-        <p className='text-muted-foreground text-sm text-balance'>
+        <p className='text-muted-foreground text-balance text-sm'>
           输入你的账号登录
         </p>
       </div>

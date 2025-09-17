@@ -48,15 +48,14 @@
     align-items: flex-start;
     gap: 16px;
   }
-  
+
   .search-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .search-form .ant-form-item {
     width: 100%;
   }
 }
-    

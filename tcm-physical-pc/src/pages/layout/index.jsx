@@ -94,14 +94,26 @@ const MainLayout = ({ children }) => {
     };
     document.addEventListener('fullscreenchange', fullscreenChangeHandler);
     document.addEventListener('mozfullscreenchange', fullscreenChangeHandler);
-    document.addEventListener('webkitfullscreenchange', fullscreenChangeHandler);
+    document.addEventListener(
+      'webkitfullscreenchange',
+      fullscreenChangeHandler,
+    );
     document.addEventListener('msfullscreenchange', fullscreenChangeHandler);
 
     return () => {
       document.removeEventListener('fullscreenchange', fullscreenChangeHandler);
-      document.removeEventListener('mozfullscreenchange', fullscreenChangeHandler);
-      document.removeEventListener('webkitfullscreenchange', fullscreenChangeHandler);
-      document.removeEventListener('msfullscreenchange', fullscreenChangeHandler);
+      document.removeEventListener(
+        'mozfullscreenchange',
+        fullscreenChangeHandler,
+      );
+      document.removeEventListener(
+        'webkitfullscreenchange',
+        fullscreenChangeHandler,
+      );
+      document.removeEventListener(
+        'msfullscreenchange',
+        fullscreenChangeHandler,
+      );
     };
   }, []);
 
@@ -145,9 +157,9 @@ const MainLayout = ({ children }) => {
   // 加载中状态：显示加载动画
   if (isLoading) {
     return (
-      <div className="loading-container">
-        <div className="loading-content">
-          <div className="spinner"></div>
+      <div className='loading-container'>
+        <div className='loading-content'>
+          <div className='spinner'></div>
           <p>系统加载中，请稍候...</p>
         </div>
       </div>
@@ -160,13 +172,13 @@ const MainLayout = ({ children }) => {
   }
 
   return (
-    <Layout className="main-layout">
+    <Layout className='main-layout'>
       {/* 顶部导航栏：Logo + 居中导航 + 右侧操作区 */}
-      <Header className="main-header">
+      <Header className='main-header'>
         {/* 左侧：Logo区域 */}
-        <div className="header-left">
-          <div className="logo-container">
-            <div className="logo-text">
+        <div className='header-left'>
+          <div className='logo-container'>
+            <div className='logo-text'>
               <h1>御和堂</h1>
               <p>中医馆收银管理系统</p>
             </div>
@@ -175,34 +187,33 @@ const MainLayout = ({ children }) => {
 
         {/* 中间：居中导航菜单 */}
         <Menu
-          theme="light"
-          mode="horizontal"
+          theme='light'
+          mode='horizontal'
           selectedKeys={[location.pathname]} // 高亮当前页面导航
-          items={topNavItems.map(item => ({
+          items={topNavItems.map((item) => ({
             ...item,
             className: location.pathname === item.key ? 'nav-item-active' : '',
           }))}
           onClick={handleNavClick}
-          className="top-navigation"
+          className='top-navigation'
         />
 
         {/* 右侧：通知 + 全屏 + 用户下拉 */}
-        <div className="header-right">
+        <div className='header-right'>
           {/* 通知图标（带3条未读消息标记） */}
-          <Badge count={3} size="small" className="notification-badge">
-            <BellOutlined className="notification-icon" />
+          <Badge count={3} size='small' className='notification-badge'>
+            <BellOutlined className='notification-icon' />
           </Badge>
 
           {/* 全屏切换按钮 */}
           <div
-            className="fullscreen-toggle"
+            className='fullscreen-toggle'
             title={isFullscreen ? '退出全屏' : '进入全屏'}
-            onClick={toggleFullscreen}
-          >
+            onClick={toggleFullscreen}>
             {isFullscreen ? (
-              <FullscreenExitOutlined className="fullscreen-icon" />
+              <FullscreenExitOutlined className='fullscreen-icon' />
             ) : (
-              <FullscreenOutlined className="fullscreen-icon" />
+              <FullscreenOutlined className='fullscreen-icon' />
             )}
           </div>
 
@@ -212,24 +223,21 @@ const MainLayout = ({ children }) => {
               items: userMenuItems,
               trigger: ['hover'], // 鼠标hover触发下拉
             }}
-            placement="bottomRight"
+            placement='bottomRight'
             arrow // 显示下拉箭头，提升交互体验
           >
-            <div className="user-menu-trigger">
-              <Avatar className="user-avatar" icon={<UserOutlined />} />
-              <span className="user-name">{userInfo.username}</span>
+            <div className='user-menu-trigger'>
+              <Avatar className='user-avatar' icon={<UserOutlined />} />
+              <span className='user-name'>{userInfo.username}</span>
             </div>
           </Dropdown>
         </div>
       </Header>
 
       {/* 主内容区域：承接子页面（如首页、订单页等） */}
-      <Content className="main-content">
-        {children}
-      </Content>
+      <Content className='main-content'>{children}</Content>
     </Layout>
   );
 };
 
 export default MainLayout;
-    

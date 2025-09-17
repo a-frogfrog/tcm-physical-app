@@ -37,8 +37,8 @@
 }
 
 .search-btn {
-  background-color: #8B5A2B;
-  border-color: #8B5A2B;
+  background-color: #8b5a2b;
+  border-color: #8b5a2b;
   margin-left: 8px;
 }
 
@@ -60,8 +60,8 @@
 }
 
 .add-btn {
-  background-color: #8B5A2B;
-  border-color: #8B5A2B;
+  background-color: #8b5a2b;
+  border-color: #8b5a2b;
 }
 
 .add-btn:hover {
@@ -86,8 +86,8 @@
 }
 
 .apply-filter-btn {
-  background-color: #8B5A2B;
-  border-color: #8B5A2B;
+  background-color: #8b5a2b;
+  border-color: #8b5a2b;
 }
 
 .apply-filter-btn:hover {
@@ -134,17 +134,17 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .search-bar {
     width: 100%;
     max-width: none;
     margin-bottom: 16px;
   }
-  
+
   .add-btn {
     width: 100%;
   }
-  
+
   .date-filter {
     width: 100%;
     margin-bottom: 8px;

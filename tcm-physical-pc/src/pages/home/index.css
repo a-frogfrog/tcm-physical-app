@@ -48,7 +48,7 @@
 }
 
 .content-card .ant-card-head-title {
-  color: #8B5A2B; /* 中医棕色标题 */
+  color: #8b5a2b; /* 中医棕色标题 */
   font-weight: 600;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .view-all-link {
-  color: #8B5A2B; /* 中医风格的棕色系 */
+  color: #8b5a2b; /* 中医风格的棕色系 */
   padding: 0;
   height: auto;
   line-height: normal;
@@ -118,7 +118,7 @@
 
 /* 鼠标悬停效果优化 - 模拟宣纸质感 */
 .department-item:hover {
-  background-color: #fcfaf6; 
+  background-color: #fcfaf6;
   box-shadow: 0 2px 6px rgba(139, 90, 43, 0.05); /* 轻微阴影，增强层次感 */
   transform: translateX(2px); /* 细微右移，提升交互反馈 */
 }
@@ -143,7 +143,7 @@
 
 /* 科室图标样式优化 - 增强中医辨识度 */
 .department-name .anticon {
-  color: #8B5A2B;
+  color: #8b5a2b;
   font-size: 18px; /* 图标放大，增强视觉引导 */
   background-color: #f5f2eb; /* 图标背景，模拟印章质感 */
   width: 24px;
@@ -168,7 +168,7 @@
 }
 
 .department-header .ant-badge-count {
-  background-color: #8B5A2B !important; /* 数字背景色强化中医风格 */
+  background-color: #8b5a2b !important; /* 数字背景色强化中医风格 */
 }
 
 .doctor-list {
@@ -197,7 +197,7 @@
 
 /* 医生图标样式优化 - 增强识别度 */
 .doctor-item .anticon {
-  color: #8B5A2B;
+  color: #8b5a2b;
   opacity: 0.9; /* 提升不透明度，更显清晰 */
   margin-right: 6px; /* 增加图标与文字间距 */
 }
@@ -247,16 +247,16 @@
   .stats-row {
     margin-bottom: 16px;
   }
-  
+
   .content-row {
     margin-bottom: 16px;
   }
-  
+
   .card-header-actions {
     top: 12px;
     right: 12px;
   }
-  
+
   /* 科室模块响应式优化 */
   .department-item {
     padding: 16px 12px; /* 小屏幕减少内边距，节省空间 */

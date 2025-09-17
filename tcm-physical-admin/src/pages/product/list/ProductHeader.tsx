@@ -7,7 +7,7 @@ const ProductHeader = () => {
       title='中医理疗产品列表'
       desc='管理中医理疗项目、套餐及相关产品信息'
       actions={
-        <Button className='ml-auto h-10 w-22 text-base'>新增产品</Button>
+        <Button className='w-22 ml-auto h-10 text-base'>新增产品</Button>
       }
     />
   );

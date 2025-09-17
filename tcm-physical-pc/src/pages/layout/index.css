@@ -7,7 +7,7 @@
 
 body {
   background-color: #f5f5f5;
-  font-family: "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* 主布局容器：占满屏幕高度，垂直排列 */
@@ -36,13 +36,15 @@ body {
   height: 40px;
   margin: 0 auto 16px;
   border: 4px solid rgba(139, 90, 43, 0.1);
-  border-left-color: #8B5A2B;
+  border-left-color: #8b5a2b;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-content p {
@@ -81,7 +83,7 @@ body {
 }
 
 .logo-text h1 {
-  color: #8B5A2B; /* 中医馆主色调：棕色 */
+  color: #8b5a2b; /* 中医馆主色调：棕色 */
   font-size: 20px;
   font-weight: 600;
   margin: 0 0 4px 0;
@@ -115,18 +117,18 @@ body {
 
 /* 导航项激活状态：棕色下边框+棕色文字 */
 .nav-item-active {
-  color: #8B5A2B !important;
+  color: #8b5a2b !important;
   background-color: transparent !important;
 }
 
 .nav-item-active .ant-menu-item-icon,
 .nav-item-active .ant-menu-title-content {
-  color: #8B5A2B !important; /* 激活态图标+文字同步变色 */
+  color: #8b5a2b !important; /* 激活态图标+文字同步变色 */
 }
 
 /* 导航项hover状态：浅棕色背景 */
 .ant-menu-horizontal .ant-menu-item:hover {
-  color: #8B5A2B !important;
+  color: #8b5a2b !important;
   background-color: rgba(139, 90, 43, 0.05) !important;
 }
 
@@ -150,7 +152,7 @@ body {
 }
 
 .notification-badge:hover .notification-icon {
-  color: #8B5A2B;
+  color: #8b5a2b;
 }
 
 /* 全屏切换按钮：hover变棕色+光标提示 */
@@ -167,7 +169,7 @@ body {
 }
 
 .fullscreen-toggle:hover .fullscreen-icon {
-  color: #8B5A2B;
+  color: #8b5a2b;
 }
 
 /* 用户下拉触发区：hover浅灰背景 */
@@ -186,7 +188,7 @@ body {
 
 /* 用户头像：棕色背景 */
 .user-avatar {
-  background-color: #8B5A2B !important;
+  background-color: #8b5a2b !important;
   margin-right: 8px;
 }
 
@@ -204,7 +206,7 @@ body {
 .ant-dropdown-menu-item:hover,
 .ant-dropdown-menu-item-active {
   background-color: rgba(139, 90, 43, 0.1) !important;
-  color: #8B5A2B !important;
+  color: #8b5a2b !important;
 }
 
 /* 主内容区域：白色背景+阴影+圆角 */
@@ -271,8 +273,8 @@ body {
   .header-right {
     gap: 10px;
   }
-  .notification-icon, .fullscreen-icon {
+  .notification-icon,
+  .fullscreen-icon {
     font-size: 16px;
   }
 }
-    

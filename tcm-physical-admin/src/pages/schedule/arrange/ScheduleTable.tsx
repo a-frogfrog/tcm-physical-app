@@ -157,7 +157,7 @@ export default function ScheduleTable({ className }: { className?: string }) {
       <table className='min-w-full divide-y divide-gray-200'>
         <thead>
           <tr>
-            <th className='w-40 border-r border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase'>
+            <th className='w-40 border-r border-gray-200 bg-gray-50 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'>
               技术人员
             </th>
             {dates.map((date, index) => (
@@ -201,7 +201,7 @@ export default function ScheduleTable({ className }: { className?: string }) {
                     {cellSchedule?.events.map((event, eventIndex) => (
                       <div
                         key={eventIndex}
-                        className={`schedule-event mb-1 cursor-pointer overflow-hidden rounded-md p-1 text-xs whitespace-nowrap bg-${event.color}-100 text-${event.color}-800`}>
+                        className={`schedule-event mb-1 cursor-pointer overflow-hidden whitespace-nowrap rounded-md p-1 text-xs bg-${event.color}-100 text-${event.color}-800`}>
                         {`${event.time} ${event.type}`}
                       </div>
                     ))}

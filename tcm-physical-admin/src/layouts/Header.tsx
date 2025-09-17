@@ -19,7 +19,7 @@ import {
 
 export default function AppHeader() {
   return (
-    <div className='flex h-16 shrink-0 items-center gap-2 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
+    <div className='group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-16 shrink-0 items-center gap-2 px-4 transition-[width,height] ease-linear'>
       <nav className='flex flex-1 items-center gap-2 px-4'>
         <SidebarTrigger className='-ml-1' />
         <Separator

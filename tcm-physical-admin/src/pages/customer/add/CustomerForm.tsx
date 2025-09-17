@@ -60,7 +60,7 @@ const CustomerForm = ({ className }: { className?: string }) => {
               <Label>出生日期</Label>
               <div className='relative'>
                 <Input placeholder='年/月/日' />
-                <CalendarIcon className='absolute top-3 right-3 h-4 w-4 text-gray-500' />
+                <CalendarIcon className='absolute right-3 top-3 h-4 w-4 text-gray-500' />
               </div>
               <span className='text-xs text-gray-400'>
                 用于计算年龄和制定理疗方案

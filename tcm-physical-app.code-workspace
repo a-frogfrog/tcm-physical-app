@@ -1,11 +1,11 @@
 {
   "folders": [
     {
-      "path": "tcm-physical-admin"
+      "path": "tcm-physical-admin",
     },
     {
-      "path": "tcm-physical-mobile"
-    }
+      "path": "tcm-physical-mobile",
+    },
   ],
-  "settings": {}
+  "settings": {},
 }

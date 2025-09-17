@@ -49,7 +49,7 @@
 
 .stats-value {
   font-weight: 600;
-  color: #8B5A2B;
+  color: #8b5a2b;
 }
 
 .order-form .ant-form-item {
@@ -136,28 +136,27 @@
     align-items: flex-start;
     gap: 16px;
   }
-  
+
   .search-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .search-form .ant-form-item {
     width: 100%;
   }
-  
+
   .stats-bar {
     flex-wrap: wrap;
   }
-  
+
   .order-item-row {
     flex-direction: column;
   }
-  
+
   .order-item-cell {
     border-right: none;
     border-bottom: 1px solid #e8e8e8;
   }
 }
-    

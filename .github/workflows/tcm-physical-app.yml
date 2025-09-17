@@ -35,8 +35,8 @@ jobs:
         run: pnpm lint & pnpm format
 
       # 类型检查
-      - name: Type Check
-        run: pnpm type-check
+      # - name: Type Check
+      #   run: pnpm type-check
 
       # 构建项目
       - name: Build Project

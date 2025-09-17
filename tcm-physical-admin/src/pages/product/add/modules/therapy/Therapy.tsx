@@ -74,7 +74,7 @@ const NavigationButtons = () => {
           {isSubmitting ? (
             <>
               <svg
-                className='mr-2 -ml-1 h-4 w-4 animate-spin text-white'
+                className='-ml-1 mr-2 h-4 w-4 animate-spin text-white'
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
                 viewBox='0 0 24 24'>
@@ -129,9 +129,9 @@ const ProductFormStepIndicator = () => {
   ];
   return (
     <div className='relative mb-8 flex items-center justify-between'>
-      <div className='absolute top-1/2 right-0 left-0 z-0 h-1 -translate-y-1/2 bg-gray-200'></div>
+      <div className='absolute left-0 right-0 top-1/2 z-0 h-1 -translate-y-1/2 bg-gray-200'></div>
       <div
-        className='bg-primary absolute top-1/2 left-0 z-10 h-1 -translate-y-1/2'
+        className='bg-primary absolute left-0 top-1/2 z-10 h-1 -translate-y-1/2'
         style={{
           width: `${(['basic', 'pricing', 'details', 'settings'].indexOf(activeTab) + 1) * 25}%`,
         }}></div>
