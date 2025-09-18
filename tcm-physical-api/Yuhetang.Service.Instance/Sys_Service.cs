@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ServiceStack;
+using Xceed.Document.NET;
+using Xceed.Words.NET;
 using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
@@ -362,6 +364,7 @@ namespace Yuhetang.Service.Instance
 
             list.ForEach(d =>
             {
+                var shift = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).FirstOrDefault();
                 data.Add(new Employee_Schedule_Response_Dto
                 {
                     id = d.SesId,
@@ -374,11 +377,11 @@ namespace Yuhetang.Service.Instance
                     scheduleDate = d.SesScheduleDate.ToString(),
                     shiftID = d.SesShiftId,
 
-                    shiftName = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SName).SingleOrDefault(),
-                    startTime = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SStartTime).SingleOrDefault().ToString(),
-                    endTime = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SEndTime).SingleOrDefault().ToString(),
-                    breakStart = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SBreakStart).SingleOrDefault().ToString(),
-                    breakEnd = _sys_IOC._sys_Shift_EFCore.QueryAll(e => e.SId == d.SesShiftId).Select(e => e.SBreakEnd).SingleOrDefault().ToString(),
+                    shiftName = shift?.SName,
+                    startTime = shift?.SStartTime.HasValue == true ? shift.SStartTime.Value.ToString("HH:mm"): null,
+                    endTime = shift?.SEndTime.HasValue == true ? shift.SEndTime.Value.ToString("HH:mm") : null,
+                    breakStart = shift?.SBreakStart.HasValue == true ? shift.SBreakStart.Value.ToString("HH:mm") : null,
+                    breakEnd = shift?.SBreakEnd.HasValue == true ? shift.SBreakEnd.Value.ToString("HH:mm") : null,
 
                     remark = d.SesRemark,
                     createID = d.SesCreatorId,
@@ -468,8 +471,8 @@ namespace Yuhetang.Service.Instance
                             day_no = pd.SpDayNo,
                             sps_id = pd.SpsId,
                             name = shift?.SName ?? "",
-                            startTime = shift?.SStartTime.ToString() ?? "",
-                            endTime = shift?.SEndTime.ToString() ?? "",
+                            startTime = shift?.SStartTime.Value.ToString("HH:mm") ?? "",
+                            endTime = shift?.SEndTime.Value.ToString("HH:mm") ?? "",
                             time = pd.SpCreateTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? ""
                         };
                     }).ToList();
@@ -561,6 +564,76 @@ namespace Yuhetang.Service.Instance
             });
         }
         /// <summary>
+        /// 新增周期排班
+        /// </summary>
+        /// <param name="sp_id"></param>
+        /// <param name="dc_id"></param>
+        /// <param name="user_id"></param>
+        /// <returns></returns>
+        public async Task<Api_Response_Dto> Set_Cycle_Schedule(string? sp_id, string? sc_id, string? user_id,string? id,string? remark)
+        {
+            //周期
+            var sp = await _sys_IOC._sys_Period_Schedule_EFCore.QueryAll(d => d.SpId == sp_id).SingleOrDefaultAsync();
+            //周期详情
+            var sp_detail = await _sys_IOC._sys_Period_Day_EFCore.QueryAll(d => d.SpId == sp.SpId).ToListAsync();
+            //规则
+            var sc = await _sys_IOC._sys_Schedule_Cycle_EFCore.QueryAll(d => d.ScId == sc_id).SingleOrDefaultAsync();
+            //用户
+            var user = await _sys_IOC._sys_Employees_EFCore.QueryAll(d => d.EId == user_id).SingleOrDefaultAsync();
+            //计算天数
+            TimeSpan duration = (TimeSpan)(sc.ScEndTime - sc.ScStartTime);
+            int totalDays = duration.Days + 1;
+
+            List<object> data = new List<object>();
+            DateTime currentDate = (DateTime)sc.ScStartTime;
+
+            for (int i = 0; i < totalDays; i++)
+            {
+                var detail = sp_detail[i % sp_detail.Count]; // 周期性取班次
+                var shift = _sys_IOC._sys_Shift_EFCore.QueryAll(d => d.SId == detail.SpsId).SingleOrDefault();
+
+                SysEmployeeSchedule sysEmployeeSchedule = new SysEmployeeSchedule()
+                {
+                    SesId = Config.GUID2(),
+                    SesEmployeeId = user_id,
+                    ScId = sc_id,
+                    SesScheduleDate = currentDate,
+                    SesShiftId = shift.SId,
+                    SesRemark = "",
+                    SesCreatorId = "",
+                    SesCreateTime = DateTime.Now
+                };
+
+                currentDate = currentDate.AddDays(1);
+                _sys_IOC._sys_Employee_Schedule_EFCore.Add(sysEmployeeSchedule);
+            }
+            await _sys_IOC._sys_Employee_Schedule_EFCore.SaveChangesAsync();
+            return Result(1, "新增成功");
+
+        }
+
+        /// <summary>
+        /// 修改排班
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Upd_Employee_Schedule(Employee_Schedult_Request_Dto dto)
+        {
+            var iq = await _sys_IOC._sys_Employee_Schedule_EFCore.QueryAll(d => d.SesId == dto.id).SingleOrDefaultAsync();
+            if (iq == null)
+            {
+                return Result(0, "没有找到");
+            }
+            iq.SesShiftId = dto.shiftID;
+
+            _sys_IOC._sys_Employee_Schedule_EFCore.Update(iq);
+            await _sys_IOC._sys_Employee_Schedule_EFCore.SaveChangesAsync();
+
+            return Result(1, "修改成功");
+        }
+
+        /// <summary>
         /// 修改班次
         /// </summary>
         /// <param name="dto"></param>
@@ -613,6 +686,152 @@ namespace Yuhetang.Service.Instance
             return children;
         }
 
+        public async Task<byte[]> ExportToWordAsync(List<ScheduleItem_Response_Dto> dto)
+        {
+            // 使用内存流处理，避免磁盘IO
+            using (var stream = new MemoryStream())
+            {
+                // 创建Word文档
+                using (var document = DocX.Create(stream))
+                {
+                    // 添加标题
+                    var title = document.InsertParagraph("员工排班表");
+                    title.FontSize(18);
+                    title.Bold();
+                    title.Alignment = Alignment.center;
+                    title.SpacingAfter(30);
 
+                    // 创建表格（8列）
+                    var table = document.AddTable(dto.Count + 1, 8);
+                    float[] widths = { 80, 80, 100, 100, 120, 120, 120, 120 };
+                    table.SetWidths(widths);
+
+                    // 表头样式
+                    var headerRow = table.Rows[0];
+                    headerRow.Cells[0].Paragraphs[0].Append("序号").Bold().Alignment = Alignment.center;
+                    headerRow.Cells[1].Paragraphs[0].Append("日期").Bold().Alignment = Alignment.center;
+                    headerRow.Cells[3].Paragraphs[0].Append("员工姓名").Bold().Alignment = Alignment.center;
+                    headerRow.Cells[4].Paragraphs[0].Append("班次").Bold().Alignment = Alignment.center;
+                    headerRow.Cells[5].Paragraphs[0].Append("上班时间").Bold().Alignment = Alignment.center;
+                    headerRow.Cells[6].Paragraphs[0].Append("下班时间").Bold().Alignment = Alignment.center;
+                    headerRow.Cells[7].Paragraphs[0].Append("休息时间").Bold().Alignment = Alignment.center;
+
+                    // 填充数据
+                    for (int i = 0; i < dto.Count; i++)
+                    {
+                        var item = dto[i];
+                        var row = table.Rows[i + 1];
+
+                        row.Cells[0].Paragraphs[0].Append((i + 1).ToString()).Alignment = Alignment.center;
+                        row.Cells[1].Paragraphs[0].Append(item.Date ?? "-").Alignment = Alignment.center;
+                        row.Cells[3].Paragraphs[0].Append(item.EmployeeName ?? "-");
+                        row.Cells[4].Paragraphs[0].Append(item.ShiftName ?? "-");
+                        row.Cells[5].Paragraphs[0].Append(item.StartTime ?? "-");
+                        row.Cells[6].Paragraphs[0].Append(item.EndTime ?? "-");
+                        row.Cells[7].Paragraphs[0].Append($"{item.BreakStart ?? "-"}-{item.BreakEnd ?? "-"}");
+                    }
+
+                    // 添加表格到文档
+                    document.InsertTable(table);
+
+                    // 保存文档
+                    document.Save();
+                }
+
+                // 转换为字节数组返回
+                return stream.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// *新增排班
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Add_Schedule(Schedule_Request_Dto dto)
+        {
+            var iq = _sys_IOC._sys_Employee_Schedule_EFCore.QueryAll(d => d.SesEmployeeId == dto.eid && d.SesWeek == dto.week);
+            if(await iq.AnyAsync())
+            {
+                return Result(1, "ok");
+            }
+            SysEmployeeSchedule sysEmployeeSchedule = new SysEmployeeSchedule()
+            {
+                SesId = Config.GUID2(),
+                SesEmployeeId = dto.eid,
+                SesWeek = dto.week,
+                SesCreateTime = DateTime.Now
+            };
+            _sys_IOC._sys_Employee_Schedule_EFCore.Add(sysEmployeeSchedule);
+            await _sys_IOC._sys_Employee_Schedule_EFCore.SaveChangesAsync();
+
+            return Result(1, "ok");
+        }
+        /// <summary>
+        /// *获取排班
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Get_Schedule()
+        {
+            var iq = _sys_IOC._sys_Employee_Schedule_EFCore.QueryAll();
+            if(!await iq.AnyAsync())
+            {
+                return Result(1, "没有排班数据");
+            }
+            var schedule = await iq.ToListAsync();
+
+            List<Schedule_Reponse_Dto> data = new List<Schedule_Reponse_Dto>();
+            schedule.ForEach(d =>
+            {
+                data.Add(new Schedule_Reponse_Dto
+                {
+                    id = d.SesId,
+                    name = _sys_IOC._sys_Employees_EFCore.QueryAll(e => e.EId == d.SesEmployeeId).Select(e => e.EName).SingleOrDefault(),
+                    week = d.SesWeek
+                });
+            });
+
+            return Result(1, "ok",data);
+        }
+        /// <summary>
+        /// *修改排班
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Upd_Schedule(Schedule_Request_Dto dto)
+        {
+            var iq = await _sys_IOC._sys_Employee_Schedule_EFCore.QueryAll(d => d.SesId == dto.id).SingleOrDefaultAsync();
+            if (iq == null)
+            {
+                return Result(0, "没有该员工排班记录");
+            }
+            iq.SesWeek = dto.week;
+
+            _sys_IOC._sys_Employee_Schedule_EFCore.Update(iq);
+            await _sys_IOC._sys_Employee_Schedule_EFCore.SaveChangesAsync();
+
+            return Result(1, "修改成功");
+        }
+        /// <summary>
+        /// *删除排班
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Del_Schedule(string id)
+        {
+            var iq = await _sys_IOC._sys_Employee_Schedule_EFCore.QueryAll(d => d.SesId == id).SingleOrDefaultAsync();
+            if (iq == null)
+            {
+                return Result(0, "没有该员工排班记录");
+            }
+            _sys_IOC._sys_Employee_Schedule_EFCore.Delete(iq);
+            await _sys_IOC._sys_Employee_Schedule_EFCore.SaveChangesAsync();
+
+            return Result(1, "删除成功");
+        }
     }
 }

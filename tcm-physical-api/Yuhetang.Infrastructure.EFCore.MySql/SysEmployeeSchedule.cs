@@ -25,6 +25,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string? ScId { get; set; }
         /// <summary>
+        /// 星期几
+        /// </summary>
+        public string? SesWeek { get; set; }
+        /// <summary>
         /// 排班日期
         /// </summary>
         public DateTime? SesScheduleDate { get; set; }

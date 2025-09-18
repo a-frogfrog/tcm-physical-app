@@ -8,6 +8,7 @@ namespace Yuhetang.Infrastructure.Dto.Request
 {
     public class Employee_Schedult_Request_Dto
     {
+        public string? id { get; set; }
         /// <summary>
         ///员工id
         /// </summary>
