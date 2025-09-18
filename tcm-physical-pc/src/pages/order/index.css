@@ -1,13 +1,19 @@
 /* 订单管理页面样式 */
-.order-page {
-  padding: 0;
+.order-page-container {
+  padding: 24px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
+/* 页面标题样式 */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .page-title {
@@ -17,146 +23,182 @@
   font-weight: 600;
 }
 
+/* 搜索区域样式 */
 .search-card {
   margin-bottom: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  padding: 16px;
+  background-color: #fff;
 }
 
 .search-form {
-  padding: 16px 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-.search-form .ant-form-item {
-  margin-bottom: 16px;
+.search-form-item {
+  margin-bottom: 16px !important;
 }
 
+.search-input {
+  width: 180px;
+}
+
+.search-select {
+  width: 180px;
+}
+
+.search-date-picker {
+  width: 300px;
+}
+
+.search-btn {
+  background-color: #8B5A2B;
+  border-color: #8B5A2B;
+}
+
+.search-btn:hover {
+  background-color: #7A4A1B;
+  border-color: #7A4A1B;
+}
+
+.reset-btn {
+  background-color: #fff;
+  color: #333;
+  border-color: #d9d9d9;
+}
+
+/* 统计信息样式 */
+.stats-card {
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  padding: 16px;
+  background-color: #fff;
+}
+
+.stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+}
+
+.stat-label {
+  color: #666;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #8B5A2B;
+  font-size: 14px;
+}
+
+.stat-count {
+  background-color: #8B5A2B;
+}
+
+/* 表格样式 */
 .table-card {
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  background-color: #fff;
   overflow: hidden;
 }
 
-.stats-bar {
-  padding: 16px 0;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 16px;
-}
-
-.stats-label {
-  color: #666;
-}
-
-.stats-value {
+.ant-table-thead > tr > th {
+  background-color: #f9f6f0;
+  color: #333;
   font-weight: 600;
-  color: #8b5a2b;
-}
-
-.order-form .ant-form-item {
-  margin-bottom: 16px;
-}
-
-.order-items-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 24px 0 16px;
-}
-
-.order-items-title h4 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.order-items-table {
-  border: 1px solid #e8e8e8;
-  border-radius: 4px;
-  margin-bottom: 16px;
-}
-
-.order-item-row {
-  display: flex;
   border-bottom: 1px solid #e8e8e8;
 }
 
-.order-item-row:last-child {
-  border-bottom: none;
+.ant-table-tbody > tr:hover > td {
+  background-color: #faf7f1;
 }
 
-.order-item-cell {
-  flex: 3;
-  padding: 12px;
-  border-right: 1px solid #e8e8e8;
+/* 客户信息样式 */
+.customer-info {
+  line-height: 1.5;
 }
 
-.order-item-cell:last-child {
-  border-right: none;
+.customer-name {
+  font-weight: 500;
+  color: #333;
 }
 
-.action-cell {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.customer-phone {
+  font-size: 12px;
+  color: #666;
 }
 
-.order-total-row {
-  display: flex;
-  justify-content: flex-end;
-  padding: 16px;
-  background-color: #fafafa;
-  border-top: 1px solid #e8e8e8;
+/* 订单金额样式 */
+.order-amount {
+  color: #c00;
+  font-weight: 500;
 }
 
-.total-label {
-  font-weight: 600;
-  margin-right: 16px;
+/* 状态标签样式 */
+.order-status-tag {
+  font-size: 12px;
+  padding: 2px 8px;
 }
 
-.total-value {
-  font-weight: 600;
-  color: #f50;
-  font-size: 16px;
-}
-
-.no-items-placeholder {
-  text-align: center;
-  padding: 32px;
-  color: #999;
-  border: 1px dashed #e8e8e8;
-  border-radius: 4px;
-  margin-bottom: 16px;
+/* 空值显示样式 */
+.empty-text {
+  color: #ccc;
 }
 
 /* 响应式调整 */
+@media (max-width: 1200px) {
+  .search-date-picker {
+    width: 250px;
+  }
+}
+
+@media (max-width: 992px) {
+  .search-input,
+  .search-select {
+    width: 150px;
+  }
+  
+  .search-date-picker {
+    width: 220px;
+  }
+  
+  .stats-container {
+    gap: 16px;
+  }
+}
+
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+  .order-page-container {
+    padding: 16px;
   }
-
+  
   .search-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    gap: 8px;
   }
-
-  .search-form .ant-form-item {
+  
+  .search-input,
+  .search-select,
+  .search-date-picker {
     width: 100%;
   }
-
-  .stats-bar {
-    flex-wrap: wrap;
-  }
-
-  .order-item-row {
+  
+  .stats-container {
     flex-direction: column;
-  }
-
-  .order-item-cell {
-    border-right: none;
-    border-bottom: 1px solid #e8e8e8;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
