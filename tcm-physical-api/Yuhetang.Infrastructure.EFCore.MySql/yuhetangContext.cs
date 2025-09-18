@@ -17,6 +17,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         }
 
         public virtual DbSet<Appointment> Appointments { get; set; } = null!;
+        public virtual DbSet<Article> Articles { get; set; } = null!;
         public virtual DbSet<Custom> Customs { get; set; } = null!;
         public virtual DbSet<CustomFollow> CustomFollows { get; set; } = null!;
         public virtual DbSet<CustomerVipCpsCommission> CustomerVipCpsCommissions { get; set; } = null!;
@@ -43,6 +44,14 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public virtual DbSet<SysScheduleCycle> SysScheduleCycles { get; set; } = null!;
         public virtual DbSet<SysShift> SysShifts { get; set; } = null!;
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseMySql("server=8.134.187.124;database=yuhetang;uid=root;pwd=Wsx0628.", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -127,6 +136,36 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("A_UpdateTime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .HasComment("最后更新时间");
+            });
+
+            modelBuilder.Entity<Article>(entity =>
+            {
+                entity.ToTable("articles");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(32)
+                    .HasColumnName("id")
+                    .HasComment("文章ID");
+
+                entity.Property(e => e.Content)
+                    .HasColumnType("text")
+                    .HasColumnName("content")
+                    .HasComment("内容");
+
+                entity.Property(e => e.CreatedTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(255)
+                    .HasColumnName("title")
+                    .HasComment("标题");
+
+                entity.Property(e => e.Visitors)
+                    .HasColumnName("visitors")
+                    .HasComment("浏览人数");
             });
 
             modelBuilder.Entity<Custom>(entity =>
@@ -1281,6 +1320,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("排班备注");
 
                 entity.Property(e => e.SesScheduleDate)
+                    .HasColumnType("datetime")
                     .HasColumnName("SES_ScheduleDate")
                     .HasComment("排班日期");
 
@@ -1288,6 +1328,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasMaxLength(32)
                     .HasColumnName("SES_ShiftID")
                     .HasComment("关联班次ID");
+
+                entity.Property(e => e.SesWeek)
+                    .HasMaxLength(255)
+                    .HasColumnName("SES_Week")
+                    .HasComment("星期几");
             });
 
             modelBuilder.Entity<SysLoginLog>(entity =>
@@ -1456,6 +1501,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("部门ID");
 
                 entity.Property(e => e.ScEndTime)
+                    .HasColumnType("datetime")
                     .HasColumnName("SC_EndTime")
                     .HasComment("结束日期");
 
@@ -1475,6 +1521,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasComment("备注");
 
                 entity.Property(e => e.ScStartTime)
+                    .HasColumnType("datetime")
                     .HasColumnName("SC_StartTime")
                     .HasComment("开始日期");
             });
@@ -1506,7 +1553,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.Property(e => e.SCreateTime)
                     .HasColumnType("datetime")
                     .HasColumnName("S_Create_Time")
-                    .HasDefaultValueSql("'2000-00-01 00:00:00'")
                     .HasComment("创建时间");
 
                 entity.Property(e => e.SEndTime)
@@ -1526,7 +1572,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.Property(e => e.SStatus)
                     .HasColumnName("S_Status")
-                    .HasDefaultValueSql("'1'")
                     .HasComment("状态：0-停用，1-启用");
             });
 
