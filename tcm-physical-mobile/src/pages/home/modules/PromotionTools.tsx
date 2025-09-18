@@ -33,7 +33,7 @@ const tools: ToolItem[] = [
 export default function PromotionTools() {
   return (
     <div className='px-2'>
-      <Card className='my-2 w-full max-w-md rounded-2xl shadow-md'>
+      <Card className='mx-auto my-2 w-full max-w-md rounded-2xl shadow-md'>
         <CardHeader>
           <CardTitle className='text-lg font-bold'>推广工具</CardTitle>
         </CardHeader>

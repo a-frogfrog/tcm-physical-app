@@ -24,7 +24,7 @@ const PromotionCard = ({
   withdrawable,
 }: PromotionCardProps) => {
   return (
-    <Card className='w-full max-w-md rounded-2xl bg-gradient-to-b from-blue-500 to-blue-400 text-white shadow-lg'>
+    <Card className='mx-auto w-full max-w-md rounded-2xl bg-gradient-to-b from-blue-500 to-blue-400 text-white shadow-lg'>
       {/* 顶部标题 */}
       <CardHeader className='flex items-center justify-between'>
         <div>
