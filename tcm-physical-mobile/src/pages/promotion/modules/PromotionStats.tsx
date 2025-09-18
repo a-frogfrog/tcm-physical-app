@@ -6,10 +6,8 @@ type Stat = {
 };
 
 const stats: Stat[] = [
-  { label: '推广订单', value: 128 },
   { label: '推广收益', value: '¥4,580' },
   { label: '本月推广', value: 36 },
-  { label: '团队人数', value: 156 },
 ];
 
 const PromotionStats = () => {

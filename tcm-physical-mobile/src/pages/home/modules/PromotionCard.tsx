@@ -1,66 +1,82 @@
-import { Button } from '#/components/ui';
-import { motion } from 'motion/react';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '#/components/ui';
+import { ArrowUp } from 'lucide-react';
+// import { motion } from 'motion/react';
 
-const PromotionCard = () => {
+type PromotionCardProps = {
+  totalUsers: number;
+  usersGrowth: number; // 12 表示 +12%
+  totalReward: number;
+  rewardGrowth: number; // 8 表示 +8%
+  withdrawable: number;
+};
+
+const PromotionCard = ({
+  totalUsers,
+  usersGrowth,
+  totalReward,
+  rewardGrowth,
+  withdrawable,
+}: PromotionCardProps) => {
   return (
-    <div className='mx-auto w-full max-w-md bg-gray-50'>
-      {/* 顶部卡片 */}
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className='relative overflow-hidden rounded-b-3xl bg-green-700 px-6 py-8 text-white'>
-        {/* 标题 */}
-        <h2 className='text-2xl leading-snug font-bold'>
-          传承中医智慧
-          <br />
-          推广健康赚佣金
-        </h2>
+    <Card className='w-full max-w-md rounded-2xl bg-gradient-to-b from-blue-500 to-blue-400 text-white shadow-lg'>
+      {/* 顶部标题 */}
+      <CardHeader className='flex items-center justify-between'>
+        <div>
+          <CardTitle className='text-lg sm:text-xl'>我的推广数据</CardTitle>
+          <p className='text-xs opacity-80 sm:text-sm'>数据实时更新</p>
+        </div>
+        <Button
+          size='sm'
+          variant='secondary'
+          className='bg-white text-blue-600 hover:bg-gray-100'>
+          查看详情
+        </Button>
+      </CardHeader>
 
-        {/* 描述 */}
-        <p className='mt-3 text-sm opacity-90'>
-          分享专业中医服务，帮助他人获得健康，同时轻松赚取丰厚佣金
-        </p>
+      <CardContent className='space-y-4'>
+        {/* 第一行：推广总人数 & 累计奖金 */}
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+          <div className='flex flex-col items-center rounded-lg bg-white/20 p-4 text-center'>
+            <p className='text-xs sm:text-sm'>推广总人数</p>
+            <p className='text-xl font-bold sm:text-2xl'>
+              {totalUsers.toLocaleString()}
+            </p>
+            <span className='mt-1 flex items-center text-xs text-green-200'>
+              <ArrowUp className='mr-1 h-3 w-3' />
+              {usersGrowth}%
+            </span>
+          </div>
 
-        {/* 按钮 */}
-        <div className='mt-6 flex flex-col gap-3'>
-          <motion.div whileTap={{ scale: 0.95 }}>
-            <Button className='w-full rounded-full bg-green-50 text-green-700 hover:bg-green-100'>
-              开始推广
-            </Button>
-          </motion.div>
-          <motion.div whileTap={{ scale: 0.95 }}>
-            <Button className='w-full rounded-full hover:bg-green-100'>
-              预约服务
-            </Button>
-          </motion.div>
+          <div className='flex flex-col items-center rounded-lg bg-white/20 p-4 text-center'>
+            <p className='text-xs sm:text-sm'>累计奖金(元)</p>
+            <p className='text-xl font-bold sm:text-2xl'>
+              {totalReward.toLocaleString()}
+            </p>
+            <span className='mt-1 flex items-center text-xs text-green-200'>
+              <ArrowUp className='mr-1 h-3 w-3' />
+              {rewardGrowth}%
+            </span>
+          </div>
         </div>
-      </motion.div>
 
-      {/* 数据统计区块 */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className='-mt-3 grid grid-cols-2 gap-y-6 rounded-t-3xl bg-white px-6 py-6 text-center'>
-        <div>
-          <p className='text-xl font-bold text-green-700'>¥12,580</p>
-          <p className='text-sm text-gray-600'>累计佣金</p>
+        {/* 第二行：可提现金额 */}
+        <div className='flex flex-col items-center rounded-lg bg-white/20 p-4 text-center'>
+          <p className='text-xs sm:text-sm'>可提现金额</p>
+          <p className='text-xl font-bold sm:text-2xl'>
+            {withdrawable.toLocaleString()}
+          </p>
+          <Button className='mt-3 w-full bg-white text-blue-600 hover:bg-gray-100'>
+            立即提现
+          </Button>
         </div>
-        <div>
-          <p className='text-xl font-bold text-green-700'>328</p>
-          <p className='text-sm text-gray-600'>推广订单</p>
-        </div>
-        <div>
-          <p className='text-xl font-bold text-green-700'>86</p>
-          <p className='text-sm text-gray-600'>本月新增</p>
-        </div>
-        <div>
-          <p className='text-xl font-bold text-green-700'>156</p>
-          <p className='text-sm text-gray-600'>我的团队</p>
-        </div>
-      </motion.div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
