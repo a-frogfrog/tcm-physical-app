@@ -1,11 +1,9 @@
 import { Card } from '#/components/ui';
-import { Share2, Wallet, ClipboardList, Users } from 'lucide-react';
+import { Share2, ClipboardList } from 'lucide-react';
 
 const menus = [
   { icon: <Share2 className='h-6 w-6' />, label: '我的推广' },
-  { icon: <Wallet className='h-6 w-6' />, label: '佣金中心' },
   { icon: <ClipboardList className='h-6 w-6' />, label: '我的订单' },
-  { icon: <Users className='h-6 w-6' />, label: '我的团队' },
 ];
 
 export default function UserMenu() {

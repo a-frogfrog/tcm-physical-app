@@ -32,7 +32,7 @@ const TabBar = ({ tabs }: TabBarProps) => {
                 transition={{ type: 'spring', stiffness: 300 }}>
                 {tab.icon}
               </motion.div>
-              <span className='mt-1'>{tab.label}</span>
+              <span className='font-smiley mt-1'>{tab.label}</span>
             </motion.div>
           )}
         </NavLink>

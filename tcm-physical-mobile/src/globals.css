@@ -1,5 +1,24 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@font-face {
+  font-family: 'SmileySans';
+  src:
+    url('/fonts/smiley/SmileySans-Oblique.otf.woff2') format('woff2'),
+    url('/fonts/smiley/SmileySans-Oblique.otf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LXGW WenKai';
+  src: url('/fonts/LXGWWenKai-Regular.ttf') format('truetype');
+}
+
+* {
+  font-family: 'Inter', sans-serif;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -127,5 +146,17 @@
 
   .scroll-bar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-smiley {
+    font-family: 'SmileySans', sans-serif !important;
+  }
+
+  .font-lxgw {
+    font-family: 'LXGW WenKai', sans-serif !important;
   }
 }

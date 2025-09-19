@@ -1,7 +1,6 @@
 import { Card } from '#/components/ui';
 import {
   User,
-  CreditCard,
   Bell,
   HelpCircle,
   Shield,
@@ -11,7 +10,6 @@ import {
 
 const settings = [
   { icon: <User className='h-5 w-5' />, label: '个人资料' },
-  { icon: <CreditCard className='h-5 w-5' />, label: '银行卡管理' },
   { icon: <Bell className='h-5 w-5' />, label: '消息通知' },
   { icon: <HelpCircle className='h-5 w-5' />, label: '帮助中心' },
   { icon: <Shield className='h-5 w-5' />, label: '关于我们' },

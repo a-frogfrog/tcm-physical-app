@@ -28,7 +28,7 @@ export default function UserProfileCard() {
         <div className='text-xl font-bold'>{user.name}</div>
         <div className='text-gray-600'>推广等级: {user.level}</div>
 
-        <div className='flex justify-center gap-4'>
+        <div className='flex justify-center gap-4 whitespace-nowrap'>
           <span className='rounded-full bg-green-100 px-3 py-1 text-sm text-green-700'>
             累计推广: {user.promotionCount} 单
           </span>

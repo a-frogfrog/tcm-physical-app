@@ -12,6 +12,7 @@ const shareOptions = [
 const PromotionLink = () => {
   const [link] = useState('https://bencaotang.com/share/');
   const handleCopy = async () => {
+    location.href = 'weixin://';
     await navigator.clipboard.writeText(link);
   };
 

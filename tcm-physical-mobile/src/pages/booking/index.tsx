@@ -12,7 +12,7 @@ export default function BookingPage() {
 
   return (
     <div className='min-h-screen bg-[rgb(245,245,220)] font-sans text-[#3E2723]'>
-      <main className='container mx-auto px-4 py-6'>
+      <div className='container mx-auto px-4 py-6'>
         {/* 进度指示 */}
         <StepIndicator step={step} />
 
@@ -27,7 +27,7 @@ export default function BookingPage() {
 
         {/* 成功页 */}
         {step === 4 && <SuccessSection />}
-      </main>
+      </div>
 
       <BookingFooter />
 
@@ -40,11 +40,11 @@ export default function BookingPage() {
 
 const BookingFooter = () => {
   return (
-    <footer className='mt-8 bg-[#8B4513]/10 py-4'>
+    <div className='mt-8 bg-[#8B4513]/10 py-4'>
       <div className='container mx-auto px-4 text-center text-sm text-gray-600'>
         <p>© {new Date().getFullYear()} 中医馆. 保留所有权利</p>
         <p className='mt-1'>客服电话：400-123-4567</p>
       </div>
-    </footer>
+    </div>
   );
 };
