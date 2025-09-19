@@ -10,7 +10,7 @@ import { Button, Card, CardContent, Progress } from '#/components/ui';
  */
 export default function UserPage() {
   return (
-    <div className='mx-auto overflow-hidden shadow-lg'>
+    <div className='mx-auto'>
       {/* Header */}
       <div className='relative rounded-b-2xl bg-blue-100 p-6 text-center'>
         {/* 左上角齿轮 */}
