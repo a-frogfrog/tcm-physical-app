@@ -1,6 +1,6 @@
 export const routes = {
   home: {
-    path: '/',
+    path: '/home',
   },
   booking: {
     path: '/booking',
