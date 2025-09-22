@@ -1,6 +1,6 @@
 import { PageTitle } from '#/components/common';
-import CommissionCenter from './modules/CommissionCenter';
-import RevenueChart from './modules/RevenueChart';
+import CommissionCenter from './components/CommissionCenter';
+import RevenueChart from './components/RevenueChart';
 
 /**
  *

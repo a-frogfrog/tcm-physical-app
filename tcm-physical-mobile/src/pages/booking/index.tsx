@@ -1,9 +1,9 @@
-import ServiceSection from './modules/ServiceSection';
-import TimeSection from './modules/TimeSection';
-import ConformSection from './modules/ConformSection';
-import SuccessSection from './modules/SuccessSection';
-import HelpModal from './modules/HelpModal';
-import StepIndicator from './modules/StepIndicator';
+import ServiceSection from './components/ServiceSection';
+import TimeSection from './components/TimeSection';
+import ConformSection from './components/ConformSection';
+import SuccessSection from './components/SuccessSection';
+import HelpModal from './components/HelpModal';
+import StepIndicator from './components/StepIndicator';
 import { useBookingStore } from './store';
 
 export default function BookingPage() {

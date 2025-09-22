@@ -1,8 +1,8 @@
 import { PageTitle } from '#/components/common';
-import PromotionLink from './modules/PromotionLink';
-import PromotionMethod from './modules/PromotionMethod';
-import PromotionStats from './modules/PromotionStats';
-import PromotionTutorial from './modules/PromotionTutorial';
+import PromotionLink from './components/PromotionLink';
+import PromotionMethod from './components/PromotionMethod';
+import PromotionStats from './components/PromotionStats';
+import PromotionTutorial from './components/PromotionTutorial';
 
 /**
  *

@@ -1,6 +1,6 @@
-import HealthArticleCard from './modules/HealthArticleCard';
-import PromotionCard from './modules/PromotionCard';
-import PromotionTools from './modules/PromotionTools';
+import HealthArticleCard from './components/HealthArticleCard';
+import PromotionCard from './components/PromotionCard';
+import PromotionTools from './components/PromotionTools';
 
 export default function HomePage() {
   return (

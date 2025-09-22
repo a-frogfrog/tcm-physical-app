@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { services } from './constants';
-import { useBookingStore } from './store';
+import { services } from '../constants';
+import { useBookingStore } from '../store';
 
 export const useBooking = () => {
   const booking = useBookingStore((state) => state.booking);
