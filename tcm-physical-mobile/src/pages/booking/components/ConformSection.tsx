@@ -1,5 +1,5 @@
 import { ArrowLeft, Check, Info } from 'lucide-react';
-import { useBooking } from '../useBooking';
+import { useBooking } from '../hooks/useBooking';
 import { useBookingStore } from '../store';
 
 const ConfirmSection = () => {

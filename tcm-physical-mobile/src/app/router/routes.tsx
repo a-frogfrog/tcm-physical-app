@@ -1,3 +1,4 @@
+import { routes as routesConfig } from '#/config/routes';
 import { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
 
@@ -8,23 +9,23 @@ const routes: RouteObject[] = [
     children: [
       { index: true, element: <Navigate to='/home' replace /> }, // 重定向到/home
       {
-        path: 'home',
+        path: routesConfig.home.path,
         Component: lazy(() => import('#/pages/home')),
       },
       {
-        path: 'promotion',
+        path: routesConfig.promotion.path,
         Component: lazy(() => import('#/pages/promotion')),
       },
       {
-        path: 'user',
+        path: routesConfig.user.path,
         Component: lazy(() => import('#/pages/user')),
       },
       {
-        path: 'commission',
+        path: routesConfig.commission.path,
         Component: lazy(() => import('#/pages/commission')),
       },
       {
-        path: 'booking',
+        path: routesConfig.booking.path,
         Component: lazy(() => import('#/pages/booking')),
       },
       {
