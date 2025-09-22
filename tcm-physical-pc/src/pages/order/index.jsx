@@ -8,7 +8,6 @@ import {
   Input,
   Space,
   Tag,
-  Badge,
   Button  
 } from 'antd';
 const { Option } = Select;
@@ -16,6 +15,7 @@ const { RangePicker } = DatePicker;
 import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'antd/dist/reset.css';
+import './index.css';
 
 const OrderPage = () => {
   const [searchForm] = Form.useForm();
@@ -182,21 +182,19 @@ const OrderPage = () => {
     }, 500);
   };
 
-  // 处理搜索
+  // 搜索与重置逻辑
   const handleSearch = () => {
     searchForm.validateFields().then((values) => {
-      const params = {
+      fetchOrderList({
         orderNo: values.orderNo || '',
         customerName: values.customerName || '',
         orderType: values.orderType || '',
         status: values.status || '',
         dateRange: values.dateRange || null,
-      };
-      fetchOrderList(params);
+      });
     });
   };
-
-  // 重置搜索
+  
   const handleReset = () => {
     searchForm.resetFields();
     fetchOrderList();
@@ -237,10 +235,7 @@ const OrderPage = () => {
       key: 'orderType',
       width: 100,
       align: 'center',
-      render: (type) => {
-        const typeInfo = orderTypeOptions.find((item) => item.value === type);
-        return typeInfo ? typeInfo.label : type;
-      },
+      render: (type) => orderTypeOptions.find(i => i.value === type)?.label || type,
     },
     {
       title: '下单时间',
@@ -265,10 +260,7 @@ const OrderPage = () => {
       key: 'paymentMethod',
       width: 120,
       align: 'center',
-      render: (method) => {
-        const methodInfo = paymentMethodOptions.find((item) => item.value === method);
-        return methodInfo ? methodInfo.label : method;
-      },
+      render: (method) => paymentMethodOptions.find(i => i.value === method)?.label || method,
     },
     {
       title: '支付时间',
@@ -287,14 +279,8 @@ const OrderPage = () => {
       width: 100,
       align: 'center',
       render: (status) => {
-        const statusInfo = orderStatusOptions.find((item) => item.value === status);
-        return statusInfo ? (
-          <Tag color={statusInfo.color} className='order-status-tag'>
-            {statusInfo.label}
-          </Tag>
-        ) : (
-          <Tag color='gray' className='order-status-tag'>{status}</Tag>
-        );
+        const info = orderStatusOptions.find(i => i.value === status);
+        return info ? <Tag color={info.color} className='order-status-tag'>{info.label}</Tag> : <Tag color='gray'>{status}</Tag>;
       },
     },
     {
@@ -314,6 +300,13 @@ const OrderPage = () => {
     },
   ];
 
+  // 初始化订单列表格式
+  useEffect(() => {
+    if (!Array.isArray(orderList)) {
+      setOrderList([]);
+    }
+  }, [orderList]);
+
   return (
     <div className='order-page-container'>
       {/* 页面标题 */}
@@ -331,111 +324,38 @@ const OrderPage = () => {
           initialValues={{ orderType: '', status: '' }}
         >
           <Form.Item name='orderNo' label='订单编号' className='search-form-item'>
-            <Input 
-              placeholder='请输入订单编号' 
-              className='search-input'
-              maxLength={20}
-            />
+            <Input placeholder='请输入订单编号' className='search-input' maxLength={20} />
           </Form.Item>
-
           <Form.Item name='customerName' label='客户姓名' className='search-form-item'>
-            <Input 
-              placeholder='请输入客户姓名' 
-              className='search-input'
-              maxLength={10}
-            />
+            <Input placeholder='请输入客户姓名' className='search-input' maxLength={10} />
           </Form.Item>
-
           <Form.Item name='orderType' label='订单类型' className='search-form-item'>
-            <Select 
-              placeholder='请选择订单类型' 
-              className='search-select'
-              showSearch
-              filterOption={(input, option) => 
-                (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-              }
-            >
-              {orderTypeOptions.map((option) => (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
-                </Option>
-              ))}
+            <Select placeholder='请选择订单类型' className='search-select' showSearch filterOption={(i, o) => (o?.children ?? '').toLowerCase().includes(i.toLowerCase())}>
+              {orderTypeOptions.map(o => <Option key={o.value} value={o.value}>{o.label}</Option>)}
             </Select>
           </Form.Item>
-
           <Form.Item name='status' label='订单状态' className='search-form-item'>
-            <Select 
-              placeholder='请选择订单状态' 
-              className='search-select'
-              showSearch
-              filterOption={(input, option) => 
-                (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-              }
-            >
-              {orderStatusOptions.map((option) => (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
-                </Option>
-              ))}
+            <Select placeholder='请选择订单状态' className='search-select' showSearch filterOption={(i, o) => (o?.children ?? '').toLowerCase().includes(i.toLowerCase())}>
+              {orderStatusOptions.map(o => <Option key={o.value} value={o.value}>{o.label}</Option>)}
             </Select>
           </Form.Item>
-
           <Form.Item name='dateRange' label='下单日期' className='search-form-item'>
-            <RangePicker 
-              format='YYYY-MM-DD' 
-              className='search-date-picker'
-              placeholder={['开始日期', '结束日期']}
-            />
+            <RangePicker format='YYYY-MM-DD' className='search-date-picker' placeholder={['开始日期', '结束日期']} />
           </Form.Item>
-
           <Form.Item className='search-form-item'>
             <Space size='middle'>
-              <Button 
-                type='primary' 
-                icon={<SearchOutlined />} 
-                htmlType='submit'
-                className='search-btn'
-              >
-                搜索
-              </Button>
-              <Button 
-                onClick={handleReset}
-                className='reset-btn'
-              >
-                重置
-              </Button>
+              <Button type='primary' icon={<SearchOutlined />} htmlType='submit' className='search-btn'>搜索</Button>
+              <Button onClick={handleReset} className='reset-btn'>重置</Button>
             </Space>
           </Form.Item>
         </Form>
-      </Card>
-
-      {/* 统计信息 */}
-      <Card className='stats-card' bordered={false}>
-        <div className='stats-container'>
-          <div className='stat-item'>
-            <span className='stat-label'>今日订单数：</span>
-            <Badge count={2} size='large' className='stat-count' />
-          </div>
-          <div className='stat-item'>
-            <span className='stat-label'>今日销售额：</span>
-            <span className='stat-value'>¥1,000.00</span>
-          </div>
-          <div className='stat-item'>
-            <span className='stat-label'>本月销售额：</span>
-            <span className='stat-value'>¥16,680.20</span>
-          </div>
-          <div className='stat-item'>
-            <span className='stat-label'>总订单数：</span>
-            <span className='stat-value'>{orderList.length} 条</span>
-          </div>
-        </div>
       </Card>
 
       {/* 订单表格 */}
       <Card className='table-card' bordered={false}>
         <Table
           columns={columns}
-          dataSource={orderList}
+          dataSource={orderList || []}
           rowKey='id'
           loading={loading}
           pagination={{

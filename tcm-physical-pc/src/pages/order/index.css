@@ -71,43 +71,6 @@
   border-color: #d9d9d9;
 }
 
-/* 统计信息样式 */
-.stats-card {
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border-radius: 4px;
-  padding: 16px;
-  background-color: #fff;
-}
-
-.stats-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  align-items: center;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-}
-
-.stat-label {
-  color: #666;
-  margin-right: 8px;
-  font-size: 14px;
-}
-
-.stat-value {
-  font-weight: 600;
-  color: #8B5A2B;
-  font-size: 14px;
-}
-
-.stat-count {
-  background-color: #8B5A2B;
-}
-
 /* 表格样式 */
 .table-card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -171,13 +134,8 @@
   .search-select {
     width: 150px;
   }
-  
   .search-date-picker {
     width: 220px;
-  }
-  
-  .stats-container {
-    gap: 16px;
   }
 }
 
@@ -185,20 +143,12 @@
   .order-page-container {
     padding: 16px;
   }
-  
   .search-form {
     gap: 8px;
   }
-  
   .search-input,
   .search-select,
   .search-date-picker {
     width: 100%;
-  }
-  
-  .stats-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
   }
 }
