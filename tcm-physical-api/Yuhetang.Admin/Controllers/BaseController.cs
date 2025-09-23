@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Yuhetang.Infrastructure.Dto.Response;
+using Yuhetang.Service.EFCore;
 using Yuhetang.Service.Interface;
 
 namespace Yuhetang.Admin.Controllers
@@ -27,11 +29,34 @@ namespace Yuhetang.Admin.Controllers
         /// 获取当前登录对象
         /// </summary>
         /// <returns></returns>
-        protected User_Response_Dto Get_Current_User()
+        /// <summary>
+        /// 获取当前登录
+        /// </summary>
+        /// <returns></returns>
+        protected User_Response_Dto? Get_Current_Admin()
         {
             var code = Response.HttpContext.User.Identity?.Name;
+            var actorClaim = Response.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Actor);
+            string account = actorClaim!.Value;
+            var merchant = _login_Service.Check_Login(code, account!);
+            if (merchant == null)
+            {
+                throw new Exception("登录已过期");
+            }
+            return merchant;
+        }
 
-            return _login_Service.Check_Login(code, "");
+        protected User_Response_Dto? Get_Current_Customer()
+        {
+            var code = Response.HttpContext.User.Identity?.Name;
+            var actorClaim = Response.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Actor);
+            string account = actorClaim!.Value;
+            var merchant = _login_Service.Customer_Check_Login(code, account!);
+            if (merchant == null)
+            {
+                throw new Exception("登录已过期");
+            }
+            return merchant;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -318,5 +319,31 @@ namespace Yuhetang.Infrastructure.Tools
             return $"{NamePrefix}{randomPart}";
         }
 
-    }
+        /// <summary>
+        /// 邀请码
+        /// </summary>
+       private const string AvailableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+       public static string GenerateCode(int length = 8)
+       {
+           if (length <= 0)
+               throw new ArgumentException("推广码长度必须大于0");
+
+           var result = new StringBuilder(length);
+           using var rng = RandomNumberGenerator.Create();
+
+           var buffer = new byte[sizeof(uint)];
+
+           for (int i = 0; i < length; i++)
+           {
+               rng.GetBytes(buffer);
+               uint num = BitConverter.ToUInt32(buffer, 0);
+               result.Append(AvailableChars[(int)(num % (uint)AvailableChars.Length)]);
+           }
+
+           return result.ToString();
+       }
+
+
+        }
 }

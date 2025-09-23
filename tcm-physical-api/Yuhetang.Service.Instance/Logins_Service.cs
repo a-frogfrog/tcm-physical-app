@@ -20,18 +20,21 @@ namespace Yuhetang.Service.EFCore
         private readonly IConfiguration _configuration;
         private readonly RedisHashService _redisHashService;
         private readonly RedisStringService _redisStringService;
+        private readonly I_Verification_Code_Service _verification_Code_Service;
 
         public Logins_Service(
             Sys_IOC sys_IOC, 
             IConfiguration configuration, 
             RedisHashService redisHashService,
-            RedisStringService redisStringService
+            RedisStringService redisStringService,
+            I_Verification_Code_Service verification_Code_Service
             )
         {
             _sys_IOC = sys_IOC;
             _configuration = configuration;
             _redisHashService = redisHashService;
             _redisStringService = redisStringService;
+            _verification_Code_Service = verification_Code_Service;
         }
         /// <summary>
         /// 检查登录
@@ -152,6 +155,107 @@ namespace Yuhetang.Service.EFCore
             return _sys_IOC._sys_Login_Logs_EFCore.SaveChanges();
         }
 
+
+        /// <summary>
+        /// 检查登录
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public User_Response_Dto Customer_Check_Login(string code, string account)
+        {
+            var _user = _redisStringService.Get<string>(code);
+            if (!string.IsNullOrEmpty(_user))
+            {
+                return JsonConvert.DeserializeObject<User_Response_Dto>(_user);
+            }
+            var key = _configuration["Redis:Keys:Mobile_Check_Login"];
+            //如果在此处你查询了这个
+            var jwt = _redisStringService.Get<string>(key + account);
+            if (code == jwt)
+            {
+                var user = _sys_IOC._custom_EFCore.QueryAll(d => d.CEmail == account).Select(d => new
+                User_Response_Dto
+                {
+                    id = d.CId,
+                    name = d.CName,
+                    account = d.CEmail,
+                    time = d.CCreateTime!.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                }).Single();
+                _redisStringService.Set(code, JsonConvert.SerializeObject(user), DateTime.Now.AddSeconds(60));
+                return user;
+            }
+            else
+                return null;
+        }
+        /// <summary>
+        /// 登录和注册（如果没有账号会自动注册新账号）
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public async Task<Api_Response_Dto> Customer_Logins(Login_Request_Dto dto)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(dto.account) && string.IsNullOrEmpty(dto.password))
+                {
+                    return Result(0, "请输入账号和验证码!");
+                }
+                if (string.IsNullOrEmpty(dto.account) && !string.IsNullOrEmpty(dto.password))
+                {
+                    return Result(0, "请输入账号!");
+                }
+                if (string.IsNullOrEmpty(dto.password) && !string.IsNullOrEmpty(dto.account))
+                {
+                    return Result(0, "请输入验证码!");
+                }
+                // 验证验证码
+                var isCodeValid = _verification_Code_Service.ValidateVerificationCode(dto.account, dto.password);
+                if (!isCodeValid)
+                {
+                    return Result(0, "验证码错误或已过期");
+                }
+
+                // 查找用户
+                var iq = _sys_IOC._custom_EFCore.QueryAll(d => d.CEmail == dto.account);
+                if (!await iq.AnyAsync())
+                {
+                    var custom = new Custom
+                    {
+                        CId = Config.GUID(),
+                        CName = Config.GenerateRandomName(),
+                        CGender = 3,
+                        CAge = 0,
+                        CEmail = dto.account,
+                        CResource = 3,
+                        IsConvert = 0,
+                        CCreateTime = DateTime.Now
+                    };
+
+                    _sys_IOC._custom_EFCore.Add(custom);
+                    await _sys_IOC._custom_EFCore.SaveChangesAsync();
+                }
+                var user = await iq.SingleAsync();
+
+                if (user.CStatus == 1)
+                {
+                    return Result(0, "账号已禁用");
+                }
+
+                // Redis键值拼接（避免硬编码，增加空值保护）
+                var redisKey = $"{_configuration["Redis:Keys:Mobile_Check_Login"]}{user.CEmail}";
+                // 存储登录凭据（24小时有效期，使用异步方法避免阻塞）
+                _redisStringService.Set(redisKey, dto.code ?? string.Empty, TimeSpan.FromDays(1));
+
+                // 返回成功结果
+                return Result(1, "登录成功");
+            }
+            catch (Exception ex)
+            {
+                return Result(0, "登录失败，请稍后重试");
+            }
+        }
 
     }
 }
