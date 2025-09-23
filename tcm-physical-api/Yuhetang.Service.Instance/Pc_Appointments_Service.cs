@@ -78,8 +78,8 @@ namespace Yuhetang.Service.Instance
             };
 
             // 6. 保存到数据库（通过Appointments_IOC）
-            _appointmentsIOC._appointments_EFCore.Add(appointment);
-            await _appointmentsIOC._appointments_EFCore.SaveChangesAsync();
+            _appointmentsIOC._appointments.Add(appointment);
+            await _appointmentsIOC._appointments.SaveChangesAsync();
 
             // 7. 构建响应
             return new Pc_Appointments_Response
@@ -195,7 +195,7 @@ namespace Yuhetang.Service.Instance
         private void CheckRoomConflict(long roomId, DateTime startTime, DateTime endTime)
         {
             // 查询同一房间在时间范围内的有效预约
-            var hasConflict = _appointmentsIOC._appointments_EFCore.QueryAll(a =>
+            var hasConflict = _appointmentsIOC._appointments.QueryAll(a =>
                 a.ArId == roomId &&
                 a.BookingStatus != 2 && // 排除已取消的预约
                 !(a.BookingEndTime <= startTime || a.BookingStartTime >= endTime)
