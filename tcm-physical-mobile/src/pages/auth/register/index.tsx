@@ -1,3 +1,11 @@
+import { Link } from 'react-router-dom';
+import { routes } from '#/config/routes';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Form, FormHeader, FormRule } from '../components/Form';
+import VerifyInput, { useFieldStatus } from '../components/VerifyInput';
+import PasswordInput from '../components/PasswordInput';
 import {
   Button,
   Form as FormProvider,
@@ -7,14 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from '#/components/ui';
-import { Link } from 'react-router-dom';
-import { routes } from '#/config/routes';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { Form, FormHeader } from '../components/Form';
-import VerifyInput, { useFieldStatus } from '../components/VerifyInput';
-import PasswordInput from '../components/PasswordInput';
 
 const formSchema = z.object({
   name: z.string().min(5, '请输入用户名').max(50, '用户名最多50个字符'),
@@ -132,9 +132,8 @@ export default function RegisterPage() {
         />
 
         {/* Password rules */}
-        <p className='text-sm text-gray-500'>
-          8+ characters, 1 uppercase, 1 number
-        </p>
+        <FormRule>账号/手机号: 11位数字</FormRule>
+        <FormRule>密码: 8+字符, 1大写字母, 1数字</FormRule>
 
         {/* Sign up button */}
         <Button className='w-full rounded-full bg-green-500 text-white hover:bg-green-600'>
@@ -142,11 +141,11 @@ export default function RegisterPage() {
         </Button>
 
         <p className='text-center text-sm text-gray-500'>
-          Already have an account?{' '}
+          已经有账号? {''}
           <Link
             to={routes.auth.login.path}
             className='font-medium text-green-600'>
-            Log in
+            登录
           </Link>
         </p>
       </Form>

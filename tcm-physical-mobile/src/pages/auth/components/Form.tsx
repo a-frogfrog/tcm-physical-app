@@ -25,4 +25,8 @@ const FormFooter = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export { Form, FormHeader, FormFooter };
+const FormRule = ({ children }: { children: React.ReactNode }) => {
+  return <p className='text-sm text-gray-500'>{children}</p>;
+};
+
+export { Form, FormHeader, FormFooter, FormRule };
