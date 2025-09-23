@@ -55,9 +55,25 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public int? CStatus { get; set; }
         /// <summary>
+        /// 推广人id
+        /// </summary>
+        public string? CvcVipid { get; set; }
+        /// <summary>
+        /// 推广码
+        /// </summary>
+        public string? CvcCode { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime CCreateTime { get; set; }
+        public DateTime? CCreateTime { get; set; }
+        /// <summary>
+        /// 近期消费时间
+        /// </summary>
+        public DateTime? CConsumptionTime { get; set; }
+        /// <summary>
+        /// 累计消费
+        /// </summary>
+        public int? CTotalSpending { get; set; }
 
         public virtual CustomsVip CustomsVip { get; set; } = null!;
         public virtual ICollection<CustomFollow> CustomFollows { get; set; }

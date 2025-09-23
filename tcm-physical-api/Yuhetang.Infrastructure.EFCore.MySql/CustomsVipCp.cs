@@ -22,9 +22,17 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string CvcVipid { get; set; } = null!;
         /// <summary>
-        /// 推广链接URL
+        /// 推广码
         /// </summary>
-        public string CvcUrl { get; set; } = null!;
+        public string? CvcCode { get; set; }
+        /// <summary>
+        /// 推广长链接URL
+        /// </summary>
+        public string CvcLongUrl { get; set; } = null!;
+        /// <summary>
+        /// 推广短链接URL
+        /// </summary>
+        public string? CvcShortUrl { get; set; }
         /// <summary>
         /// 状态：0-停用，1-启用
         /// </summary>
@@ -34,7 +42,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public DateTime? CvcCreateTime { get; set; }
 
-        public virtual CustomsVip CvcVip { get; set; } = null!;
         public virtual ICollection<CustomerVipCpsCommission> CustomerVipCpsCommissions { get; set; }
     }
 }

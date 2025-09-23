@@ -1,32 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Yuhetang.Infrastructure.EFCore.MySql
+namespace Yuhetang.Infrastructure.Dto.Response.Pc
 {
-    public partial class Appointment
+    public class Pc_Appointments_Response
     {
         /// <summary>
-        /// 预约ID
+        /// 预约id
         /// </summary>
-        public string Id { get; set; } = null!;
+        public string? Id { get; set; }
         /// <summary>
         /// 预约人姓名
         /// </summary>
-        public string CustomerName { get; set; } = null!;
+        public string? CustomerName { get; set; }
         /// <summary>
-        /// 联系方式
+        /// 预约人电话号码
         /// </summary>
-        public string CustomerPhone { get; set; } = null!;
+        public string? CustomerPhone { get; set; }
         /// <summary>
         /// 预约时间
         /// </summary>
-        public DateTime? AppointmentTime { get; set; }
+        public string? AppointmentTime { get; set; }
         /// <summary>
         /// 套餐id
         /// </summary>
-        public string? PpId { get; set; }
+        public string? PP_ID { get; set; }
         /// <summary>
-        /// 预约状态0-待确认,1-已确认,2-已完成,3-已取消
+        /// 预约状态
         /// </summary>
         public int? Status { get; set; }
         /// <summary>
@@ -36,10 +39,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime? CreatedAt { get; set; }
+        public string? CreatedAt { get; set; }
         /// <summary>
         /// 员工id
         /// </summary>
-        public string? AeId { get; set; }
+        public string? AE_ID { get; set; }
     }
 }

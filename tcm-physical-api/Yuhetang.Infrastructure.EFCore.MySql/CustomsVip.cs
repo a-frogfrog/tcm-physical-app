@@ -12,7 +12,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         {
             CustomerVipCpsCommissions = new HashSet<CustomerVipCpsCommission>();
             CustomerVipRecords = new HashSet<CustomerVipRecord>();
-            CustomsVipCps = new HashSet<CustomsVipCp>();
             Orders = new HashSet<Order>();
         }
 
@@ -56,7 +55,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public virtual Custom CvCustomer { get; set; } = null!;
         public virtual ICollection<CustomerVipCpsCommission> CustomerVipCpsCommissions { get; set; }
         public virtual ICollection<CustomerVipRecord> CustomerVipRecords { get; set; }
-        public virtual ICollection<CustomsVipCp> CustomsVipCps { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

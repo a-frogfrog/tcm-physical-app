@@ -23,7 +23,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 产品数量
         /// </summary>
-        public int? PpdQuantity { get; set; }
+        public int PpdQuantity { get; set; }
         /// <summary>
         /// 明细价格
         /// </summary>
