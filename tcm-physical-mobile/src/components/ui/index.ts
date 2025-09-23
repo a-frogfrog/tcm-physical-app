@@ -4,3 +4,4 @@ export * from './input';
 export * from './progress';
 export * from './dropdown-menu';
 export * from './avatar';
+export * from './form';
