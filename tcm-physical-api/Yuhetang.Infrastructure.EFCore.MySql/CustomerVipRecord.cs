@@ -17,7 +17,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string CvrVipid { get; set; } = null!;
         /// <summary>
-        /// 行为类型：1-推广奖励，3-佣金
+        /// 行为类型：1-推广奖励，2-佣金
         /// </summary>
         public int CvrType { get; set; }
         /// <summary>

@@ -9,7 +9,7 @@ using Yuhetang.Infrastructure.Dto.Response;
 
 namespace Yuhetang.Service.Interface
 {
-    [Inject_]
+    [Provider_]
     public interface I_Pc_Customs_Service
     {
         /// <summary>

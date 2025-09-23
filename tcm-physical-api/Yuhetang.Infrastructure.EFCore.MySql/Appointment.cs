@@ -15,7 +15,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 客户ID
         /// </summary>
-        public string AcId { get; set; } = null!;
+        public string? AcId { get; set; }
         /// <summary>
         /// 房间ID
         /// </summary>
@@ -27,15 +27,19 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 套餐ID
         /// </summary>
+        public string? AppId { get; set; }
+        /// <summary>
+        /// 产品ID
+        /// </summary>
         public string? ApId { get; set; }
         /// <summary>
         /// 预约开始时间
         /// </summary>
-        public DateTime BookingStartTime { get; set; }
+        public DateTime? BookingStartTime { get; set; }
         /// <summary>
         /// 预约结束时间
         /// </summary>
-        public DateTime BookingEndTime { get; set; }
+        public DateTime? BookingEndTime { get; set; }
         /// <summary>
         /// 预约状态：0-待确认，1-已确认，2-已取消，3-已完成
         /// </summary>
@@ -49,7 +53,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public DateTime? CreateTime { get; set; }
 
-        public virtual Custom Ac { get; set; } = null!;
+        public virtual Custom? Ac { get; set; }
         public virtual SysEmployee? Ae { get; set; }
         public virtual ProductPackage? Ap { get; set; }
         public virtual Room? Ar { get; set; }

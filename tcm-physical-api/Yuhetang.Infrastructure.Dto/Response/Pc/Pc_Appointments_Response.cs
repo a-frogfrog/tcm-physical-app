@@ -16,7 +16,16 @@ namespace Yuhetang.Infrastructure.Dto.Response.Pc
         /// <summary>
         /// 客户姓名
         /// </summary>
-        public string? name { get; set; }
+        public string? CustomsName { get; set; }
+
+        /// <summary>
+        /// 客户ID
+        /// </summary>
+        public string? CustomerId { get; set; }
+        /// <summary>
+        /// 客户手机号码
+        /// </summary>
+        public string? CustomsPhone { get; set; }
 
         /// <summary>
         /// 房间号
@@ -24,14 +33,46 @@ namespace Yuhetang.Infrastructure.Dto.Response.Pc
         public string? RoomNumber { get; set; }
 
         /// <summary>
+        /// 房间名称
+        /// </summary>
+        public string? RoomName { get; set; }
+
+        /// <summary>
+        /// 房间ID
+        /// </summary>
+        public long? RoomId { get; set; }
+
+        /// <summary>
         /// 员工姓名
         /// </summary>
         public string? EmployeeName { get; set; }
 
         /// <summary>
+        /// 员工姓名
+        /// </summary>
+        public string? EmployeePosition { get; set; }
+        /// <summary>
+        /// 员工ID
+        /// </summary>
+        public string? EmployeeId { get; set; }
+        /// <summary>
         /// 套餐名称
         /// </summary>
-        public string? PackageName { get; set; }
+        public string? ProductpackageName { get; set; }
+
+        /// <summary>
+        /// 套餐ID
+        /// </summary>
+        public string? ProductpackageId { get; set; }
+        /// <summary>
+        /// 产品名称
+        /// </summary>
+        public string? ProductName { get; set; }
+
+        /// <summary>
+        /// 产品ID
+        /// </summary>
+        public string? ProductId { get; set; }
 
         /// <summary>
         /// 预约开始时间
@@ -48,6 +89,10 @@ namespace Yuhetang.Infrastructure.Dto.Response.Pc
         /// </summary>
         public int? BookingStatus { get; set; }
 
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string? Remark { get; set; }
         /// <summary>
         /// 预约状态名称
         /// </summary>

@@ -10,28 +10,33 @@ namespace Yuhetang.Infrastructure.Dto.Request.Pc
     /// <summary>
     /// 新增预约请求DTO
     /// </summary>
-    public class Pc_Appointment_Request_Dto:Base_Request
+    public class Pc_Appointment_Request_Dto : Base_Request
     {
 
-            /// <summary>
-            /// 客户ID
-            /// </summary>
-            public string CustomerId { get; set; }
+        /// <summary>
+        /// 客户ID
+        /// </summary>
+        public string CustomerId { get; set; }
 
-            /// <summary>
-            /// 房间ID（可选）
-            /// </summary>
-            public long? RoomId { get; set; }
+        /// <summary>
+        /// 房间ID（可选）
+        /// </summary>
+        public long? RoomId { get; set; }
 
-            /// <summary>
-            /// 员工ID（可选）
-            /// </summary>
-            public string? EmployeeId { get; set; }
+        /// <summary>
+        /// 员工ID（可选）
+        /// </summary>
+        public string? EmployeeId { get; set; }
 
-            /// <summary>
-            /// 套餐ID（可选）
-            /// </summary>
-            public string? PackageId { get; set; }
+        /// <summary>
+        /// 产品ID（可选）
+        /// </summary>
+        public string? ProductId { get; set; }
+
+        /// <summary>
+        /// 套餐ID
+        /// </summary>
+        public string? ProductpackageId { get; set; }
 
             /// <summary>
             /// 预约开始时间

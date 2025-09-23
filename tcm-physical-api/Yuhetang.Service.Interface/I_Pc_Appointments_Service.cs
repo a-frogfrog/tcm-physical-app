@@ -22,5 +22,12 @@ namespace Yuhetang.Service.Interface
         /// <param name="requestDto">预约请求数据</param>
         /// <returns>新增的预约信息</returns>
         Task<Pc_Appointments_Response> AddAppointmentAsync(Pc_Appointment_Request_Dto dto);
+
+        /// <summary>
+        /// 获取所有预约
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<List<Pc_Appointments_Response>> Get_Appointments();
     }
 }

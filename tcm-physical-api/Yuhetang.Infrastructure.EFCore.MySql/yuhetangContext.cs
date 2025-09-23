@@ -50,7 +50,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=8.134.187.124;database=yuhetang;uid=root;pwd=Wsx0628.", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
+                optionsBuilder.UseMySql("server=8.134.187.124;database=yuhetang;user=root;password=Wsx0628.", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
             }
         }
 
@@ -94,6 +94,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.Property(e => e.ApId)
                     .HasMaxLength(32)
                     .HasColumnName("Ap_id")
+                    .HasComment("产品ID");
+
+                entity.Property(e => e.AppId)
+                    .HasMaxLength(32)
+                    .HasColumnName("App_id")
                     .HasComment("套餐ID");
 
                 entity.Property(e => e.ArId)
@@ -129,7 +134,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.HasOne(d => d.Ac)
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.AcId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_booking_customer");
 
                 entity.HasOne(d => d.Ae)
@@ -186,6 +190,8 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.ToTable("customs");
 
                 entity.HasComment("客户信息表");
+
+                entity.HasIndex(e => e.CId, "C_ID");
 
                 entity.HasIndex(e => e.CPhone, "C_Phone")
                     .IsUnique();
@@ -362,6 +368,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasDefaultValueSql("'0'")
                     .HasComment("状态：0-未结算，1-已结算");
 
+                entity.Property(e => e.CvccVipid)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVCC_VIPID")
+                    .HasComment("VIPid");
+
                 entity.HasOne(d => d.CvccCps)
                     .WithMany(p => p.CustomerVipCpsCommissions)
                     .HasForeignKey(d => d.CvccCpsid)
@@ -431,7 +442,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.Property(e => e.CvrType)
                     .HasColumnName("CVR_Type")
-                    .HasComment("行为类型：1-推广奖励，3-佣金");
+                    .HasComment("行为类型：1-推广奖励，2-佣金");
 
                 entity.Property(e => e.CvrVipid)
                     .HasMaxLength(32)
