@@ -26,13 +26,7 @@ namespace Yuhetang.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Get_Pc_Appointments(int? page = 1, int? limit = 10, string? key = "")
         {
-            var result = await _pc_Appointments_Service.Get_Appointment(new Pc_Appointment_Request_Dto()
-            {
-                page = page ?? 1,
-                limit = limit ?? 10,
-                key = key ?? ""
-            });
-            return Ok(result);
+            throw new NotImplementedException();
         }
 
         /// <summary>

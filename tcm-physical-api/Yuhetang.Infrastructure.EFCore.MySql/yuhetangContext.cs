@@ -61,52 +61,91 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
             modelBuilder.Entity<Appointment>(entity =>
             {
-                entity.ToTable("appointments");
+                entity.HasKey(e => e.AId)
+                    .HasName("PRIMARY");
 
-                entity.Property(e => e.Id)
+                entity.ToTable("appointment");
+
+                entity.HasComment("预约信息表");
+
+                entity.HasIndex(e => e.AcId, "FK_booking_customer");
+
+                entity.HasIndex(e => e.AeId, "FK_booking_employee");
+
+                entity.HasIndex(e => e.ApId, "FK_booking_package");
+
+                entity.HasIndex(e => e.ArId, "FK_booking_room");
+
+                entity.Property(e => e.AId)
                     .HasMaxLength(32)
-                    .HasColumnName("id")
+                    .HasColumnName("A_id")
                     .HasComment("预约ID");
+
+                entity.Property(e => e.AcId)
+                    .HasMaxLength(32)
+                    .HasColumnName("Ac_id")
+                    .HasComment("客户ID");
 
                 entity.Property(e => e.AeId)
                     .HasMaxLength(32)
-                    .HasColumnName("AE_ID")
-                    .HasComment("员工id");
+                    .HasColumnName("Ae_id")
+                    .HasComment("员工ID");
 
-                entity.Property(e => e.AppointmentTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("appointment_time")
-                    .HasComment("预约时间");
+                entity.Property(e => e.ApId)
+                    .HasMaxLength(32)
+                    .HasColumnName("Ap_id")
+                    .HasComment("套餐ID");
 
-                entity.Property(e => e.CreatedAt)
+                entity.Property(e => e.ArId)
+                    .HasColumnName("Ar_id")
+                    .HasComment("房间ID");
+
+                entity.Property(e => e.BookingEndTime)
                     .HasColumnType("datetime")
-                    .HasColumnName("created_at")
+                    .HasColumnName("booking_end_time")
+                    .HasComment("预约结束时间");
+
+                entity.Property(e => e.BookingStartTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("booking_start_time")
+                    .HasComment("预约开始时间");
+
+                entity.Property(e => e.BookingStatus)
+                    .HasColumnName("booking_status")
+                    .HasDefaultValueSql("'0'")
+                    .HasComment("预约状态：0-待确认，1-已确认，2-已取消，3-已完成");
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("create_time")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .HasComment("创建时间");
-
-                entity.Property(e => e.CustomerName)
-                    .HasMaxLength(100)
-                    .HasColumnName("customer_name")
-                    .HasComment("预约人姓名");
-
-                entity.Property(e => e.CustomerPhone)
-                    .HasMaxLength(20)
-                    .HasColumnName("customer_phone")
-                    .HasComment("联系方式");
-
-                entity.Property(e => e.PpId)
-                    .HasMaxLength(32)
-                    .HasColumnName("PP_ID")
-                    .HasComment("套餐id");
 
                 entity.Property(e => e.Remark)
                     .HasMaxLength(255)
                     .HasColumnName("remark")
                     .HasComment("备注");
 
-                entity.Property(e => e.Status)
-                    .HasColumnName("status")
-                    .HasComment("预约状态0-待确认,1-已确认,2-已完成,3-已取消");
+                entity.HasOne(d => d.Ac)
+                    .WithMany(p => p.Appointments)
+                    .HasForeignKey(d => d.AcId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_booking_customer");
+
+                entity.HasOne(d => d.Ae)
+                    .WithMany(p => p.Appointments)
+                    .HasForeignKey(d => d.AeId)
+                    .HasConstraintName("FK_booking_employee");
+
+                entity.HasOne(d => d.Ap)
+                    .WithMany(p => p.Appointments)
+                    .HasForeignKey(d => d.ApId)
+                    .HasConstraintName("FK_booking_package");
+
+                entity.HasOne(d => d.Ar)
+                    .WithMany(p => p.Appointments)
+                    .HasForeignKey(d => d.ArId)
+                    .HasConstraintName("FK_booking_room");
             });
 
             modelBuilder.Entity<Article>(entity =>
@@ -156,16 +195,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("C_ID")
                     .HasComment("客户ID");
 
-                entity.Property(e => e.CAccount)
-                    .HasMaxLength(50)
-                    .HasColumnName("C_Account")
-                    .HasComment("邮箱账号");
-
-                entity.Property(e => e.CAddress)
-                    .HasMaxLength(200)
-                    .HasColumnName("C_Address")
-                    .HasComment("地址");
-
                 entity.Property(e => e.CAge)
                     .HasColumnName("C_Age")
                     .HasComment("年龄");
@@ -180,6 +209,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("C_CreateTime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .HasComment("创建时间");
+
+                entity.Property(e => e.CEmail)
+                    .HasMaxLength(255)
+                    .HasColumnName("C_Email")
+                    .HasComment("客户邮箱");
 
                 entity.Property(e => e.CGender)
                     .HasColumnName("C_Gender")
@@ -201,11 +235,16 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.Property(e => e.CStatus)
                     .HasColumnName("C_Status")
-                    .HasComment("状态：0-无效，1-有效");
+                    .HasComment("0-禁用,1-启动");
 
                 entity.Property(e => e.CTotalSpending)
                     .HasColumnName("C_TotalSpending")
                     .HasComment("累计消费");
+
+                entity.Property(e => e.CUserName)
+                    .HasMaxLength(255)
+                    .HasColumnName("C_UserName")
+                    .HasComment("客户用户名");
 
                 entity.Property(e => e.CvcCode)
                     .HasMaxLength(255)
@@ -386,9 +425,13 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("CVR_OrderID")
                     .HasComment("关联订单ID");
 
+                entity.Property(e => e.CvrSatus)
+                    .HasColumnName("CVR_Satus")
+                    .HasComment("0=冻结 1=可提现 2=已提现 3=退回");
+
                 entity.Property(e => e.CvrType)
                     .HasColumnName("CVR_Type")
-                    .HasComment("行为类型：1-充值，2-消费，3-退款");
+                    .HasComment("行为类型：1-推广奖励，3-佣金");
 
                 entity.Property(e => e.CvrVipid)
                     .HasMaxLength(32)
