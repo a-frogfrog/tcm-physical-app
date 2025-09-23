@@ -58,7 +58,7 @@ namespace Yuhetang.Service.EFCore
                     name = d.CName,
                     account = d.CAccount,
                     isBan = d.CStatus,
-                    time = d.CCreateTime!.ToString("yyyy-MM-dd HH:mm:ss")
+                    time = d.CCreateTime!.Value.ToString("yyyy-MM-dd HH:mm:ss")
                 }).Single();
                 _redisStringService.Set(code, JsonConvert.SerializeObject(user), DateTime.Now.AddSeconds(60));
                 return user;
