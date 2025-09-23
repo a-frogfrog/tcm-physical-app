@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Yuhetang.Infrastructure.Attr\Yuhetang.Infrastructure.Attr.csproj" />
     <ProjectReference Include="..\Yuhetang.Infrastructure.Dto\Yuhetang.Infrastructure.Dto.csproj" />
+    <ProjectReference Include="..\Yuhetang.Infrastructure.EFCore.MySql\Yuhetang.Infrastructure.EFCore.MySql.csproj" />
   </ItemGroup>
 
 </Project>

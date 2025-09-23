@@ -22,6 +22,7 @@ namespace Yuhetang.Infrastructure.IOC
         public readonly Sys_Shift_EFCore _sys_Shift_EFCore;
         public readonly Sys_Employee_Schedule_EFCore _sys_Employee_Schedule_EFCore;
         public readonly Sys_Login_Logs_EFCore _sys_Login_Logs_EFCore;
+        public readonly Custom_EFCore _custom_EFCore;
 
         public Sys_IOC(
             Sys_Department_EFCore sys_Department_EFCore,
@@ -32,8 +33,8 @@ namespace Yuhetang.Infrastructure.IOC
             Sys_Schedule_Cycle_EFCore sys_Schedule_Cycle_EFCore,
             Sys_Shift_EFCore sys_Shift_EFCore,
             Sys_Employee_Schedule_EFCore sys_Employee_Schedule_EFCore,
-            Sys_Login_Logs_EFCore sys_Login_Logs_EFCore
-
+            Sys_Login_Logs_EFCore sys_Login_Logs_EFCore,
+            Custom_EFCore custom_EFCore
             ) 
         {
             _sys_Department_EFCore = sys_Department_EFCore;
@@ -46,6 +47,8 @@ namespace Yuhetang.Infrastructure.IOC
             _sys_Shift_EFCore = sys_Shift_EFCore;
             _sys_Employee_Schedule_EFCore = sys_Employee_Schedule_EFCore;
             _sys_Login_Logs_EFCore = sys_Login_Logs_EFCore;
+
+            _custom_EFCore = custom_EFCore;
         }
     }
 }

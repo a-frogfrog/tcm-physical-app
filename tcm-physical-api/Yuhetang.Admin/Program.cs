@@ -78,7 +78,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
          OnMessageReceived = context =>
          {
              string url = context.Request.Path;
-             if (url.ToLower() == "/api/admin/check_login" || url.ToLower() == "/api/mobile/check_login")
+             if (url.ToLower() == "/api/Logins/Check_Login" || url.ToLower() == "/api/Logins/Customer_Check_Login")
              {
                  if (!StringValues.IsNullOrEmpty(context.Request.Headers["Authorization"]))
                  {
@@ -114,7 +114,8 @@ builder.Services.AddCors(c =>
     c.AddPolicy("AllRequests", policy =>
     {
         policy.AllowAnyOrigin()    // 允许所有来源
-            .AllowAnyMethod()    // 允许所有HTTP方法
+        //policy.WithOrigins("http://8.134.187.124:8081", "http://8.134.187.124:8080")
+          .AllowAnyMethod()    // 允许所有HTTP方法
             .AllowAnyHeader();   // 允许所有请求头
     });
 });
@@ -160,25 +161,25 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 #endregion
-
 var app = builder.Build();
-
-// 接口文档
-app.UseKnife4UI(d =>
-{
-    d.RoutePrefix = String.Empty;
-    d.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-});
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors("AllRequests");
 
-app.UseCors("AllRequests"); 
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+
+app.UseKnife4UI(d =>
+{
+    d.RoutePrefix = String.Empty;
+    d.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+});
 
 app.Run();

@@ -5,6 +5,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 {
     public partial class Room
     {
+        public Room()
+        {
+            Appointments = new HashSet<Appointment>();
+        }
+
         /// <summary>
         /// 房间ID
         /// </summary>
@@ -29,5 +34,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// 创建时间
         /// </summary>
         public DateTime? CreateTime { get; set; }
+
+        public virtual ICollection<Appointment> Appointments { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
     {
         public Custom()
         {
+            Appointments = new HashSet<Appointment>();
             CustomFollows = new HashSet<CustomFollow>();
             MembershipCards = new HashSet<MembershipCard>();
         }
@@ -19,9 +20,21 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string CId { get; set; } = null!;
         /// <summary>
+        /// 客户邮箱
+        /// </summary>
+        public string? CEmail { get; set; }
+        /// <summary>
+        /// 客户用户名
+        /// </summary>
+        public string? CUserName { get; set; }
+        /// <summary>
         /// 客户姓名
         /// </summary>
         public string? CName { get; set; }
+        /// <summary>
+        /// 0-禁用,1-启动
+        /// </summary>
+        public int? CStatus { get; set; }
         /// <summary>
         /// 手机号码
         /// </summary>
@@ -35,14 +48,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public int? CAge { get; set; }
         /// <summary>
-        /// 邮箱账号
-        /// </summary>
-        public string? CAccount { get; set; }
-        /// <summary>
-        /// 地址
-        /// </summary>
-        public string? CAddress { get; set; }
-        /// <summary>
         /// 客户来源：1-广告，2-介绍，3-自行上门
         /// </summary>
         public int? CResource { get; set; }
@@ -50,10 +55,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// 是否转换：0-未转换，1-已转换
         /// </summary>
         public int? IsConvert { get; set; }
-        /// <summary>
-        /// 状态：0-无效，1-有效
-        /// </summary>
-        public int? CStatus { get; set; }
         /// <summary>
         /// 推广人id
         /// </summary>
@@ -76,6 +77,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public int? CTotalSpending { get; set; }
 
         public virtual CustomsVip CustomsVip { get; set; } = null!;
+        public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<CustomFollow> CustomFollows { get; set; }
         public virtual ICollection<MembershipCard> MembershipCards { get; set; }
     }

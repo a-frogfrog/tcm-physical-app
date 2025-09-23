@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using Yuhetang.Infrastructure.Attr;
+using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
+using Yuhetang.Infrastructure.EFCore.MySql;
 using Yuhetang.Infrastructure.IOC;
+using Yuhetang.Infrastructure.Tools;
 using Yuhetang.Service.Interface;
 
 namespace Yuhetang.Service.Instance
@@ -16,20 +19,6 @@ namespace Yuhetang.Service.Instance
         {
             _appointments_IOC = appointments_IOC;
         }
-
-        public Task<Api_Response_Dto> Add_Appointments()
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// 获取预约列表(没写完)
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<Api_Response_Dto> Get_Appointments(int page, int limit, string? key)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
- 

@@ -10,6 +10,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
     {
         public ProductPackage()
         {
+            Appointments = new HashSet<Appointment>();
             ProductPackageDetails = new HashSet<ProductPackageDetail>();
         }
 
@@ -42,6 +43,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public DateTime? PpCreateTime { get; set; }
 
+        public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<ProductPackageDetail> ProductPackageDetails { get; set; }
     }
 }
