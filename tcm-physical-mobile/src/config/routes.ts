@@ -14,4 +14,12 @@ export const routes = {
   user: {
     path: '/user',
   },
+  auth: {
+    login: {
+      path: '/auth/login',
+    },
+    register: {
+      path: '/auth/register',
+    },
+  },
 };

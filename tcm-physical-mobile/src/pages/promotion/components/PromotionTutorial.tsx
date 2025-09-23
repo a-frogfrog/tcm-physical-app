@@ -31,11 +31,10 @@ const steps: Step[] = [
 
 export default function PromotionTutorial() {
   return (
-    <div className='p-6'>
+    <div>
       <h2 className='mb-6 text-center text-xl font-bold text-green-800'>
         推广教程
       </h2>
-
       <Card className='mx-auto max-w-lg rounded-2xl shadow-sm'>
         <CardContent className='space-y-6 p-6'>
           {steps.map((step) => (

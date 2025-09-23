@@ -1,16 +1,11 @@
 import { Card, CardContent, Button, Input } from '#/components/ui';
-import { Link2 } from 'lucide-react';
-import { useState } from 'react';
+import { shareOptions } from '../constants';
 
-const shareOptions = [
-  { name: '微信', icon: <Link2 className='h-5 w-5 text-green-500' /> },
-  { name: '微博', icon: <Link2 className='h-5 w-5 text-red-500' /> },
-  { name: 'QQ', icon: <Link2 className='h-5 w-5 text-blue-500' /> },
-  { name: '更多', icon: <Link2 className='h-5 w-5 text-gray-500' /> },
-];
+type PromotionLinkProps = {
+  link: string;
+};
 
-const PromotionLink = () => {
-  const [link] = useState('https://bencaotang.com/share/');
+const PromotionLink = ({ link }: PromotionLinkProps) => {
   const handleCopy = async () => {
     location.href = 'weixin://';
     await navigator.clipboard.writeText(link);
@@ -34,7 +29,7 @@ const PromotionLink = () => {
 
         {/* 分享方式 */}
         <p className='mb-3 font-bold text-green-900'>分享到</p>
-        <div className='flex gap-4'>
+        <div className='flex justify-center gap-4'>
           {shareOptions.map((item, idx) => (
             <div
               key={idx}

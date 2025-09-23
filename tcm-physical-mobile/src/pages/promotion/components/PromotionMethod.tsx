@@ -1,6 +1,10 @@
 import { Card, CardContent, Button } from '#/components/ui';
 
-const PromotionMethod = () => {
+type PromotionMethodProps = {
+  photoUrl: string;
+  onSaveImage?: () => void;
+};
+const PromotionMethod = ({ photoUrl, onSaveImage }: PromotionMethodProps) => {
   return (
     <div className='p-6'>
       <h2 className='mb-6 text-center text-xl font-bold text-green-800'>
@@ -11,7 +15,7 @@ const PromotionMethod = () => {
         <CardContent className='flex flex-col items-center justify-center p-6'>
           {/* 示例二维码/图片 */}
           <img
-            src='https://via.placeholder.com/150'
+            src={photoUrl || 'https://via.placeholder.com/150'}
             alt='推广二维码'
             className='mb-4 h-40 w-40 rounded-lg shadow'
           />
@@ -24,7 +28,7 @@ const PromotionMethod = () => {
           <Button
             variant='outline'
             className='bg-green-100 text-green-800 hover:bg-green-200'
-            onClick={() => alert('保存图片功能待实现')}>
+            onClick={onSaveImage}>
             保存图片
           </Button>
         </CardContent>

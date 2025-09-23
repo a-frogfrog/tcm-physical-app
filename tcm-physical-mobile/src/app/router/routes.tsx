@@ -28,12 +28,21 @@ const routes: RouteObject[] = [
         path: routesConfig.booking.path,
         Component: lazy(() => import('#/pages/booking')),
       },
+
       {
         //404错误路由.
         path: '*',
         Component: lazy(() => import('#/pages/error/NotFound')),
       },
     ],
+  },
+  {
+    path: routesConfig.auth.login.path,
+    Component: lazy(() => import('#/pages/auth/login')),
+  },
+  {
+    path: routesConfig.auth.register.path,
+    Component: lazy(() => import('#/pages/auth/register')),
   },
 ];
 
