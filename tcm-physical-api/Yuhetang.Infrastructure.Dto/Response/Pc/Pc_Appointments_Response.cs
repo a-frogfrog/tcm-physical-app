@@ -9,40 +9,104 @@ namespace Yuhetang.Infrastructure.Dto.Response.Pc
     public class Pc_Appointments_Response
     {
         /// <summary>
-        /// 预约id
+        /// 预约ID
         /// </summary>
-        public string? Id { get; set; }
+        public string? id { get; set; }
+        
         /// <summary>
-        /// 预约人姓名
+        /// 客户姓名
         /// </summary>
-        public string? CustomerName { get; set; }
+        public string? CustomsName { get; set; }
+
         /// <summary>
-        /// 预约人电话号码
+        /// 客户ID
         /// </summary>
-        public string? CustomerPhone { get; set; }
+        public string? CustomerId { get; set; }
         /// <summary>
-        /// 预约时间
+        /// 客户手机号码
         /// </summary>
-        public string? AppointmentTime { get; set; }
+        public string? CustomsPhone { get; set; }
+
         /// <summary>
-        /// 套餐id
+        /// 房间号
         /// </summary>
-        public string? PP_ID { get; set; }
+        public string? RoomNumber { get; set; }
+
+        /// <summary>
+        /// 房间名称
+        /// </summary>
+        public string? RoomName { get; set; }
+
+        /// <summary>
+        /// 房间ID
+        /// </summary>
+        public long? RoomId { get; set; }
+
+        /// <summary>
+        /// 员工姓名
+        /// </summary>
+        public string? EmployeeName { get; set; }
+
+        /// <summary>
+        /// 员工姓名
+        /// </summary>
+        public string? EmployeePosition { get; set; }
+        /// <summary>
+        /// 员工ID
+        /// </summary>
+        public string? EmployeeId { get; set; }
+        /// <summary>
+        /// 套餐名称
+        /// </summary>
+        public string? ProductpackageName { get; set; }
+
+        /// <summary>
+        /// 套餐ID
+        /// </summary>
+        public string? ProductpackageId { get; set; }
+        /// <summary>
+        /// 产品名称
+        /// </summary>
+        public string? ProductName { get; set; }
+
+        /// <summary>
+        /// 产品ID
+        /// </summary>
+        public string? ProductId { get; set; }
+
+        /// <summary>
+        /// 预约开始时间
+        /// </summary>
+        public string? BookingStartTime { get; set; }
+
+        /// <summary>
+        /// 预约结束时间
+        /// </summary>
+        public string? BookingEndTime { get; set; }
+
         /// <summary>
         /// 预约状态
         /// </summary>
-        public int? Status { get; set; }
+        public int? BookingStatus { get; set; }
+
         /// <summary>
         /// 备注
         /// </summary>
         public string? Remark { get; set; }
         /// <summary>
+        /// 预约状态名称
+        /// </summary>
+        public string BookingStatusName => BookingStatus switch
+        {
+            0 => "待确认",
+            1 => "已确认",
+            2 => "已取消",
+            3 => "已完成"
+        };
+
+        /// <summary>
         /// 创建时间
         /// </summary>
-        public string? CreatedAt { get; set; }
-        /// <summary>
-        /// 员工id
-        /// </summary>
-        public string? AE_ID { get; set; }
+        public string? CreateTime { get; set; }
     }
 }

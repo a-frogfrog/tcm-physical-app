@@ -1,42 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Yuhetang.Infrastructure.Dto.Request.Pc
 {
-    public class Pc_Appointment_Request_Dto:Base_Request
+    /// <summary>
+    /// 新增预约请求DTO
+    /// </summary>
+    public class Pc_Appointment_Request_Dto : Base_Request
     {
-        /// <summary>
-        /// 预约人姓名
-        /// </summary>
-        public string? CustomerName { get; set; }
 
         /// <summary>
-        /// 预约人联系电话
+        /// 客户ID
         /// </summary>
-        public string? CustomerPhone { get; set; }
+        public string CustomerId { get; set; }
 
         /// <summary>
-        /// 预约时间
+        /// 房间ID（可选）
         /// </summary>
-        public string? AppointmentTime { get; set; }
+        public long? RoomId { get; set; }
 
         /// <summary>
-        /// 预约套餐id
+        /// 员工ID（可选）
         /// </summary>
-        public string? PP_ID { get; set; }
+        public string? EmployeeId { get; set; }
 
         /// <summary>
-        /// 员工id
+        /// 产品ID（可选）
         /// </summary>
-        public string? AE_ID { get; set; }
+        public string? ProductId { get; set; }
 
         /// <summary>
-        /// 预约状态(0 待确认,1-已确认,2-已完成,3-已取消)
+        /// 套餐ID
         /// </summary>
-        public int Status { get; set; }
+        public string? ProductpackageId { get; set; }
 
-    }
+            /// <summary>
+            /// 预约开始时间
+            /// </summary>
+            public string? BookingStartTime { get; set; }
+
+            /// <summary>
+            /// 预约结束时间
+            /// </summary>
+            public string? BookingEndTime { get; set; }
+
+            /// <summary>
+            /// 预约备注
+            /// </summary>
+            public string? Remark { get; set; }
+        }
 }

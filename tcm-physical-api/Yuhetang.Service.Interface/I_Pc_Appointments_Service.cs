@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Dto.Request.Pc;
 using Yuhetang.Infrastructure.Dto.Response;
+using Yuhetang.Infrastructure.Dto.Response.Pc;
 
 namespace Yuhetang.Service.Interface
 {
@@ -16,12 +17,17 @@ namespace Yuhetang.Service.Interface
     public interface I_Pc_Appointments_Service
     {
         /// <summary>
+        /// 新增预约
+        /// </summary>
+        /// <param name="requestDto">预约请求数据</param>
+        /// <returns>新增的预约信息</returns>
+        Task<Pc_Appointments_Response> AddAppointmentAsync(Pc_Appointment_Request_Dto dto);
+
+        /// <summary>
         /// 获取所有预约
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
-        /// <param name="key"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
-        Task<Api_Response_Dto> Get_Appointment(Pc_Appointment_Request_Dto dto);
+        Task<List<Pc_Appointments_Response>> Get_Appointments();
     }
 }

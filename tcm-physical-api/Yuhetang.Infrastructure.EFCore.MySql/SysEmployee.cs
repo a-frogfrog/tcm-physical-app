@@ -8,6 +8,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
     /// </summary>
     public partial class SysEmployee
     {
+        public SysEmployee()
+        {
+            Appointments = new HashSet<Appointment>();
+        }
+
         /// <summary>
         /// 员工ID
         /// </summary>
@@ -64,5 +69,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// 创建时间
         /// </summary>
         public DateTime? ECreateTime { get; set; }
+
+        public virtual ICollection<Appointment> Appointments { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Yuhetang.Infrastructure.Dto.Request.Pc;
+using Yuhetang.Infrastructure.Dto.Response.Pc;
 using Yuhetang.Service.Instance;
 using Yuhetang.Service.Interface;
 
@@ -24,14 +25,9 @@ namespace Yuhetang.Admin.Controllers
         /// <param name="key"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Get_Pc_Appointments(int? page = 1, int? limit = 10, string? key = "")
+        public async Task<IActionResult> Get_Appointments()
         {
-            var result = await _pc_Appointments_Service.Get_Appointment(new Pc_Appointment_Request_Dto()
-            {
-                page = page ?? 1,
-                limit = limit ?? 10,
-                key = key ?? ""
-            });
+           var result = await _pc_Appointments_Service.Get_Appointments();
             return Ok(result);
         }
 
@@ -51,6 +47,18 @@ namespace Yuhetang.Admin.Controllers
                 limit = limit ?? 10,
                 key = key ?? ""
             });
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 新增预约
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> AddAppointmentAsync(Pc_Appointment_Request_Dto dto)
+        {
+            var result = await _pc_Appointments_Service.AddAppointmentAsync(dto);
             return Ok(result);
         }
     }

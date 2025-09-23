@@ -21,5 +21,20 @@ namespace Yuhetang.Service.Interface
         /// <param name="account">账号</param>
         /// <returns></returns>
         User_Response_Dto Check_Login(string code, string account);
+
+        /// <summary>
+        /// 客户登录/注册
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Customer_Logins(Login_Request_Dto dto);
+
+        /// <summary>
+        /// 检查登录
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="account">账号</param>
+        /// <returns></returns>
+        User_Response_Dto Customer_Check_Login(string code, string account);
     }
 }

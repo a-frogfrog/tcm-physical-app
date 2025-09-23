@@ -13,6 +13,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string CvccId { get; set; } = null!;
         /// <summary>
+        /// VIPid
+        /// </summary>
+        public string? CvccVipid { get; set; }
+        /// <summary>
         /// 推广链接ID
         /// </summary>
         public string CvccCpsid { get; set; } = null!;

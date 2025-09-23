@@ -46,13 +46,6 @@ namespace Yuhetang.Infrastructure.Dto.Response
         /// 预约来源:1-前台预约,2-微信预约,3-电话预约
         /// </summary>
         public int? source { get; set; }
-        /// <summary>
-        /// 员工ID 
-        /// </summary>
-        public string ae_id { get; set; }
-        /// <summary>
-        /// 创建时间
-        /// </summary>
         public string? createTime { get; set; }
         /// <summary>
         /// 最后更新时间

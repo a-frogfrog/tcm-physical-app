@@ -4,19 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Yuhetang.Infrastructure.Attr;
-using Yuhetang.Infrastructure.Dto.Request.Pc;
 using Yuhetang.Infrastructure.Dto.Response;
 
 namespace Yuhetang.Service.Interface
 {
     [Provider_]
-    public interface I_Pc_Customs_Service
+    /// <summary>
+    /// 产品套餐
+    /// </summary>s
+    public interface I_Product_Package_Service
     {
         /// <summary>
-        /// 获取所有客户
+        /// 获取产品套餐
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
         /// <returns></returns>
-        Task<Api_Response_Dto> Get_Customs(Pc_Customs_Request_Dto dto);
+        Task<Api_Response_Dto> Get_Product_Package(int page=1,int limit=10);
     }
 }

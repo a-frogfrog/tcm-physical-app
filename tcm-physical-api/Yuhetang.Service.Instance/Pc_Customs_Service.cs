@@ -14,7 +14,7 @@ using Yuhetang.Service.Interface;
 
 namespace Yuhetang.Service.Instance
 {
-    [Provider_]
+    [Inject_]
     public class Pc_Customs_Service : Base_Service, I_Pc_Customs_Service
     {
         private readonly Custom_IOC _custom_IOC;

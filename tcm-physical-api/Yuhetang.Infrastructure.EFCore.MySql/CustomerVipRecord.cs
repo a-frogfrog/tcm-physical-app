@@ -17,9 +17,13 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string CvrVipid { get; set; } = null!;
         /// <summary>
-        /// 行为类型：1-充值，2-消费，3-退款
+        /// 行为类型：1-推广奖励，2-佣金
         /// </summary>
         public int CvrType { get; set; }
+        /// <summary>
+        /// 0=冻结 1=可提现 2=已提现 3=退回
+        /// </summary>
+        public int? CvrSatus { get; set; }
         /// <summary>
         /// 金额
         /// </summary>
