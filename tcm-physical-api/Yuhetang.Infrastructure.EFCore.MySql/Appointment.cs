@@ -55,7 +55,8 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
         public virtual Custom? Ac { get; set; }
         public virtual SysEmployee? Ae { get; set; }
-        public virtual ProductPackage? Ap { get; set; }
+        public virtual Product? Ap { get; set; }
+        public virtual ProductPackage? App { get; set; }
         public virtual Room? Ar { get; set; }
     }
 }

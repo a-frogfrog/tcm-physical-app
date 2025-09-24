@@ -8,19 +8,35 @@ namespace Yuhetang.Infrastructure.Dto.Request
 {
     public class Appointments_Request_Dto
     {
-        public string? name { get; set; }
-        public string? phone { get; set; }
         /// <summary>
-        /// 预约时间
+        /// 客户ID
         /// </summary>
-        public string? aim_time { get; set; }
+        public string CustomerId { get; set; }
+
+
         /// <summary>
-        /// 套餐id
+        /// 产品ID（可选）
         /// </summary>
-        public string? pp_id { get; set; }
+        public string? ProductId { get; set; }
+
         /// <summary>
-        /// 备注
+        /// 套餐ID
         /// </summary>
-        public string? remark { get; set; }
+        public string? ProductpackageId { get; set; }
+
+        /// <summary>
+        /// 预约开始时间
+        /// </summary>
+        public string? BookingStartTime { get; set; }
+
+        /// <summary>
+        /// 预约结束时间
+        /// </summary>
+        public string? BookingEndTime { get; set; }
+
+        /// <summary>
+        /// 预约备注
+        /// </summary>
+        public string? Remark { get; set; }
     }
 }

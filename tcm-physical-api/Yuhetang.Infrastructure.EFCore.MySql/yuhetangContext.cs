@@ -50,7 +50,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=8.134.187.124;database=yuhetang;user=root;password=Wsx0628.", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
+                optionsBuilder.UseMySql("server=8.134.187.124;database=yuhetang;uid=root;pwd=Wsx0628.", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
             }
         }
 
@@ -72,7 +72,9 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.HasIndex(e => e.AeId, "FK_booking_employee");
 
-                entity.HasIndex(e => e.ApId, "FK_booking_package");
+                entity.HasIndex(e => e.AppId, "FK_booking_package");
+
+                entity.HasIndex(e => e.ApId, "FK_booking_product");
 
                 entity.HasIndex(e => e.ArId, "FK_booking_room");
 
@@ -144,6 +146,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.HasOne(d => d.Ap)
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.ApId)
+                    .HasConstraintName("FK_booking_product");
+
+                entity.HasOne(d => d.App)
+                    .WithMany(p => p.Appointments)
+                    .HasForeignKey(d => d.AppId)
                     .HasConstraintName("FK_booking_package");
 
                 entity.HasOne(d => d.Ar)
@@ -367,6 +374,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("CVCC_Status")
                     .HasDefaultValueSql("'0'")
                     .HasComment("状态：0-未结算，1-已结算");
+
+                entity.Property(e => e.CvccVipid)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVCC_VIPID")
+                    .HasComment("VIPid");
             });
 
             modelBuilder.Entity<CustomerVipRecord>(entity =>
@@ -818,6 +830,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("P_Category")
                     .HasComment("产品分类ID");
 
+                entity.Property(e => e.PCommissionRate)
+                    .HasPrecision(5, 2)
+                    .HasColumnName("P_CommissionRate")
+                    .HasComment("佣金比例");
+
                 entity.Property(e => e.PCostPrice)
                     .HasPrecision(10, 2)
                     .HasColumnName("P_CostPrice")
@@ -833,6 +850,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnType("text")
                     .HasColumnName("P_Description")
                     .HasComment("产品描述");
+
+                entity.Property(e => e.PMpocommissionRate)
+                    .HasMaxLength(255)
+                    .HasColumnName("P_MPOCommissionRate");
 
                 entity.Property(e => e.PName)
                     .HasMaxLength(100)
@@ -1336,7 +1357,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.Property(e => e.EStatus)
                     .HasColumnName("E_Status")
                     .HasDefaultValueSql("'1'")
-                    .HasComment("状态：0-离职，1-在职");
+                    .HasComment("状态：0-离职，1-在职 , 2-在忙");
             });
 
             modelBuilder.Entity<SysEmployeeSchedule>(entity =>

@@ -62,7 +62,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public int? EIsBan { get; set; }
         /// <summary>
-        /// 状态：0-离职，1-在职
+        /// 状态：0-离职，1-在职 , 2-在忙
         /// </summary>
         public int? EStatus { get; set; }
         /// <summary>

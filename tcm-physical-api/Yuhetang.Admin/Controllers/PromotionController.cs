@@ -30,6 +30,29 @@ public class PromotionController : BaseController
         return Ok(result);
     }
     /// <summary>
+    /// 删除推广链接
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    public async Task<IActionResult> Del_Link(string id)
+    {
+        var result = await _promotion_Service.Del_Link(id);
+        return Ok(result);
+    }
+    /// <summary>
+    /// 启用/禁用链接
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> Upd_Link_Status(string id)
+    {
+        var result = await _promotion_Service.Upd_Link_Status(id);
+        return Ok(result);
+    }
+
+    /// <summary>
     /// 跳转链接
     /// </summary>
     /// <param name="shortKey"></param>

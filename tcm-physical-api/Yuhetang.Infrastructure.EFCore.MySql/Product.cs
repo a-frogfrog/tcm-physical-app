@@ -10,6 +10,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
     {
         public Product()
         {
+            Appointments = new HashSet<Appointment>();
             OrderDetails = new HashSet<OrderDetail>();
             ProductInventories = new HashSet<ProductInventory>();
             ProductPackageDetails = new HashSet<ProductPackageDetail>();
@@ -41,13 +42,18 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public decimal PPrice { get; set; }
         /// <summary>
+        /// 佣金比例
+        /// </summary>
+        public decimal? PCommissionRate { get; set; }
+        public string? PMpocommissionRate { get; set; }
+        /// <summary>
         /// 产品成本价
         /// </summary>
         public decimal? PCostPrice { get; set; }
         /// <summary>
         /// 状态：0-下架，1-上架
         /// </summary>
-        public int? PStatus { get; set; }
+        public int PStatus { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
@@ -57,6 +63,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public DateTime? PUpdateTime { get; set; }
 
+        public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<ProductInventory> ProductInventories { get; set; }
         public virtual ICollection<ProductPackageDetail> ProductPackageDetails { get; set; }
