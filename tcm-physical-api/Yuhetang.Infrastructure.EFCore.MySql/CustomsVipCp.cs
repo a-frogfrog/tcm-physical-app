@@ -8,11 +8,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
     /// </summary>
     public partial class CustomsVipCp
     {
-        public CustomsVipCp()
-        {
-            CustomerVipCpsCommissions = new HashSet<CustomerVipCpsCommission>();
-        }
-
         /// <summary>
         /// 推广链接ID
         /// </summary>
@@ -41,7 +36,5 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// 创建时间
         /// </summary>
         public DateTime? CvcCreateTime { get; set; }
-
-        public virtual ICollection<CustomerVipCpsCommission> CustomerVipCpsCommissions { get; set; }
     }
 }

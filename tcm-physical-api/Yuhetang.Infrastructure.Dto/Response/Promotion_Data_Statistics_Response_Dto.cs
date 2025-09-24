@@ -21,5 +21,9 @@ namespace Yuhetang.Infrastructure.Dto.Response
         /// 提现金额
         /// </summary>
         public decimal? withdrawal_amount { get; set; }
+        /// <summary>
+        /// 本月推广
+        /// </summary>
+        public int? promotionedCount { get; set; }
     }
 }

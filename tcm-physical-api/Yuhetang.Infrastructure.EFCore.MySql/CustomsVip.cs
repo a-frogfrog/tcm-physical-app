@@ -10,7 +10,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
     {
         public CustomsVip()
         {
-            CustomerVipCpsCommissions = new HashSet<CustomerVipCpsCommission>();
             CustomerVipRecords = new HashSet<CustomerVipRecord>();
             Orders = new HashSet<Order>();
         }
@@ -52,8 +51,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public DateTime? CvUpdateTime { get; set; }
 
-        public virtual Custom CvCustomer { get; set; } = null!;
-        public virtual ICollection<CustomerVipCpsCommission> CustomerVipCpsCommissions { get; set; }
         public virtual ICollection<CustomerVipRecord> CustomerVipRecords { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }

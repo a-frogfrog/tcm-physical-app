@@ -38,19 +38,19 @@ namespace Yuhetang.Infrastructure.Dto.Request.Pc
         /// </summary>
         public string? ProductpackageId { get; set; }
 
-            /// <summary>
-            /// 预约开始时间
-            /// </summary>
-            public string? BookingStartTime { get; set; }
+        /// <summary>
+        /// 预约开始时间
+        /// </summary>
+        public string? BookingStartTime { get; set; }
 
-            /// <summary>
-            /// 预约结束时间
-            /// </summary>
-            public string? BookingEndTime { get; set; }
+        /// <summary>
+        /// 预约结束时间
+        /// </summary>
+        public string? BookingEndTime { get; set; }
 
-            /// <summary>
-            /// 预约备注
-            /// </summary>
-            public string? Remark { get; set; }
-        }
+        /// <summary>
+        /// 预约备注
+        /// </summary>
+        public string? Remark { get; set; }
+    }
 }
