@@ -23,19 +23,22 @@ namespace Yuhetang.Service.Instance
         private readonly Product_IOC _productIOC;
         private readonly Employees_IOC _employeesIOC;
         private readonly Room_IOC _roomIOC;
+        private readonly Product_Package_IOC _product_Package_IOC;
 
         public Pc_Appointments_Service(
             Appointments_IOC appointmentsIOC,
             Custom_IOC customIOC,
             Product_IOC productIOC,
             Employees_IOC employeesIOC,
-            Room_IOC roomIOC)
+            Room_IOC roomIOC,
+            Product_Package_IOC product_Package_IOC)
         {
             _appointmentsIOC = appointmentsIOC;
             _customIOC = customIOC;
             _productIOC = productIOC;
             _employeesIOC = employeesIOC;
             _roomIOC = roomIOC;
+            _product_Package_IOC = product_Package_IOC;
         }
 
         /// <summary>
@@ -54,8 +57,8 @@ namespace Yuhetang.Service.Instance
             var customer = ValidateAndGetCustomer(dto.CustomerId);
             var room = ValidateAndGetRoom(dto.RoomId);
             var employee = ValidateAndGetEmployee(dto.EmployeeId);
-            var package = ValidateAndGetPackage(dto.PackageId);
-
+            var Productpackage = ValidateAndGetProductpackage(dto.ProductpackageId);
+            var Product = ValidateAndGetProduct(dto.ProductId);
             // 4. 检查房间预约冲突
             if (room != null)
             {
@@ -69,7 +72,8 @@ namespace Yuhetang.Service.Instance
                 AcId = dto.CustomerId,
                 ArId = dto.RoomId,
                 AeId = dto.EmployeeId,
-                ApId = dto.PackageId,
+                ApId = dto.ProductId,
+                AppId = dto.ProductpackageId,
                 BookingStartTime = startTime,
                 BookingEndTime = endTime,
                 BookingStatus = 0, // 默认为待确认状态
@@ -82,20 +86,122 @@ namespace Yuhetang.Service.Instance
             await _appointmentsIOC._appointments.SaveChangesAsync();
 
             // 7. 构建响应
+            return MapToResponse(appointment, customer, room, employee, Product, Productpackage);
+        }
+
+       
+
+        /// <summary>
+        /// 将预约实体和关联数据映射为响应对象
+        /// </summary>
+        private Pc_Appointments_Response MapToResponse(
+            Appointment appointment,
+            Custom customer,
+            Room room,
+            SysEmployee employee,
+            Product product,
+            ProductPackage productPackage)
+        {
             return new Pc_Appointments_Response
             {
                 id = appointment.AId,
-                name = customer?.CName,
+                CustomsName = customer?.CName,
+                CustomsPhone = customer?.CPhone,
+                CustomerId = appointment.AcId,
                 RoomNumber = room?.RoomNumber,
+                RoomName = room?.RoomName,
+                RoomId = appointment.ArId,
                 EmployeeName = employee?.EName,
                 PackageName = package?.PName,
-                BookingStartTime = appointment.BookingStartTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
-                BookingEndTime = appointment.BookingEndTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+                BookingStartTime = appointment.BookingStartTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                BookingEndTime = appointment.BookingEndTime.ToString("yyyy-MM-dd HH:mm:ss"),
                 BookingStatus = appointment.BookingStatus,
-                CreateTime = appointment.CreateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                Remark = appointment.Remark,
+                CreateTime = appointment.CreateTime?.ToString("yyyy-MM-dd HH:mm:ss"),
             };
         }
 
+        /// <summary>
+        /// 将预约状态数字转换为对应的状态名称
+        /// </summary>
+        private string GetBookingStatusName(int status)
+        {
+            return status switch
+            {
+                0 => "待确认",
+                1 => "已确认",
+                2 => "已取消",
+                3 => "已完成",
+                _ => "未知状态"
+            };
+        }
+
+        /// <summary>
+        /// 获取预约详情（包含所有关联信息）
+        /// </summary>
+        private async Task<Pc_Appointments_Response> GetAppointmentDetailsAsync(Appointment appointment)
+        {
+            // 并行获取关联数据，提高性能
+            var customerTask = Task.Run(() =>
+                string.IsNullOrEmpty(appointment.AcId)
+                    ? null
+                    : _customIOC._custom_EFCore.QueryAll(c => c.CId == appointment.AcId).FirstOrDefault()
+            );
+
+            var roomTask = Task.Run(() =>
+                appointment.ArId.HasValue
+                    ? _roomIOC._rooms_EFCore.QueryAll(r => r.RoomId == appointment.ArId.Value).FirstOrDefault()
+                    : null
+            );
+
+            var employeeTask = Task.Run(() =>
+                string.IsNullOrEmpty(appointment.AeId)
+                    ? null
+                    : _employeesIOC._sys_Employees_EFCore.QueryAll(e => e.EId == appointment.AeId).FirstOrDefault()
+            );
+
+            var productTask = Task.Run(() =>
+                string.IsNullOrEmpty(appointment.ApId)
+                    ? null
+                    : _productIOC._product_EFCore.QueryAll(p => p.PId == appointment.ApId).FirstOrDefault()
+            );
+
+            var productPackageTask = Task.Run(() =>
+                string.IsNullOrEmpty(appointment.AppId)
+                    ? null
+                    : _product_Package_IOC._product_Package_EFCore.QueryAll(pp => pp.PpId == appointment.AppId).FirstOrDefault()
+            );
+
+            // 等待所有任务完成
+            await Task.WhenAll(customerTask, roomTask, employeeTask, productTask, productPackageTask);
+
+            // 映射为响应对象
+            return MapToResponse(
+                appointment,
+                customerTask.Result,
+                roomTask.Result,
+                employeeTask.Result,
+                productTask.Result,
+                productPackageTask.Result
+            );
+        }
+
+        /// <summary>
+        /// 验证并获取产品信息（新增）
+        /// </summary>
+        private Product ValidateAndGetProduct(string productId)
+        {
+            if (string.IsNullOrEmpty(productId)) return null;
+
+            var product = _productIOC._product_EFCore.QueryAll(p => p.PId == productId).FirstOrDefault();
+            if (product == null)
+                throw new ArgumentException("产品不存在");
+
+            if (product.PStatus!= 1)
+                throw new ArgumentException("产品已下架");
+
+            return product;
+        }
         /// <summary>
         /// 验证请求参数
         /// </summary>
@@ -175,18 +281,18 @@ namespace Yuhetang.Service.Instance
         /// <summary>
         /// 验证并获取套餐信息（通过Product_IOC）
         /// </summary>
-        private Product ValidateAndGetPackage(string packageId)
+        private ProductPackage ValidateAndGetProductpackage(string ProductpackageId)
         {
-            if (string.IsNullOrEmpty(packageId)) return null;
+            if (string.IsNullOrEmpty(ProductpackageId)) return null;
 
-            var package = _productIOC._product_EFCore.QueryAll(p => p.PId == packageId).FirstOrDefault();
-            if (package == null)
+            var Productpackage = _product_Package_IOC._product_Package_EFCore.QueryAll(p => p.PpId == ProductpackageId).FirstOrDefault();
+            if (Productpackage == null)
                 throw new ArgumentException("套餐不存在");
 
-            if (package.PStatus != 1) // 假设1表示上架状态
+            if (Productpackage.PpStatus != 1) // 假设1表示上架状态
                 throw new ArgumentException("套餐已下架");
 
-            return package;
+            return Productpackage;
         }
 
         /// <summary>
@@ -197,12 +303,36 @@ namespace Yuhetang.Service.Instance
             // 查询同一房间在时间范围内的有效预约
             var hasConflict = _appointmentsIOC._appointments.QueryAll(a =>
                 a.ArId == roomId &&
-                a.BookingStatus != 2 && // 排除已取消的预约
+                a.BookingStatus != 2 && // 排除已取消的预约 
                 !(a.BookingEndTime <= startTime || a.BookingStartTime >= endTime)
             ).Any();
 
             if (hasConflict)
                 throw new ArgumentException("该房间在所选时段已被预约");
+        }
+
+        /// <summary>
+        /// 获取所有预约
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<List<Pc_Appointments_Response>> Get_Appointments()
+        {
+            // 查询所有预约，按创建时间倒序排列
+            var appointments = await _appointmentsIOC._appointments
+                .QueryAll()
+                .OrderByDescending(a => a.CreateTime)
+                .ToListAsync();
+
+            var results = new List<Pc_Appointments_Response>();
+
+            // 为每条预约补充关联数据
+            foreach (var appointment in appointments)
+            {
+                results.Add(await GetAppointmentDetailsAsync(appointment));
+            }
+
+            return results;
         }
     }
 }

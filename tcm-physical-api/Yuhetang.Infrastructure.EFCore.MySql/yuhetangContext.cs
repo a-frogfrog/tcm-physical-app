@@ -50,7 +50,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=8.134.187.124;database=yuhetang;uid=root;pwd=Wsx0628.", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
+                optionsBuilder.UseMySql("server=8.134.187.124;database=yuhetang;user=root;password=Wsx0628.", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql"));
             }
         }
 
@@ -368,10 +368,15 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasDefaultValueSql("'0'")
                     .HasComment("状态：0-未结算，1-已结算");
 
-                entity.Property(e => e.CvccVipid)
-                    .HasMaxLength(32)
-                    .HasColumnName("CVCC_VIPID")
-                    .HasComment("VIPid");
+                entity.HasOne(d => d.CvccCps)
+                    .WithMany(p => p.CustomerVipCpsCommissions)
+                    .HasForeignKey(d => d.CvccCpsid)
+                    .HasConstraintName("customer_vip_cps_commission_ibfk_1");
+
+                entity.HasOne(d => d.CvccNewVip)
+                    .WithMany(p => p.CustomerVipCpsCommissions)
+                    .HasForeignKey(d => d.CvccNewVipid)
+                    .HasConstraintName("customer_vip_cps_commission_ibfk_2");
             });
 
             modelBuilder.Entity<CustomerVipRecord>(entity =>
