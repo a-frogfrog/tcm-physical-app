@@ -5,3 +5,4 @@ export * from './progress';
 export * from './dropdown-menu';
 export * from './avatar';
 export * from './form';
+export * from './input-otp';

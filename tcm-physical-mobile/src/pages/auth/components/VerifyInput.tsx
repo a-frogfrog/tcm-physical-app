@@ -5,7 +5,7 @@ import type { UseFormReturn, Path } from 'react-hook-form';
 export type VerifyInputStatus = 'default' | 'success' | 'error';
 
 type VerifyInputProps = {
-  status: VerifyInputStatus;
+  status?: VerifyInputStatus;
 };
 const VerifyInput = ({
   status = 'default',
