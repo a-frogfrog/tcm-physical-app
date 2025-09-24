@@ -1,5 +1,5 @@
 import { createAxiosRequest } from '#/lib/request';
 
 export const http = createAxiosRequest({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
