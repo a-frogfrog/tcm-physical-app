@@ -2,10 +2,10 @@ import { Input } from '#/components/ui';
 import { Check, ShieldX } from 'lucide-react';
 import type { UseFormReturn, Path } from 'react-hook-form';
 
-type VerifyInputStatus = 'default' | 'success' | 'error';
+export type VerifyInputStatus = 'default' | 'success' | 'error';
 
 type VerifyInputProps = {
-  status?: VerifyInputStatus;
+  status: VerifyInputStatus;
 };
 const VerifyInput = ({
   status = 'default',

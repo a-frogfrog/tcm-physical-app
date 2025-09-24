@@ -1,7 +1,12 @@
 import { http } from '../http';
 
-const fetchAuthLogin = () => {
-  return http.post('/auth/login');
+export type LoginRequestParams = {
+  account: string;
+  password: string;
+};
+
+const fetchAuthLogin = (params: LoginRequestParams) => {
+  return http.post('/auth/login', params);
 };
 
 export const authApi = {

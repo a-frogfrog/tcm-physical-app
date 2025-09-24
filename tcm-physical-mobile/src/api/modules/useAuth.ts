@@ -1,9 +1,12 @@
 import { authApi } from './auth';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export function useAuth() {
-  return useQuery({
-    queryKey: ['login'],
-    queryFn: authApi.fetchAuthLogin,
+export function useAuthLogin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: authApi.fetchAuthLogin,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
+    },
   });
 }
