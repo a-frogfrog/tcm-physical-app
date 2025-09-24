@@ -22,7 +22,7 @@ const PromotionLink = ({ link }: PromotionLinkProps) => {
           <Input value={link} readOnly className='rounded-r-none' />
           <Button
             onClick={handleCopy}
-            className='rounded-l-none bg-green-700 hover:bg-green-800'>
+            className='min-h-12 rounded-l-none bg-green-700 hover:bg-green-800'>
             复制
           </Button>
         </div>

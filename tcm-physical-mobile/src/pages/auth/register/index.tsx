@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { routes } from '#/config/routes';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form, FormHeader, FormRule } from '../components/Form';
@@ -15,34 +14,27 @@ import {
   FormLabel,
   FormMessage,
 } from '#/components/ui';
+import { registerSchema, type RegisterSchema } from '#/schemas';
 
-const formSchema = z.object({
-  name: z.string().min(5, '请输入用户名').max(50, '用户名最多50个字符'),
-  account: z.string().min(11, '账号/手机号最少11个字符').max(11),
-  password: z.string().min(8, '密码最少8个字符').max(32),
-  confirmPassword: z.string().min(8, '确认密码最少8个字符').max(32),
-});
-
-type FormSchema = z.infer<typeof formSchema>;
 export default function RegisterPage() {
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<RegisterSchema>({
+    resolver: zodResolver(registerSchema),
     mode: 'onChange',
     defaultValues: {
       name: '',
-      account: '',
+      email: '',
       password: '',
       confirmPassword: '',
     },
   });
 
-  const onSubmit = (data: FormSchema) => {
+  const onSubmit = (data: RegisterSchema) => {
     console.log(data);
   };
 
   const status = {
     name: useFieldStatus(form, 'name', form.watch('name')),
-    account: useFieldStatus(form, 'account', form.watch('account')),
+    email: useFieldStatus(form, 'email', form.watch('email')),
     password: useFieldStatus(form, 'password', form.watch('password')),
     confirmPassword: useFieldStatus(
       form,
@@ -76,15 +68,14 @@ export default function RegisterPage() {
 
         <FormField
           control={form.control}
-          name='account'
+          name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>账号/手机号</FormLabel>
+              <FormLabel>邮箱</FormLabel>
               <FormControl>
                 <VerifyInput
-                  placeholder='请输入账号/手机号'
-                  status={status.account}
-                  maxLength={11}
+                  placeholder='请输入邮箱'
+                  status={status.email}
                   {...field}
                 />
               </FormControl>
@@ -132,8 +123,7 @@ export default function RegisterPage() {
         />
 
         {/* Password rules */}
-        <FormRule>账号/手机号: 11位数字</FormRule>
-        <FormRule>密码: 8+字符, 1大写字母, 1数字</FormRule>
+        <FormRule>密码: 6+字符</FormRule>
 
         {/* Sign up button */}
         <Button className='w-full rounded-full bg-green-500 text-white hover:bg-green-600'>
