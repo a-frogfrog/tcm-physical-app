@@ -89,7 +89,7 @@ namespace Yuhetang.Service.Instance
             return MapToResponse(appointment, customer, room, employee, Product, Productpackage);
         }
 
-       
+
 
         /// <summary>
         /// 将预约实体和关联数据映射为响应对象
@@ -112,9 +112,13 @@ namespace Yuhetang.Service.Instance
                 RoomName = room?.RoomName,
                 RoomId = appointment.ArId,
                 EmployeeName = employee?.EName,
-                PackageName = package?.PName,
-                BookingStartTime = appointment.BookingStartTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                BookingEndTime = appointment.BookingEndTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                EmployeeId = appointment.AeId,
+                ProductName = product?.PName,
+                ProductId = appointment.ApId,
+                ProductpackageName = productPackage?.PpName,
+                ProductpackageId = appointment.AppId,
+                BookingStartTime = appointment.BookingStartTime?.ToString("yyyy-MM-dd HH:mm:ss"),
+                BookingEndTime = appointment.BookingEndTime?.ToString("yyyy-MM-dd HH:mm:ss"),
                 BookingStatus = appointment.BookingStatus,
                 Remark = appointment.Remark,
                 CreateTime = appointment.CreateTime?.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -191,13 +195,14 @@ namespace Yuhetang.Service.Instance
         /// </summary>
         private Product ValidateAndGetProduct(string productId)
         {
-            if (string.IsNullOrEmpty(productId)) return null;
+            if (string.IsNullOrEmpty(productId))
+                return null;
 
             var product = _productIOC._product_EFCore.QueryAll(p => p.PId == productId).FirstOrDefault();
             if (product == null)
                 throw new ArgumentException("产品不存在");
 
-            if (product.PStatus!= 1)
+            if (product.PStatus != 1)
                 throw new ArgumentException("产品已下架");
 
             return product;
@@ -247,7 +252,8 @@ namespace Yuhetang.Service.Instance
         /// </summary>
         private Room ValidateAndGetRoom(long? roomId)
         {
-            if (!roomId.HasValue) return null;
+            if (!roomId.HasValue)
+                return null;
 
             var room = _roomIOC._rooms_EFCore.QueryAll(
                 order: r => r.RoomId,
@@ -266,7 +272,8 @@ namespace Yuhetang.Service.Instance
         /// </summary>
         private SysEmployee ValidateAndGetEmployee(string employeeId)
         {
-            if (string.IsNullOrEmpty(employeeId)) return null;
+            if (string.IsNullOrEmpty(employeeId))
+                return null;
 
             var employee = _employeesIOC._sys_Employees_EFCore.QueryAll(e => e.EId == employeeId).FirstOrDefault();
             if (employee == null)
@@ -283,7 +290,8 @@ namespace Yuhetang.Service.Instance
         /// </summary>
         private ProductPackage ValidateAndGetProductpackage(string ProductpackageId)
         {
-            if (string.IsNullOrEmpty(ProductpackageId)) return null;
+            if (string.IsNullOrEmpty(ProductpackageId))
+                return null;
 
             var Productpackage = _product_Package_IOC._product_Package_EFCore.QueryAll(p => p.PpId == ProductpackageId).FirstOrDefault();
             if (Productpackage == null)

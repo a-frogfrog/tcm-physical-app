@@ -367,16 +367,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("CVCC_Status")
                     .HasDefaultValueSql("'0'")
                     .HasComment("状态：0-未结算，1-已结算");
-
-                entity.HasOne(d => d.CvccCps)
-                    .WithMany(p => p.CustomerVipCpsCommissions)
-                    .HasForeignKey(d => d.CvccCpsid)
-                    .HasConstraintName("customer_vip_cps_commission_ibfk_1");
-
-                entity.HasOne(d => d.CvccNewVip)
-                    .WithMany(p => p.CustomerVipCpsCommissions)
-                    .HasForeignKey(d => d.CvccNewVipid)
-                    .HasConstraintName("customer_vip_cps_commission_ibfk_2");
             });
 
             modelBuilder.Entity<CustomerVipRecord>(entity =>
