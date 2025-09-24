@@ -2,7 +2,7 @@ import VerifyInput, { type VerifyInputStatus } from '../components/VerifyInput';
 import PasswordInput from '../components/PasswordInput';
 import { Form, FormFooter, FormHeader } from '../components/Form';
 
-import { KeySquare, Link } from 'lucide-react';
+import { KeySquare } from 'lucide-react';
 
 import {
   Button,
@@ -15,6 +15,7 @@ import {
 } from '#/components/ui';
 import type { useForm } from 'react-hook-form';
 import type { FormSchema } from './constants';
+import { Link } from 'react-router-dom';
 
 type FieldStatusMap<T> = {
   [K in keyof T]: VerifyInputStatus;
