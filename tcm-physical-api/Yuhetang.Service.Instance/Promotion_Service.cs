@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QRCoder;
+using ServiceStack;
 using System.Security.Cryptography;
 using System.Text;
 using Yuhetang.Infrastructure.Attr;
@@ -30,29 +31,39 @@ namespace Yuhetang.Service.Instance
         /// <exception cref="NotImplementedException"></exception>
         public async Task<Api_Response_Dto> Generate_Link(string id)
         {
-            // 1. 生成推广记录
-            CustomsVipCp customsVipCp = new CustomsVipCp()
+            var iq = _promotion_IOC._customerVipCps_EFCore.QueryAll(d => d.CvcVipid == id);
+            if (!await iq.AnyAsync())
             {
-                CvcId = Config.GUID2(),
-                CvcVipid = id,
-                CvcCode = Config.GenerateCode(),
-                CvcStatus = 1,
-                CvcCreateTime = DateTime.Now
-            };
+                // 1. 生成推广记录
+                CustomsVipCp customsVipCp = new CustomsVipCp()
+                {
+                    CvcId = Config.GUID2(),
+                    CvcVipid = id,
+                    CvcCode = Config.GenerateCode(),
+                    CvcStatus = 1,
+                    CvcCreateTime = DateTime.Now
+                };
 
-            // 2. 生成长链接，例如带推广码参数
-            string baseDomain = "http://8.134.187.124:8081/home";
-            customsVipCp.CvcLongUrl = $"{baseDomain}?user={id}&code={customsVipCp.CvcCode}";
+                // 2. 生成长链接，例如带推广码参数
+                string baseDomain = "http://8.134.187.124:8081/home";
+                customsVipCp.CvcLongUrl = $"{baseDomain}?user={id}&code={customsVipCp.CvcCode}";
 
-            // 3. 生成短链接（这里演示一个简单的Base62生成，实际可以调用第三方接口）
-            customsVipCp.CvcShortUrl = GenerateShortUrl(customsVipCp.CvcLongUrl);
+                // 3. 生成短链接（这里演示一个简单的Base62生成，实际可以调用第三方接口）
+                customsVipCp.CvcShortUrl = GenerateShortUrl(customsVipCp.CvcLongUrl);
 
-            // 4. 保存到数据库（假设你用 EF Core）
-            _promotion_IOC._customerVipCps_EFCore.Add(customsVipCp);
-            await _promotion_IOC._customerVipCps_EFCore.SaveChangesAsync();
+                // 4. 保存到数据库（假设你用 EF Core）
+                _promotion_IOC._customerVipCps_EFCore.Add(customsVipCp);
+                await _promotion_IOC._customerVipCps_EFCore.SaveChangesAsync();
 
-            // 5. 返回结果
-            return Result(1, "ok", customsVipCp);
+                // 5. 返回结果
+                return Result(1, "ok", customsVipCp);
+            }
+            else
+            {
+                var data = await iq.FirstOrDefaultAsync();
+                // 5. 返回结果
+                return Result(1, "ok", data);
+            }
         }
         /// <summary>
         /// 生成二维码
@@ -79,17 +90,24 @@ namespace Yuhetang.Service.Instance
         /// <returns></returns>
         public async Task<Api_Response_Dto> Get_Commission_List(string vipId, int status = -1, int page = 1, int limit = 10)
         {
-            var query = _promotion_IOC._customerVipCpsCommission_EFCore.QueryAll(out int total,page,limit,false,o=>o.CvccCreateTime, d => d.CvccCpsid == vipId);
+            var query = _promotion_IOC._customerVipCpsCommission_EFCore.QueryAll(out int total,page,limit,false,o=>o.CvccCreateTime, d => d.CvccVipid == vipId);
 
-            if (status >= 0)
+            if (status == 0)
+            {
+                //未结算
                 query = query.Where(d => d.CvccStatus == status);
+            }
+            if(status == 1)
+            {
+                //已结算
+                query = query.Where(d => d.CvccStatus == status);
+            }
 
             var data = await query.ToListAsync();
-
             return Result(1, "ok", new
             {
                 total,
-                records = data
+                data
             });
         }
 
@@ -160,8 +178,6 @@ namespace Yuhetang.Service.Instance
 
             return Result(1, "ok", data);
         }
-
-
         /// <summary>
         /// 简单生成短链接（Base62哈希）
         /// 实际项目中可替换为调用第三方短链服务
@@ -184,9 +200,6 @@ namespace Yuhetang.Service.Instance
 
             return $"http://8.134.187.124:8081/home/{sb}";
         }
-
-
-
         /// <summary>
         /// 获取余额
         /// </summary>
@@ -194,13 +207,13 @@ namespace Yuhetang.Service.Instance
         /// <returns></returns>
         public async Task<Api_Response_Dto> Get_Balance(string vipId)
         {
-            var data = await _promotion_IOC._customsVip_EFCore
-                .QueryAll(d => d.CvCustomerId == vipId)
+            var data = await _promotion_IOC._membership_Card_EFCore
+                .QueryAll(d => d.CId == vipId)
                 .SingleOrDefaultAsync();
 
             return Result(1, "ok", new
             {
-                balance = data.CvBalance
+                balance = data.Balance
             });
         }
 
@@ -213,10 +226,10 @@ namespace Yuhetang.Service.Instance
         public async Task<Api_Response_Dto> Withdraw(string vipId, decimal amount)
         {
             // 1. 校验余额
-            var balance = await _promotion_IOC._customsVip_EFCore
-                .QueryAll(d => d.CvCustomerId == vipId).SingleOrDefaultAsync();
+            var balance = await _promotion_IOC._membership_Card_EFCore
+                .QueryAll(d => d.CId == vipId).SingleOrDefaultAsync();
 
-            if (amount <= 0 || amount > balance.CvBalance)
+            if (amount <= 0 || amount > balance.Balance)
                 return Result(0, "余额不足");
 
             // 2. 插入提现申请流水
@@ -233,7 +246,52 @@ namespace Yuhetang.Service.Instance
 
             return Result(1, "提现申请已提交，等待审核");
         }
+        /// <summary>
+        /// 删除推广链接
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Del_Link(string id)
+        {
+            var iq = _promotion_IOC._customerVipCps_EFCore.QueryAll(d=>d.CvcId == id);
+            if(!await iq.AnyAsync())
+            {
+                return Result(0, "删除失败");
+            }
+            var data = await iq.SingleOrDefaultAsync();
+            _promotion_IOC._customerVipCps_EFCore.Delete(data);
 
+            return Result(1, "删除成功");
+        }
+        /// <summary>
+        /// 启用/禁用链接
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Upd_Link_Status(string id)
+        {
+            var iq = _promotion_IOC._customerVipCps_EFCore.QueryAll(d => d.CvcId == id);
+            if (!await iq.AnyAsync())
+            {
+                return Result(0, "失败");
+            }
+            var data = await iq.SingleOrDefaultAsync();
 
+            if(data.CvcStatus == 1)
+            {
+                data.CvcStatus = 0;
+            }
+            else
+            {
+                data.CvcStatus = 1;
+            }
+
+            _promotion_IOC._customerVipCps_EFCore.Update(data);
+            await _promotion_IOC._customerVipCps_EFCore.SaveChangesAsync();
+
+            return Result(1, "成功");
+        }
     }
 }

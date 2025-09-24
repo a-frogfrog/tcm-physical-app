@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Yuhetang.Infrastructure.Attr;
+﻿using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Dto.Response;
-using Yuhetang.Infrastructure.EFCore.MySql;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Yuhetang.Service.Interface
 {
@@ -34,6 +27,18 @@ namespace Yuhetang.Service.Interface
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> Get_CustomsVipCps(int page=1,int limit = 10);
+        /// <summary>
+        /// 删除推广链接
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Del_Link(string id);
+        /// <summary>
+        /// 启用/禁用链接
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Upd_Link_Status(string id);
         /// <summary>
         /// 推广数据统计
         /// </summary>
