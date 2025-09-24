@@ -89,8 +89,8 @@ namespace Yuhetang.Service.Instance
                 RoomNumber = room?.RoomNumber,
                 EmployeeName = employee?.EName,
                 PackageName = package?.PName,
-                BookingStartTime = appointment.BookingStartTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                BookingEndTime = appointment.BookingEndTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                BookingStartTime = appointment.BookingStartTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+                BookingEndTime = appointment.BookingEndTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
                 BookingStatus = appointment.BookingStatus,
                 CreateTime = appointment.CreateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
             };

@@ -76,7 +76,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public int? CTotalSpending { get; set; }
 
-        public virtual CustomsVip CustomsVip { get; set; } = null!;
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<CustomFollow> CustomFollows { get; set; }
         public virtual ICollection<MembershipCard> MembershipCards { get; set; }

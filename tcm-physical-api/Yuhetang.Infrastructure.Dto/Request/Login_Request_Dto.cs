@@ -20,5 +20,13 @@ namespace Yuhetang.Infrastructure.Dto.Request
         /// 凭据
         /// </summary>
         public string code { get; set; }
+        /// <summary>
+        /// 推广人id
+        /// </summary>
+        public string? VIPID { get; set; }
+        /// <summary>
+        /// 推广码
+        /// </summary>
+        public string? VIPCode { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using Yuhetang.Infrastructure.IOC;
 using Yuhetang.Infrastructure.Redis;
 using Yuhetang.Infrastructure.Tools;
 using Yuhetang.Service.Interface;
+using ServiceStack;
 
 namespace Yuhetang.Service.EFCore
 {
@@ -21,9 +22,11 @@ namespace Yuhetang.Service.EFCore
         private readonly RedisHashService _redisHashService;
         private readonly RedisStringService _redisStringService;
         private readonly I_Verification_Code_Service _verification_Code_Service;
+        private readonly Promotion_IOC _promotion_IOC;
 
         public Logins_Service(
-            Sys_IOC sys_IOC, 
+            Sys_IOC sys_IOC,
+            Promotion_IOC promotion_IOC,
             IConfiguration configuration, 
             RedisHashService redisHashService,
             RedisStringService redisStringService,
@@ -35,9 +38,10 @@ namespace Yuhetang.Service.EFCore
             _redisHashService = redisHashService;
             _redisStringService = redisStringService;
             _verification_Code_Service = verification_Code_Service;
+            _promotion_IOC = promotion_IOC;
         }
         /// <summary>
-        /// 检查登录
+        /// 检查登录（后台的）
         /// </summary>
         /// <param name="code"></param>
         /// <param name="account"></param>
@@ -74,7 +78,7 @@ namespace Yuhetang.Service.EFCore
 
         }
         /// <summary>
-        /// 登录
+        /// 登录(后台的)
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -189,7 +193,7 @@ namespace Yuhetang.Service.EFCore
                 return null;
         }
         /// <summary>
-        /// 登录和注册（如果没有账号会自动注册新账号）
+        /// 登录（如果没有账号会自动注册新账号）
         /// </summary>
         /// <param name="code"></param>
         /// <param name="account"></param>
@@ -219,43 +223,122 @@ namespace Yuhetang.Service.EFCore
 
                 // 查找用户
                 var iq = _sys_IOC._custom_EFCore.QueryAll(d => d.CEmail == dto.account);
+                var NewVIPID = Config.GUID2();
                 if (!await iq.AnyAsync())
                 {
-                    var custom = new Custom
+                    Custom custom = new Custom();
+                    //判断是否是推广人邀请的
+                    if (!string.IsNullOrEmpty(dto.VIPID) && !string.IsNullOrEmpty(dto.VIPCode))
                     {
-                        CId = Config.GUID(),
-                        CName = Config.GenerateRandomName(),
-                        CGender = 3,
-                        CAge = 0,
-                        CEmail = dto.account,
-                        CResource = 3,
-                        IsConvert = 0,
-                        CCreateTime = DateTime.Now
-                    };
 
-                    _sys_IOC._custom_EFCore.Add(custom);
-                    await _sys_IOC._custom_EFCore.SaveChangesAsync();
+                        custom = new Custom
+                        {
+                            CId = NewVIPID,
+                            CUserName = Config.GenerateRandomName(),
+                            CAge = 0,
+                            CEmail = dto.account,
+                            CStatus = 1,
+                            CResource = 3,
+                            IsConvert = 0,
+                            CvcVipid = dto.VIPID,
+                            CvcCode = dto.VIPCode,
+                            CCreateTime = DateTime.Now
+                        };
+                        _sys_IOC._custom_EFCore.Add(custom);
+                        await _sys_IOC._custom_EFCore.SaveChangesAsync();
+                        //佣金记录
+                        CustomerVipCpsCommission customerVipCpsCommission = new CustomerVipCpsCommission()
+                        {
+                            CvccId = Config.GUID2(),
+                            CvccVipid = dto.VIPID,
+                            CvccNewVipid = NewVIPID,
+                            CvccAmount = 10,
+                            CvccStatus = 1,
+                            CvccSettleTime = DateTime.Now,
+                            CvccCreateTime = DateTime.Now
+                        };
+
+                        _promotion_IOC._customerVipCpsCommission_EFCore.Add(customerVipCpsCommission);
+                        await _promotion_IOC._customerVipCpsCommission_EFCore.SaveChangesAsync();
+                        //初始化钱包
+                        CustomsVip customsVip = new CustomsVip()
+                        {
+                            CvId = Config.GUID2(),
+                            CvCustomerId = NewVIPID,
+                            CvLevel = 0,
+                            CvBalance = 0,
+                            CvTotalConsume = 0,
+                            CvTotalRecharge = 0,
+                            CvStatus = 1,
+                            CvCreateTime = DateTime.Now
+                        };
+                        _promotion_IOC._customsVip_EFCore.Add(customsVip);
+                        await _promotion_IOC._customsVip_EFCore.SaveChangesAsync();
+                        //推广人余额追加佣金
+                        var balance = await _promotion_IOC._customsVip_EFCore.QueryAll(d => d.CvCustomerId == dto.VIPID).SingleOrDefaultAsync();
+                        balance!.CvBalance += 10;
+
+                        _promotion_IOC._customsVip_EFCore.Update(balance);
+                        await _promotion_IOC._customsVip_EFCore.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        custom = new Custom
+                        {
+                            CId = Config.GUID2(),
+                            CUserName = Config.GenerateRandomName(),
+                            CGender = 3,
+                            CAge = 0,
+                            CEmail = dto.account,
+                            CResource = 3,
+                            IsConvert = 0,
+                            CCreateTime = DateTime.Now
+                        };
+                        _sys_IOC._custom_EFCore.Add(custom);
+                        await _sys_IOC._custom_EFCore.SaveChangesAsync();
+                    }
+
                 }
-                var user = await iq.SingleAsync();
+                //登录日志
 
-                if (user.CStatus == 1)
+                var user = await iq.SingleOrDefaultAsync();
+                if (user.CStatus == 0)
                 {
                     return Result(0, "账号已禁用");
                 }
+                var loginLog = new SysLoginLog
+                {
+                    Llid = Config.GUID(),
+                    LlcreateTime = DateTime.Now,
+                    LlEid = user?.CId ?? string.Empty, // 账号不存在时用空字符串
+                    LlEname = user?.CUserName ?? "未知账号",
+                    Llbrowser = Config.GetBrowserInfo(),
+                    Llcode = dto.code ?? "无凭据",
+                    LlloginResult = 1,
+                    LlfailureReason = "",
+                    LldeviceType = Config.GetLoginType(),
+                    Lllocation = Config.GetLoginLocation(),
+                    LlloginIp = Config.GetIp() ?? "未知IP"
+                };
+
+
+                _sys_IOC._sys_Login_Logs_EFCore.Add(loginLog);
+                await _sys_IOC._sys_Login_Logs_EFCore.SaveChangesAsync();
 
                 // Redis键值拼接（避免硬编码，增加空值保护）
                 var redisKey = $"{_configuration["Redis:Keys:Mobile_Check_Login"]}{user.CEmail}";
                 // 存储登录凭据（24小时有效期，使用异步方法避免阻塞）
                 _redisStringService.Set(redisKey, dto.code ?? string.Empty, TimeSpan.FromDays(1));
-
                 // 返回成功结果
                 return Result(1, "登录成功");
             }
-            catch (Exception ex)
-            {
-                return Result(0, "登录失败，请稍后重试");
-            }
-        }
 
+            catch (Exception)
+            {
+
+                return Result(0, "稍后再试");
+            }
+
+        }
     }
 }

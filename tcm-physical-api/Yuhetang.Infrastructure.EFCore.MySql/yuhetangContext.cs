@@ -94,6 +94,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.Property(e => e.ApId)
                     .HasMaxLength(32)
                     .HasColumnName("Ap_id")
+                    .HasComment("产品ID");
+
+                entity.Property(e => e.AppId)
+                    .HasMaxLength(32)
+                    .HasColumnName("App_id")
                     .HasComment("套餐ID");
 
                 entity.Property(e => e.ArId)
@@ -129,7 +134,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.HasOne(d => d.Ac)
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.AcId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_booking_customer");
 
                 entity.HasOne(d => d.Ae)
@@ -186,6 +190,8 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.ToTable("customs");
 
                 entity.HasComment("客户信息表");
+
+                entity.HasIndex(e => e.CId, "C_ID");
 
                 entity.HasIndex(e => e.CPhone, "C_Phone")
                     .IsUnique();
@@ -362,15 +368,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasDefaultValueSql("'0'")
                     .HasComment("状态：0-未结算，1-已结算");
 
-                entity.HasOne(d => d.CvccCps)
-                    .WithMany(p => p.CustomerVipCpsCommissions)
-                    .HasForeignKey(d => d.CvccCpsid)
-                    .HasConstraintName("customer_vip_cps_commission_ibfk_1");
-
-                entity.HasOne(d => d.CvccNewVip)
-                    .WithMany(p => p.CustomerVipCpsCommissions)
-                    .HasForeignKey(d => d.CvccNewVipid)
-                    .HasConstraintName("customer_vip_cps_commission_ibfk_2");
+                entity.Property(e => e.CvccVipid)
+                    .HasMaxLength(32)
+                    .HasColumnName("CVCC_VIPID")
+                    .HasComment("VIPid");
             });
 
             modelBuilder.Entity<CustomerVipRecord>(entity =>
@@ -431,7 +432,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.Property(e => e.CvrType)
                     .HasColumnName("CVR_Type")
-                    .HasComment("行为类型：1-推广奖励，3-佣金");
+                    .HasComment("行为类型：1-推广奖励，2-佣金");
 
                 entity.Property(e => e.CvrVipid)
                     .HasMaxLength(32)
@@ -506,11 +507,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("CV_UpdateTime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .HasComment("最后更新时间");
-
-                entity.HasOne(d => d.CvCustomer)
-                    .WithOne(p => p.CustomsVip)
-                    .HasForeignKey<CustomsVip>(d => d.CvCustomerId)
-                    .HasConstraintName("customs_vip_ibfk_1");
             });
 
             modelBuilder.Entity<CustomsVipCp>(entity =>

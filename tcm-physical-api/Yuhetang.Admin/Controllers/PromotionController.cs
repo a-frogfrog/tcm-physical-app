@@ -90,4 +90,41 @@ public class PromotionController : BaseController
         var result = await _promotion_Service.Promotion_Data_Statistics(id);
         return Ok(result);
     }
+    /// <summary>
+    /// 佣金明细
+    /// </summary>
+    /// <param name="status"></param>
+    /// <param name="page"></param>
+    /// <param name="limit"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> Get_Commission_List(int status = -1, int page = 1, int limit = 10)
+    {
+        var user = this.Get_Current_Customer();
+        var result = await _promotion_Service.Get_Commission_List(user.id,status,page,limit);
+        return Ok(result);
+    }
+    /// <summary>
+    /// 获取余额
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> Get_Balance()
+    {
+        var user = this.Get_Current_Customer();
+        var result = await _promotion_Service.Get_Balance(user.id);
+        return Ok(result);
+    }
+    /// <summary>
+    /// 申请提现
+    /// </summary>
+    /// <param name="amount"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public async Task<IActionResult> Withdraw(decimal amount)
+    {
+        var user = this.Get_Current_Customer();
+        var result = await _promotion_Service.Withdraw(user.id,amount);
+        return Ok(result);
+    }
 }
