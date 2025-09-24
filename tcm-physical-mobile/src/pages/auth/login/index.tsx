@@ -12,20 +12,25 @@ export default function LoginPage() {
     resolver: zodResolver(formSchema),
     mode: 'onChange',
     defaultValues: {
-      account: '',
+      email: '',
       password: '',
     },
   });
 
   const status = {
-    account: useFieldStatus(form, 'account', form.watch('account')),
+    email: useFieldStatus(form, 'email', form.watch('email')),
     password: useFieldStatus(form, 'password', form.watch('password')),
+  };
+
+  const handleSubmit = (data: FormSchema) => {
+    console.log(data);
   };
 
   return (
     <LoginForm
       form={form}
       status={status}
+      onSubmit={handleSubmit}
       registerLink={routes.auth.register.path}
     />
   );

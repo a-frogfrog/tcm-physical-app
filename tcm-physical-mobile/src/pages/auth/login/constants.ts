@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const formSchema = z.object({
-  account: z.string().min(11, '账号/手机号最少11个字符').max(11),
+  email: z.email('请输入正确的邮箱格式'),
   password: z.string().min(6, '密码最少6个字符').max(32),
 });
 

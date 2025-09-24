@@ -24,30 +24,31 @@ type LoginFormProps = {
   form: ReturnType<typeof useForm<FormSchema>>;
   status: FieldStatusMap<FormSchema>;
   registerLink: string;
+  onSubmit: (data: FormSchema) => void;
 };
 
 export default function LoginForm({
   form,
   status,
   registerLink,
-}: React.ComponentProps<typeof Form> & LoginFormProps) {
+  onSubmit,
+}: LoginFormProps) {
   return (
     <FormProvider {...form}>
-      <Form>
+      <Form onSubmit={form.handleSubmit(onSubmit)}>
         <FormHeader>登录账号</FormHeader>
 
         <FormField
           control={form.control}
-          name='account'
+          name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>账号/手机号</FormLabel>
+              <FormLabel>邮箱</FormLabel>
               <FormControl>
                 <VerifyInput
-                  type='cellphone'
-                  maxLength={11}
-                  placeholder='账号/手机号'
-                  status={status.account}
+                  type='email'
+                  placeholder='请输入邮箱'
+                  status={status.email}
                   {...field}
                 />
               </FormControl>
@@ -65,7 +66,7 @@ export default function LoginForm({
               <FormControl>
                 <PasswordInput
                   maxLength={32}
-                  placeholder='密码'
+                  placeholder='请输入密码'
                   status={status.password}
                   {...field}
                 />
