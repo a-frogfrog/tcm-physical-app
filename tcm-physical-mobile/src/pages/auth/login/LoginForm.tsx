@@ -4,6 +4,10 @@ import { Form, FormFooter, FormHeader } from '../components/Form';
 
 import { KeySquare } from 'lucide-react';
 
+import type { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import type { LoginSchema } from '#/schemas';
+
 import {
   Button,
   Form as FormProvider,
@@ -13,18 +17,15 @@ import {
   FormLabel,
   FormMessage,
 } from '#/components/ui';
-import type { useForm } from 'react-hook-form';
-import type { FormSchema } from './constants';
-import { Link } from 'react-router-dom';
 
 type FieldStatusMap<T> = {
   [K in keyof T]: VerifyInputStatus;
 };
 type LoginFormProps = {
-  form: ReturnType<typeof useForm<FormSchema>>;
-  status: FieldStatusMap<FormSchema>;
+  form: ReturnType<typeof useForm<LoginSchema>>;
+  status: FieldStatusMap<LoginSchema>;
   registerLink: string;
-  onSubmit: (data: FormSchema) => void;
+  onSubmit: (data: LoginSchema) => void;
 };
 
 export default function LoginForm({

@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { routes } from '#/config/routes';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form, FormHeader, FormRule } from '../components/Form';
@@ -15,23 +14,11 @@ import {
   FormLabel,
   FormMessage,
 } from '#/components/ui';
+import { registerSchema, type RegisterSchema } from '#/schemas';
 
-const formSchema = z
-  .object({
-    name: z.string().min(1, '请输入用户名').max(50, '用户名最多50个字符'),
-    email: z.email('请输入正确的邮箱格式'),
-    password: z.string().min(6, '密码最少6个字符').max(32),
-    confirmPassword: z.string().min(6, '确认密码最少6个字符').max(32),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: '两次输入的密码不一致',
-    path: ['confirmPassword'], // 错误提示挂在 confirmPassword 字段上
-  });
-
-type FormSchema = z.infer<typeof formSchema>;
 export default function RegisterPage() {
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<RegisterSchema>({
+    resolver: zodResolver(registerSchema),
     mode: 'onChange',
     defaultValues: {
       name: '',
@@ -41,7 +28,7 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = (data: FormSchema) => {
+  const onSubmit = (data: RegisterSchema) => {
     console.log(data);
   };
 

@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import LoginForm from './LoginForm';
-import { formSchema, type FormSchema } from './constants';
 import { routes } from '#/config/routes';
+import { loginSchema, type LoginSchema } from '#/schemas';
 
 export default function LoginPage() {
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
     mode: 'onChange',
     defaultValues: {
       email: '',
@@ -22,7 +22,7 @@ export default function LoginPage() {
     password: useFieldStatus(form, 'password', form.watch('password')),
   };
 
-  const handleSubmit = (data: FormSchema) => {
+  const handleSubmit = (data: LoginSchema) => {
     console.log(data);
   };
 
