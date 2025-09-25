@@ -1,12 +1,20 @@
 import { http } from '../http';
 
 export type LoginRequestParams = {
-  account: string;
-  password: string;
+  email: string;
+  code: string;
 };
 
 const fetchAuthLogin = (params: LoginRequestParams) => {
-  return http.post('/auth/login', params);
+  const a = {
+    account: params.email,
+    password: params.code,
+    code: '',
+    //cspell:words vipid
+    vipid: '',
+    vipCode: '',
+  };
+  return http.post('/Logins/Customer_Logins', a);
 };
 
 export const authApi = {

@@ -1,4 +1,4 @@
-import { KeySquare } from 'lucide-react';
+import { Binary, KeySquare, Mail } from 'lucide-react';
 import React from 'react';
 import { z } from 'zod';
 
@@ -44,7 +44,7 @@ type LoginMethod = {
 const loginMethods: LoginMethod[] = [
   {
     name: 'code',
-    icon: React.createElement(KeySquare),
+    icon: React.createElement(Binary),
     text: '验证码登录',
   },
   {
@@ -54,7 +54,7 @@ const loginMethods: LoginMethod[] = [
   },
   {
     name: 'google',
-    icon: React.createElement(KeySquare),
+    icon: React.createElement(Mail),
     text: 'Google登录',
   },
 ];

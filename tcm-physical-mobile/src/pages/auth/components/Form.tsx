@@ -5,7 +5,7 @@ const Form = ({ children, ...props }: React.ComponentProps<'form'>) => {
         {...props}
         role='form'
         className='w-full max-w-md rounded-3xl border-0'>
-        <div className='flex flex-col gap-6 p-6'>
+        <div className='flex flex-col gap-6 p-3'>
           <div className='space-y-4'>{children}</div>
 
           {/* Footer */}

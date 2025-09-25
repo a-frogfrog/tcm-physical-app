@@ -31,6 +31,7 @@ type LoginFormProps = {
   loginType: LoginSchema['loginType'];
   onSubmit: (data: LoginSchema) => void;
   onChangeLoginType: (type: LoginSchema['loginType']) => void;
+  onGetCode: () => void;
 };
 
 export default function LoginForm({
@@ -40,6 +41,7 @@ export default function LoginForm({
   loginType,
   onSubmit,
   onChangeLoginType,
+  onGetCode,
 }: LoginFormProps) {
   return (
     <FormProvider {...form}>
@@ -92,18 +94,27 @@ export default function LoginForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>验证码</FormLabel>
-                <FormControl>
-                  <InputOTP maxLength={6} {...field}>
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} className='size-12' />
-                      <InputOTPSlot index={1} className='size-12' />
-                      <InputOTPSlot index={2} className='size-12' />
-                      <InputOTPSlot index={3} className='size-12' />
-                      <InputOTPSlot index={4} className='size-12' />
-                      <InputOTPSlot index={5} className='size-12' />
-                    </InputOTPGroup>
-                  </InputOTP>
-                </FormControl>
+                <section className='flex justify-between'>
+                  <FormControl>
+                    <InputOTP maxLength={6} {...field}>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} className='size-9' />
+                        <InputOTPSlot index={1} className='size-9' />
+                        <InputOTPSlot index={2} className='size-9' />
+                        <InputOTPSlot index={3} className='size-9' />
+                        <InputOTPSlot index={4} className='size-9' />
+                        <InputOTPSlot index={5} className='size-9' />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </FormControl>
+                  <Button
+                    type='button'
+                    onClick={() => {
+                      onGetCode();
+                    }}>
+                    获取验证码
+                  </Button>
+                </section>
                 <FormMessage />
               </FormItem>
             )}
