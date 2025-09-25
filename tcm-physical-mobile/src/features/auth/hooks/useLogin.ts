@@ -4,10 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { routes } from '#/config/routes';
 
 import { loginSchema, type LoginSchema } from '#/schemas';
-import { useAuthCode, useAuthLogin } from '#/features/auth/api/login';
-import { useFieldStatus } from '#/features/auth/components/VerifyInput';
 
-import { toast } from 'sonner';
+import { useAuthCode, useAuthLogin } from '#/features/auth/hooks/useAuth';
+import { useFieldStatus } from '#/features/auth/components/VerifyInput';
 
 export function useLogin() {
   const form = useForm<LoginSchema>({
@@ -19,7 +18,7 @@ export function useLogin() {
       code: '',
     },
   });
-  const { mutate: loginApi } = useAuthLogin();
+  const { mutate: loginApi, isPending } = useAuthLogin();
   const { mutate: codeApi } = useAuthCode();
 
   const passwordStatus = {
@@ -39,7 +38,6 @@ export function useLogin() {
   };
 
   const handleSubmit = (data: LoginSchema) => {
-    console.log(data);
     loginApi({
       email: data.email,
       code: data.loginType === 'code' ? data.code : '',
@@ -47,9 +45,7 @@ export function useLogin() {
   };
 
   const handleGetCode = () => {
-    console.log('获取验证码', form.watch('email'));
     codeApi({ email: form.watch('email') });
-    toast('验证码已发送');
   };
 
   return {
@@ -61,5 +57,6 @@ export function useLogin() {
     handleSubmit,
     handleGetCode,
     link: routes.auth.register.path,
+    isPending,
   };
 }

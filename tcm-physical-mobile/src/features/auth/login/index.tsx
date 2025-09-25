@@ -20,6 +20,7 @@ const LoginInteraction = () => {
     handleChangeLoginType,
     handleSubmit,
     handleGetCode,
+    isPending,
   } = useLogin();
 
   return (
@@ -31,6 +32,7 @@ const LoginInteraction = () => {
       onSubmit={handleSubmit}
       onChangeLoginType={handleChangeLoginType}
       onGetCode={handleGetCode}
+      isPending={isPending}
     />
   );
 };

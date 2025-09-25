@@ -30,6 +30,7 @@ type LoginFormProps = {
   onSubmit: (data: LoginSchema) => void;
   onChangeLoginType: (type: LoginSchema['loginType']) => void;
   onGetCode: () => void;
+  isPending: boolean;
 };
 
 export default function LoginForm({
@@ -40,6 +41,7 @@ export default function LoginForm({
   onSubmit,
   onChangeLoginType,
   onGetCode,
+  isPending,
 }: LoginFormProps) {
   return (
     <FormProvider {...form}>
@@ -127,6 +129,7 @@ export default function LoginForm({
         {/* Sign in button */}
         <Button
           type='submit'
+          disabled={isPending}
           className='my-4 h-10 w-full rounded-full bg-green-500 text-white hover:bg-green-600'>
           登录账号
         </Button>

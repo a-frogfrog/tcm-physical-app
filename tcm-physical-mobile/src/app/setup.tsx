@@ -1,7 +1,12 @@
 import { RouterProvider } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from 'sonner';
 import router from './router';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { Toaster } from 'sonner';
+import { useToastStore } from '#/stores';
+
+import { LoaderPortal } from '#/components/common';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,7 +21,11 @@ const queryClient = new QueryClient({
 export default function SetupApp() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
+      <Toaster
+        position={useToastStore((state) => state.sonnerPosition)}
+        richColors
+      />
+      <LoaderPortal />
       <RouterProvider router={router} />;
     </QueryClientProvider>
   );
