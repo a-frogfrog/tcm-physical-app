@@ -7,6 +7,8 @@ import { loginSchema, type LoginSchema } from '#/schemas';
 import { useAuthCode, useAuthLogin } from '#/features/auth/api/login';
 import { useFieldStatus } from '#/features/auth/components/VerifyInput';
 
+import { toast } from 'sonner';
+
 export function useLogin() {
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -47,6 +49,7 @@ export function useLogin() {
   const handleGetCode = () => {
     console.log('获取验证码', form.watch('email'));
     codeApi({ email: form.watch('email') });
+    toast('验证码已发送');
   };
 
   return {

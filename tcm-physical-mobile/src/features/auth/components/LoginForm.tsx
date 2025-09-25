@@ -1,8 +1,6 @@
-import VerifyInput, {
-  type VerifyInputStatus,
-} from '../../components/VerifyInput';
-import PasswordInput from '../../components/PasswordInput';
-import { Form, FormFooter, FormHeader } from '../../components/Form';
+import VerifyInput, { type VerifyInputStatus } from './VerifyInput';
+import PasswordInput from './PasswordInput';
+import { Form, FormFooter, FormHeader } from './Form';
 
 import type { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
