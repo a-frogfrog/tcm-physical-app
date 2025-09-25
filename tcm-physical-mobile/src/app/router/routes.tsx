@@ -10,39 +10,39 @@ const routes: RouteObject[] = [
       { index: true, element: <Navigate to='/home' replace /> }, // 重定向到/home
       {
         path: routesConfig.home.path,
-        Component: lazy(() => import('#/pages/home')),
+        Component: lazy(() => import('#/features/home')),
       },
       {
         path: routesConfig.promotion.path,
-        Component: lazy(() => import('#/pages/promotion')),
+        Component: lazy(() => import('#/features/promotion')),
       },
       {
         path: routesConfig.user.path,
-        Component: lazy(() => import('#/pages/user')),
+        Component: lazy(() => import('#/features/user')),
       },
       {
         path: routesConfig.commission.path,
-        Component: lazy(() => import('#/pages/commission')),
+        Component: lazy(() => import('#/features/commission')),
       },
       {
         path: routesConfig.booking.path,
-        Component: lazy(() => import('#/pages/booking')),
+        Component: lazy(() => import('#/features/booking')),
       },
 
       {
         //404错误路由.
         path: '*',
-        Component: lazy(() => import('#/pages/error/NotFound')),
+        Component: lazy(() => import('#/features/error/NotFound')),
       },
     ],
   },
   {
     path: routesConfig.auth.login.path,
-    Component: lazy(() => import('#/pages/auth/login')),
+    Component: lazy(() => import('#/features/auth/login')),
   },
   {
     path: routesConfig.auth.register.path,
-    Component: lazy(() => import('#/pages/auth/register')),
+    Component: lazy(() => import('#/features/auth/register')),
   },
 ];
 

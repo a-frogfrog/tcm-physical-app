@@ -1,6 +1,6 @@
 import LoginForm from './components/LoginForm';
 
-import { useLogin } from '#/pages/auth/hooks/useLogin';
+import { useLogin } from '#/features/auth/hooks/useLogin';
 
 /**
  * 登录路由

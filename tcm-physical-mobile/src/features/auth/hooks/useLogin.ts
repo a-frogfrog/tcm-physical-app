@@ -4,8 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { routes } from '#/config/routes';
 
 import { loginSchema, type LoginSchema } from '#/schemas';
-import { useAuthCode, useAuthLogin } from '#/pages/auth/api/login';
-import { useFieldStatus } from '#/pages/auth/components/VerifyInput';
+import { useAuthCode, useAuthLogin } from '#/features/auth/api/login';
+import { useFieldStatus } from '#/features/auth/components/VerifyInput';
 
 export function useLogin() {
   const form = useForm<LoginSchema>({
