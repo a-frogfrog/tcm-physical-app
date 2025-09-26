@@ -1,12 +1,15 @@
 import { Outlet } from 'react-router-dom';
+
 import TabBar from './components/TabBar';
+
 import { tabs } from './constants';
+
 import { useApplication } from '#/hooks';
 
 export default function Layout() {
   return (
     <div className='scroll-bar-hide v h-[calc(100vh-50px)] overflow-auto'>
-      <main>
+      <main role='main' aria-label='Main content'>
         <Outlet />
       </main>
       <footer className=''>

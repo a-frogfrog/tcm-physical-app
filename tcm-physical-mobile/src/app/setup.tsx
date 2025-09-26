@@ -8,8 +8,7 @@ import { useLoadingStore, useToastStore } from '#/store';
 
 import { LoaderPortal, Mask } from '#/components/common';
 
-import { AnimatePresence, motion, useScroll } from 'motion/react';
-import { createPortal } from 'react-dom';
+import { AnimatePresence, motion } from 'motion/react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,26 +28,12 @@ export default function SetupApp() {
         richColors
       />
       <SetupLoader />
-      <ScrollLinked />
+      {/* <ScrollLinked /> */}
+
       <RouterProvider router={router} />
     </QueryClientProvider>
   );
 }
-
-const ScrollLinked = () => {
-  const { scrollYProgress } = useScroll();
-
-  return createPortal(
-    <motion.div
-      className='fixed top-0 right-0 left-0 z-520 h-2 bg-green-200'
-      style={{
-        scaleX: scrollYProgress,
-        originX: 0,
-      }}
-    />,
-    document.body,
-  );
-};
 
 const SetupLoader = () => {
   const visible = useLoadingStore((state) => state.visible);
