@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
 import { routes } from '#/config/routes';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+
 import { Form, FormHeader, FormRule } from '../components/Form';
 import VerifyInput, { useFieldStatus } from '../components/VerifyInput';
 import PasswordInput from '../components/PasswordInput';
+
 import {
   Button,
   Form as FormProvider,
@@ -14,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '#/components/ui';
+
 import { registerSchema, type RegisterSchema } from '#/schemas';
 
 export default function RegisterPage() {
