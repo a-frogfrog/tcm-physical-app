@@ -16,26 +16,30 @@ const routes: RouteObject[] = [
         element: <Navigate to='/home' replace />,
       },
       {
-        path: routesConfig.home.path,
+        path: routesConfig.tabbar.home.path,
         Component: lazy(() => import('#/features/home')),
       },
       {
-        path: routesConfig.promotion.path,
+        path: routesConfig.tabbar.promotion.path,
         Component: lazy(() => import('#/features/promotion')),
       },
       {
-        path: routesConfig.user.path,
+        path: routesConfig.tabbar.user.path,
         Component: lazy(() => import('#/features/user')),
       },
       {
-        path: routesConfig.commission.path,
+        path: routesConfig.tabbar.commission.path,
         Component: lazy(() => import('#/features/commission')),
       },
       {
-        path: routesConfig.booking.path,
+        path: routesConfig.tabbar.booking.path,
         Component: lazy(() => import('#/features/booking')),
       },
     ],
+  },
+  {
+    path: routesConfig.article.list.path,
+    Component: lazy(() => import('#/features/article/list')),
   },
   ...coreRoutes,
 ];

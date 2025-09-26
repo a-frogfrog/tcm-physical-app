@@ -1,19 +1,4 @@
 export const routes = {
-  home: {
-    path: '/home',
-  },
-  booking: {
-    path: '/booking',
-  },
-  promotion: {
-    path: '/promotion',
-  },
-  commission: {
-    path: '/commission',
-  },
-  user: {
-    path: '/user',
-  },
   auth: {
     login: {
       path: '/auth/login',
@@ -34,6 +19,28 @@ export const routes = {
     },
     internalError: {
       path: '/internal-error',
+    },
+  },
+  tabbar: {
+    home: {
+      path: '/home',
+    },
+    booking: {
+      path: '/booking',
+    },
+    promotion: {
+      path: '/promotion',
+    },
+    commission: {
+      path: '/commission',
+    },
+    user: {
+      path: '/user',
+    },
+  },
+  article: {
+    list: {
+      path: '/article/list',
     },
   },
 };
