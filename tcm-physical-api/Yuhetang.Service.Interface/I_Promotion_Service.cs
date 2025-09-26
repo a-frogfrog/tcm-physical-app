@@ -67,5 +67,19 @@ namespace Yuhetang.Service.Interface
         /// <param name="amount"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> Withdraw(string vipId, decimal amount);
+        /// <summary>
+        /// 佣金数据统计
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Commission_Data_Statistics(string id);
+        /// <summary>
+        /// 佣金收益趋势数据
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <param name="period">时间周期：month/quarter/year</param>
+        /// <param name="year">年份，默认当前年份</param>
+        /// <returns>收益趋势响应</returns>
+        //Task<Api_Response_Dto> GetIncomeTrendAsync(string userId, string period = "month", int? year = null);
     }
 }

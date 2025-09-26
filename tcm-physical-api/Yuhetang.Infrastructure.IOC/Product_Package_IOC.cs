@@ -13,14 +13,16 @@ namespace Yuhetang.Infrastructure.IOC
     {
         public readonly Product_Package_EFCore _product_Package_EFCore;
         public readonly Product_Package_Details_EFCore _product_Package_Details_EFCore;
-
+        public readonly Product_EFCore _product_EFCore;
         public Product_Package_IOC(
             Product_Package_EFCore product_Package_EFCore,
-            Product_Package_Details_EFCore product_Package_Details_EFCore
+            Product_Package_Details_EFCore product_Package_Details_EFCore,
+            Product_EFCore product_EFCore
             )
         {
             _product_Package_EFCore = product_Package_EFCore;
             _product_Package_Details_EFCore = product_Package_Details_EFCore;
+            _product_EFCore = product_EFCore;
         }
     }
 }
