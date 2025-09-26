@@ -8,6 +8,8 @@ import { useLoadingStore, useToastStore } from '#/stores';
 
 import { LoaderPortal, Mask } from '#/components/common';
 
+import { AnimatePresence, motion } from 'motion/react';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -35,10 +37,18 @@ const SetupLoader = () => {
   const visible = useLoadingStore((state) => state.visible);
 
   return (
-    visible && (
-      <Mask backdrop>
-        <LoaderPortal />
-      </Mask>
-    )
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}>
+          <Mask>
+            <LoaderPortal />
+          </Mask>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

@@ -47,7 +47,9 @@ export function useLogin() {
       email: data.email,
       code: data.loginType === 'code' ? data.code : '',
     });
-    hide();
+    setTimeout(() => {
+      hide();
+    }, 2000);
   };
 
   const handleGetCode = () => {
