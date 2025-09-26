@@ -5,6 +5,8 @@ import { routes } from '#/config/routes';
 
 import { loginSchema, type LoginSchema } from '#/schemas';
 
+import { useLoadingStore } from '#/stores/loading';
+
 import { useAuthCode, useAuthLogin } from '#/features/auth/hooks/useAuth';
 import { useFieldStatus } from '#/features/auth/components/VerifyInput';
 
@@ -20,6 +22,8 @@ export function useLogin() {
   });
   const { mutate: loginApi, isPending } = useAuthLogin();
   const { mutate: codeApi } = useAuthCode();
+
+  const { show, hide } = useLoadingStore();
 
   const passwordStatus = {
     email: useFieldStatus(form, 'email', form.watch('email')),
@@ -38,10 +42,12 @@ export function useLogin() {
   };
 
   const handleSubmit = (data: LoginSchema) => {
+    show();
     loginApi({
       email: data.email,
       code: data.loginType === 'code' ? data.code : '',
     });
+    hide();
   };
 
   const handleGetCode = () => {
