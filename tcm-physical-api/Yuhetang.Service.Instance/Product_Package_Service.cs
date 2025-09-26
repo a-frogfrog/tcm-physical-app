@@ -47,5 +47,29 @@ namespace Yuhetang.Service.Instance
             }).ToListAsync();
             return Result(1, "ok", data);
         }
+        /// <summary>
+        /// 获取服务
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Get_Service(int page = 1, int limit = 10)
+        {
+            var data = await _product_Package_IOC._product_EFCore
+                .QueryAll(out int total, page, limit, false, o => o.PCreateTime, d => d.PType == 2 && d.PStatus == 1)
+                .Select(d=>new Product_Response_Dto
+                {
+                    id = d.PId,
+                    desc = d.PDescription,
+                    price = d.PPrice,
+                    rate = d.PCommissionRate,
+                    time = d.PCreateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                })
+                .ToListAsync();
+
+            return Result(1, "ok", data);
+        }
+
     }
 }

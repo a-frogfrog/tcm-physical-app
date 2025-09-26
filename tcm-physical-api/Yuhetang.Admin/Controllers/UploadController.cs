@@ -6,7 +6,7 @@ using Yuhetang.Service.Interface;
 namespace Yuhetang.Admin.Controllers
 {
     /// <summary>
-    /// 
+    /// 图片上传
     /// </summary>
     public class UploadController : BaseController
     {
@@ -32,7 +32,7 @@ namespace Yuhetang.Admin.Controllers
                 //var filePath = $"/{DateTime.Now.ToString("yyyyMMdd")}/";
 
 
-                var webRootPath = _configuration["UpLoad:Goods:Cover"];
+                var webRootPath = _configuration["UpLoad:Yuhetang:Cover"];
                 ////创建存储文件夹
                 //if (!Directory.Exists(webRootPath + filePath))
                 //{

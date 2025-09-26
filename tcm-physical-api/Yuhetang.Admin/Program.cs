@@ -114,8 +114,7 @@ builder.Services.AddCors(c =>
     c.AddPolicy("AllRequests", policy =>
     {
         policy.AllowAnyOrigin()    // 允许所有来源
-        //policy.WithOrigins("http://8.134.187.124:8081", "http://8.134.187.124:8080")
-          .AllowAnyMethod()    // 允许所有HTTP方法
+            .AllowAnyMethod()    // 允许所有HTTP方法
             .AllowAnyHeader();   // 允许所有请求头
     });
 });
@@ -138,6 +137,8 @@ builder.Services.AddSwaggerGen(options =>
     string basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Yuhetang.Admin.xml"), true);
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Yuhetang.Infrastructure.Dto.xml"), true);
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

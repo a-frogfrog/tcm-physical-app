@@ -18,5 +18,17 @@ namespace Yuhetang.Service.Interface
         /// <param name="requestDto">预约请求数据</param>
         /// <returns>新增的预约信息</returns>
         Task<Api_Response_Dto> Add_Appointment(Appointments_Request_Dto dto);
+        /// <summary>
+        /// 获取可预约日期
+        /// </summary>
+        /// <returns></returns>
+        Api_Response_Dto GetAvailableDates();
+        /// <summary>
+        /// 获取某天可预约时间段
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="minutes"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> GetAvailableSlots(string date, double minutes);
     }
 }

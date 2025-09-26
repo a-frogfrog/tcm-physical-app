@@ -21,5 +21,13 @@ namespace Yuhetang.Service.Interface
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> Get_Product_Package(int page=1,int limit=10);
+        /// <summary>
+        /// 获取服务
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Get_Service(int page = 1, int limit = 10);
+        
     }
 }

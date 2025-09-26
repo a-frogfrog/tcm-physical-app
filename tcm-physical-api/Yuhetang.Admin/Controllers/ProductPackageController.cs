@@ -30,5 +30,22 @@ namespace Yuhetang.Admin.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// 获取服务
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> Get_Service(int page=1,int limit = 10)
+        {
+            var result = await _product_Package_Service.Get_Service(page, limit);
+
+            return Ok(result);
+        }
+
+        
+
     }
 }

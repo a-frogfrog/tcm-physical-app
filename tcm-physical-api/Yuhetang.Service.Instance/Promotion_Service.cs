@@ -10,6 +10,7 @@ using Yuhetang.Infrastructure.IOC;
 using Yuhetang.Infrastructure.Tools;
 using Yuhetang.Service.EFCore;
 using Yuhetang.Service.Interface;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Yuhetang.Service.Instance
 {
@@ -293,5 +294,35 @@ namespace Yuhetang.Service.Instance
 
             return Result(1, "成功");
         }
+        /// <summary>
+        /// 佣金数据统计（累计佣金、已结算/未结算金额）
+        /// </summary>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>E</returns>
+        public async Task<Api_Response_Dto> Commission_Data_Statistics(string id)
+        {
+            // 1. 查询该用户的所有佣金记录
+            var commissionList = await _promotion_IOC._customerVipCpsCommission_EFCore
+                .QueryAll(d => d.CvccVipid == id)
+                .ToListAsync();
+
+            // 2. 统计逻辑：累计佣金、已结算佣金、未结算佣金
+            decimal totalCommission = commissionList.Sum(d => d.CvccAmount ?? 0); // 累计佣金
+            decimal settledCommission = commissionList
+                .Where(d => d.CvccStatus == 1) // 假设 status=1 为“已结算”
+                .Sum(d => d.CvccAmount ?? 0);
+            decimal unsettledCommission = totalCommission - settledCommission;
+
+            // 3. 构造返回结果
+            return Result(1, "统计成功", new
+            {
+                totalCommission,
+                settledCommission,
+                unsettledCommission
+            });
+        }
+        
+
     }
 }

@@ -128,6 +128,26 @@ public class PromotionController : BaseController
         return Ok(result);
     }
     /// <summary>
+    /// 佣金数据统计
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> Commission_Data_Statistics()
+    {
+        var user = this.Get_Current_Customer();
+        var result = await _promotion_Service.Commission_Data_Statistics(user.id);
+        return Ok(result);
+    }
+    /// <summary>
+    /// 佣金收益趋势数据
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> GetIncomeTrendAsync(string period = "month", int? year = null)
+    {
+        return Ok("没写sorry");
+    }
+    /// <summary>
     /// 获取余额
     /// </summary>
     /// <returns></returns>
@@ -150,4 +170,5 @@ public class PromotionController : BaseController
         var result = await _promotion_Service.Withdraw(user.id,amount);
         return Ok(result);
     }
+
 }
