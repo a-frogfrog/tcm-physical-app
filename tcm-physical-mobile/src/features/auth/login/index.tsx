@@ -1,7 +1,7 @@
 import LoginForm from '../components/LoginForm';
 
 import { useLogin } from '#/features/auth/hooks/useLogin';
-import { useLoading } from '#/app/LoadingContext';
+import { useLoadingStore } from '#/stores';
 
 /**
  * 登录路由
@@ -24,7 +24,7 @@ const LoginInteraction = () => {
     isPending,
   } = useLogin();
 
-  const { show } = useLoading();
+  const { show } = useLoadingStore();
   setTimeout(() => {
     show();
   }, 2000);

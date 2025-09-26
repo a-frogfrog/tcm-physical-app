@@ -4,10 +4,9 @@ import router from './router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { Toaster } from 'sonner';
-import { useToastStore } from '#/stores';
+import { useLoadingStore, useToastStore } from '#/stores';
 
 import { LoaderPortal, Mask } from '#/components/common';
-import { LoadingProvider, useLoading } from './LoadingContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,16 +25,14 @@ export default function SetupApp() {
         position={useToastStore((state) => state.sonnerPosition)}
         richColors
       />
-      <LoadingProvider>
-        <SetupLoader />
-        <RouterProvider router={router} />;
-      </LoadingProvider>
+      <SetupLoader />
+      <RouterProvider router={router} />;
     </QueryClientProvider>
   );
 }
 
 const SetupLoader = () => {
-  const { visible } = useLoading();
+  const visible = useLoadingStore((state) => state.visible);
 
   return (
     visible && (
