@@ -20,7 +20,7 @@ const Loader = ({ className }: React.ComponentProps<'div'>) => {
 
 const LoaderPortal = () => {
   return createPortal(
-    <Loader className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-50 lg:scale-75' />,
+    <Loader className='absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 scale-50 lg:scale-75' />,
     document.body,
   );
 };

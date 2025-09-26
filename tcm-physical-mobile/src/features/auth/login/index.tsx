@@ -1,6 +1,7 @@
 import LoginForm from '../components/LoginForm';
 
 import { useLogin } from '#/features/auth/hooks/useLogin';
+import { useLoading } from '#/app/LoadingContext';
 
 /**
  * 登录路由
@@ -22,6 +23,11 @@ const LoginInteraction = () => {
     handleGetCode,
     isPending,
   } = useLogin();
+
+  const { show } = useLoading();
+  setTimeout(() => {
+    show();
+  }, 2000);
 
   return (
     <LoginForm
