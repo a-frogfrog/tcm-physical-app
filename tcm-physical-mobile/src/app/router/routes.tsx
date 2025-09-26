@@ -1,13 +1,20 @@
-import { routes as routesConfig } from '#/config/routes';
-import { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
+
+import { routes as routesConfig } from '#/config/routes';
+import { coreRoutes } from './core';
+
+import { lazy } from 'react';
 
 const routes: RouteObject[] = [
   {
     path: '/',
     Component: lazy(() => import('#/layouts')),
     children: [
-      { index: true, element: <Navigate to='/home' replace /> }, // 重定向到/home
+      // 重定向到/home
+      {
+        index: true,
+        element: <Navigate to='/home' replace />,
+      },
       {
         path: routesConfig.home.path,
         Component: lazy(() => import('#/features/home')),
@@ -28,22 +35,9 @@ const routes: RouteObject[] = [
         path: routesConfig.booking.path,
         Component: lazy(() => import('#/features/booking')),
       },
-
-      {
-        //404错误路由.
-        path: '*',
-        Component: lazy(() => import('#/features/error/NotFound')),
-      },
     ],
   },
-  {
-    path: routesConfig.auth.login.path,
-    Component: lazy(() => import('#/features/auth/login')),
-  },
-  {
-    path: routesConfig.auth.register.path,
-    Component: lazy(() => import('#/features/auth/register')),
-  },
+  ...coreRoutes,
 ];
 
 export default routes;

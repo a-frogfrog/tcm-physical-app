@@ -22,4 +22,18 @@ export const routes = {
       path: '/auth/register',
     },
   },
+  fallback: {
+    notFound: {
+      path: '*',
+    },
+    offline: {
+      path: '/offline',
+    },
+    forbidden: {
+      path: '/forbidden',
+    },
+    internalError: {
+      path: '/internal-error',
+    },
+  },
 };
