@@ -38,4 +38,4 @@ const CommissionCard = ({
   );
 };
 
-export { CommissionCard };
+export default CommissionCard;

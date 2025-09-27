@@ -17,29 +17,29 @@ const routes: RouteObject[] = [
       },
       {
         path: routesConfig.tabbar.home.path,
-        Component: lazy(() => import('#/features/home')),
+        Component: lazy(() => import('./routes/home')),
       },
       {
         path: routesConfig.tabbar.promotion.path,
-        Component: lazy(() => import('#/features/promotion')),
+        Component: lazy(() => import('./routes/promotion')),
       },
       {
         path: routesConfig.tabbar.user.path,
-        Component: lazy(() => import('#/features/user')),
+        Component: lazy(() => import('./routes/user')),
       },
       {
         path: routesConfig.tabbar.commission.path,
-        Component: lazy(() => import('#/features/commission')),
+        Component: lazy(() => import('./routes/commission')),
       },
       {
         path: routesConfig.tabbar.booking.path,
-        Component: lazy(() => import('#/features/booking')),
+        Component: lazy(() => import('./routes/booking')),
       },
     ],
   },
   {
     path: routesConfig.article.list.path,
-    Component: lazy(() => import('#/features/article/list')),
+    Component: lazy(() => import('./routes/article/list')),
   },
   ...coreRoutes,
 ];

@@ -1,16 +1,8 @@
-import LoginForm from '../components/LoginForm';
+import LoginForm from '#/features/auth/components/LoginForm';
 
 import { useLogin } from '#/features/auth/hooks/useLogin';
 
-/**
- * 登录路由
- * @returns 登录交互组件
- */
-export default function LoginPage() {
-  return <LoginInteraction />;
-}
-
-const LoginInteraction = () => {
+export default function LoginRoute() {
   const {
     form,
     link,
@@ -35,4 +27,4 @@ const LoginInteraction = () => {
       isPending={isPending}
     />
   );
-};
+}

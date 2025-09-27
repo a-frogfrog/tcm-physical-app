@@ -1,9 +1,13 @@
 import { ArrowRight } from 'lucide-react';
-import { services } from '../constants';
+import { type Service } from '../constants';
 import { useBookingStore } from '../store';
 import { cn } from '#/lib/utils';
 
-const ServiceSection = () => {
+type ServiceProps = {
+  services: Service[];
+};
+
+const ServiceSection = ({ services }: ServiceProps) => {
   const booking = useBookingStore((state) => state.booking);
   const setBooking = useBookingStore((state) => state.setBooking);
   const setStep = useBookingStore((state) => state.setStep);

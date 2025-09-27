@@ -1,14 +1,24 @@
-import ServiceSection from './components/ServiceSection';
-import TimeSection from './components/TimeSection';
-import ConformSection from './components/ConformSection';
-import SuccessSection from './components/SuccessSection';
-import HelpModal from './components/HelpModal';
-import StepIndicator from './components/StepIndicator';
-import { useBookingStore } from './store';
+import {
+  ServiceSection,
+  TimeSection,
+  ConformSection,
+  SuccessSection,
+  HelpModal,
+  StepIndicator,
+} from '#/features/booking/components';
 
-export default function BookingPage() {
+import { services } from '#/features/booking/constants';
+
+import { useBookingStore } from '#/features/booking/store';
+
+import { useFetchService } from '#/features/services/hooks/useFetchService';
+import { Loader } from '#/components/common';
+
+export default function BookingRoute() {
   const step = useBookingStore((state) => state.step);
   const helpOpen = useBookingStore((state) => state.helpOpen);
+
+  const { data: serviceData, isLoading } = useFetchService();
 
   return (
     <div className='bg-[rgb(245,245,220)] font-sans text-[#3E2723]'>
@@ -17,7 +27,10 @@ export default function BookingPage() {
         <StepIndicator step={step} />
 
         {/* 步骤 1: 服务选择 */}
-        {step === 1 && <ServiceSection />}
+        {isLoading && <Loader className='scale-50' />}
+        {step === 1 && (
+          <ServiceSection services={serviceData?.data || services} />
+        )}
 
         {/* 步骤 2: 时间选择 */}
         {step === 2 && <TimeSection />}

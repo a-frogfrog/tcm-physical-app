@@ -4,9 +4,11 @@ import { routes } from '#/config/routes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { Form, FormHeader, FormRule } from '../components/Form';
-import VerifyInput, { useFieldStatus } from '../components/VerifyInput';
-import PasswordInput from '../components/PasswordInput';
+import { Form, FormHeader, FormRule } from '#/features/auth/components/Form';
+import VerifyInput, {
+  useFieldStatus,
+} from '#/features/auth/components/VerifyInput';
+import PasswordInput from '#/features/auth/components/PasswordInput';
 
 import {
   Button,
@@ -20,7 +22,7 @@ import {
 
 import { registerSchema, type RegisterSchema } from '#/schemas';
 
-export default function RegisterPage() {
+export default function RegisterRoute() {
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     mode: 'onChange',
