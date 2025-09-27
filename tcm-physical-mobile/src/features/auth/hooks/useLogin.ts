@@ -7,7 +7,7 @@ import { loginSchema, type LoginSchema } from '#/schemas';
 
 import { useLoadingStore } from '#/store/loading';
 
-import { useAuthCode, useAuthLogin } from '#/features/auth/hooks/useAuth';
+import { useAuthCode, useAuthLogin } from '#/features/auth/hooks/useFetchAuth';
 import { useFieldStatus } from '#/features/auth/components/VerifyInput';
 
 export function useLogin() {
