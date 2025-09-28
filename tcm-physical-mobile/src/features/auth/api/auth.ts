@@ -9,21 +9,22 @@ export type CodeRequestParams = {
   email: LoginRequestParams['email'];
 };
 
+const loginAdapter = (params: LoginRequestParams) => ({
+  account: params.email,
+  password: params.code,
+  code: '',
+  //cspell:words vipid
+  vipid: '',
+  vipCode: '',
+});
+
 /**
  * 登录
  * @param params 登录参数
  * @returns
  */
 const fetchAuthLogin = (params: LoginRequestParams) => {
-  const adaptedData = {
-    account: params.email,
-    password: params.code,
-    code: '',
-    //cspell:words vipid
-    vipid: '',
-    vipCode: '',
-  };
-  return http.post('/Logins/Customer_Logins', adaptedData);
+  return http.post('/Logins/Customer_Logins', loginAdapter(params));
 };
 
 /**

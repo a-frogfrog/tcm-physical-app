@@ -1,16 +1,19 @@
 import { http } from '#/lib/http';
+import { serviceAdapter } from './adapter';
 
-export type Service = {
+export type ServiceResponse = {
   id: string;
-  title: string;
-  description: string;
-  price: number;
+  name: string;
   duration: number; // minutes
-  img: string;
+  price: string;
+  time: Date;
+  desc: string;
 };
 
 const fetchServiceList = async () => {
-  return await http.get<Service[]>('/Service/Get_Service');
+  const res = await http.get<ServiceResponse[]>('/Service/Get_Service');
+  const services = res.data.map((item) => serviceAdapter(item));
+  return services;
 };
 
 export const serviceApi = {

@@ -1,54 +1,41 @@
 import { ArrowLeft, Check, Info } from 'lucide-react';
 import { useBooking } from '../hooks/useBooking';
 import { useBookingStore } from '../store';
+import { BookingTitle } from './BookingTitle';
+import {
+  DetailCard,
+  DetailCardFooter,
+  DetailCardHeader,
+  DetailCardItem,
+} from './DetailCard';
 
 const ConfirmSection = () => {
   const booking = useBookingStore((state) => state.booking);
   const setStep = useBookingStore((state) => state.setStep);
   const { formatDateReadable, handleSubmit, selectedService } = useBooking();
 
+  console.log(selectedService);
   return (
     <section className='space-y-6'>
-      <h2 className='border-b-2 border-[#8B4513]/30 pb-2 text-xl font-bold text-[#8B4513]'>
-        确认预约信息
-      </h2>
+      <BookingTitle title='确认预约信息' />
 
-      <div className='rounded-xl bg-white p-6 shadow-md'>
-        <h3 className='mb-4 border-b pb-2 text-lg font-bold'>预约详情</h3>
+      <DetailCard>
+        <DetailCardHeader>预约信息</DetailCardHeader>
+        <DetailCardItem
+          label='预约服务'
+          value={selectedService?.title || '--'}
+        />
+        <DetailCardItem
+          label='预约日期'
+          value={formatDateReadable(booking.date)}
+        />
+        <DetailCardItem label='预约时间' value={booking.time!} />
 
-        <div className='space-y-4'>
-          <div className='flex justify-between'>
-            <span className='text-gray-600'>服务类型：</span>
-            <span className='font-medium'>
-              {selectedService ? selectedService.title : '--'}
-            </span>
-          </div>
-          <div className='flex justify-between'>
-            <span className='text-gray-600'>预约日期：</span>
-            <span className='font-medium'>
-              {formatDateReadable(booking.date)}
-            </span>
-          </div>
-          <div className='flex justify-between'>
-            <span className='text-gray-600'>预约时间：</span>
-            <span className='font-medium'>{booking.time ?? '--'}</span>
-          </div>
-          <div className='flex justify-between'>
-            <span className='text-gray-600'>服务时长：</span>
-            <span className='font-medium'>
-              {selectedService ? `${selectedService.duration}分钟` : '--'}
-            </span>
-          </div>
-          <div className='border-t border-gray-200 pt-4'>
-            <div className='flex justify-between text-lg font-bold'>
-              <span>总计费用：</span>
-              <span className='text-[#CD5C5C]'>
-                ¥{selectedService ? selectedService.price : '--'}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <DetailCardFooter
+          title='预约费用'
+          value={selectedService?.price.toFixed(2) || '--'}
+        />
+      </DetailCard>
 
       {/* 预约须知 */}
       <BookingInfo />
