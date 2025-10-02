@@ -15,4 +15,28 @@ export default defineConfig({
       '#': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          axios: ['axios'],
+          chart: ['chart.js'],
+          lib: [
+            'clsx',
+            'input-otp',
+            'lucide-react',
+            'motion',
+            'next-themes',
+            'react-hook-form',
+            'sonner',
+            'tailwind-merge',
+            'tailwindcss',
+            'zod',
+            'zustand',
+          ],
+        },
+      },
+    },
+  },
 });
