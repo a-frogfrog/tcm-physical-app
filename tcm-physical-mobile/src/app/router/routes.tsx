@@ -4,11 +4,18 @@ import { routes as routesConfig } from '#/config/routes';
 import { coreRoutes } from './core';
 
 import { lazy } from 'react';
+import AuthRoute from './AuthRoute';
+
+const Layout = lazy(() => import('#/layouts'));
 
 const routes: RouteObject[] = [
   {
     path: '/',
-    Component: lazy(() => import('#/layouts')),
+    element: (
+      <AuthRoute>
+        <Layout />
+      </AuthRoute>
+    ),
     children: [
       // 重定向到/home
       {
@@ -35,12 +42,13 @@ const routes: RouteObject[] = [
         path: routesConfig.tabbar.booking.path,
         Component: lazy(() => import('./routes/booking')),
       },
+      {
+        path: routesConfig.article.list.path,
+        Component: lazy(() => import('./routes/article/list')),
+      },
     ],
   },
-  {
-    path: routesConfig.article.list.path,
-    Component: lazy(() => import('./routes/article/list')),
-  },
+
   ...coreRoutes,
 ];
 

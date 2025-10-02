@@ -24,6 +24,7 @@ export function createAxiosRequest(options: CreateAxiosRequestOptions) {
   const instance = axios.create({
     baseURL: options.baseURL || '/api',
     timeout: options.timeout || 10000,
+    headers: options.headers || {},
     ...options,
   });
 
