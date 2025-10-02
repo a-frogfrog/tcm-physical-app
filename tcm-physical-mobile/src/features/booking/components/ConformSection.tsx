@@ -13,7 +13,8 @@ import { PrevButton } from './StepButton';
 const ConfirmSection = () => {
   const booking = useBookingStore((state) => state.booking);
   const setStep = useBookingStore((state) => state.setStep);
-  const { formatDateReadable, handleSubmit, selectedService } = useBooking();
+  const selectedService = useBookingStore((state) => state.selectedService);
+  const { formatDateReadable, handleSubmit } = useBooking();
 
   console.log(booking);
   return (
@@ -50,7 +51,7 @@ const ConfirmSection = () => {
         <PrevButton onClick={() => setStep(1)} />
         <button
           onClick={handleSubmit}
-          className={`'bg-[#2E8B57] text-white' : 'cursor-not-allowed opacity-50'} rounded-full bg-[#2E8B57] px-6 py-3 font-medium text-white shadow-md transition-all duration-300`}>
+          className={`cursor-not-allowed rounded-full bg-[#2E8B57] px-6 py-3 font-medium text-white shadow-md transition-all duration-300`}>
           确认预约 <Check className='ml-1 inline-block' />
         </button>
       </div>
