@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "words": [
     "vite",
     "shadcn",
@@ -10,5 +11,14 @@
     "chartjs",
     "LXGW",
     "weixin"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "./cspell-words.md",
+    "dist",
+    "design",
+    "public",
+    "*.html",
+    "*.yaml"
   ]
 }

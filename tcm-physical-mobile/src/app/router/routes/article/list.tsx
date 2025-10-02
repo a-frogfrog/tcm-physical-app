@@ -9,7 +9,7 @@ export default function ArticleListRoute() {
           subtitle='从饮食到心理，科学养生指南'
           imageUrl='https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&q=80'
           highlights={[
-            { text: '秋季nout护肺的5个关键要点' },
+            { text: '秋季护肺的5个关键要点' },
             { text: '每天10分钟冥想改善焦虑和压力' },
             { text: '告别失眠：健康睡眠习惯养成' },
           ]}

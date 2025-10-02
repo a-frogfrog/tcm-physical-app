@@ -67,6 +67,7 @@ export const services: Service[] = [
     img: 'https://picsum.photos/seed/acupuncture/640/360',
   },
   {
+    // cspell:ignore tuina
     id: 'tuina',
     title: '推拿按摩',
     description: '运用手法刺激经络穴位，疏通经络，调和气血',
