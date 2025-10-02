@@ -4,8 +4,10 @@ import { useBookingStore } from '../store';
 
 const SuccessSection = () => {
   const booking = useBookingStore((state) => state.booking);
+  const selectedService = useBookingStore((state) => state.selectedService);
   const resetAll = useBookingStore((state) => state.resetAll);
-  const { formatDateReadable, selectedService } = useBooking();
+
+  const { formatDateReadable } = useBooking();
 
   return (
     <section className='py-10'>

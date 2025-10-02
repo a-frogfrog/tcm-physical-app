@@ -4,7 +4,6 @@ export const http = createAxiosRequest({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   handleResponseSuccess: (response) => {
     const data = response.data;
-    console.log(data);
     return data;
   },
   handleResponseError: (error) => {
