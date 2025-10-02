@@ -3,7 +3,7 @@ import { useBookingStore } from '../store';
 
 import { ServiceCard } from '#/features/services/components/ServiceCard';
 import { BookingTitle } from './BookingTitle';
-import { NextButton } from './stepButton';
+import { NextButton } from './StepButton';
 
 type ServiceProps = {
   services: Service[];

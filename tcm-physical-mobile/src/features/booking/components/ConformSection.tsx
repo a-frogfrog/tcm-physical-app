@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Info } from 'lucide-react';
+import { Check, Info } from 'lucide-react';
 import { useBooking } from '../hooks/useBooking';
 import { useBookingStore } from '../store';
 import { BookingTitle } from './BookingTitle';
@@ -8,13 +8,14 @@ import {
   DetailCardHeader,
   DetailCardItem,
 } from './DetailCard';
+import { PrevButton } from './StepButton';
 
 const ConfirmSection = () => {
   const booking = useBookingStore((state) => state.booking);
   const setStep = useBookingStore((state) => state.setStep);
   const { formatDateReadable, handleSubmit, selectedService } = useBooking();
 
-  console.log(selectedService);
+  console.log(booking);
   return (
     <section className='space-y-6'>
       <BookingTitle title='确认预约信息' />
@@ -22,17 +23,22 @@ const ConfirmSection = () => {
       <DetailCard>
         <DetailCardHeader>预约信息</DetailCardHeader>
         <DetailCardItem
-          label='预约服务'
+          label='服务类型'
           value={selectedService?.title || '--'}
         />
         <DetailCardItem
           label='预约日期'
           value={formatDateReadable(booking.date)}
         />
-        <DetailCardItem label='预约时间' value={booking.time!} />
+        <DetailCardItem label='预约日期' value={booking.time!} />
+
+        <DetailCardItem
+          label='服务时长'
+          value={selectedService?.duration.toString() || '--'}
+        />
 
         <DetailCardFooter
-          title='预约费用'
+          title='总计费用'
           value={selectedService?.price.toFixed(2) || '--'}
         />
       </DetailCard>
@@ -41,11 +47,7 @@ const ConfirmSection = () => {
       <BookingInfo />
 
       <div className='mt-8 flex justify-between'>
-        <button
-          onClick={() => setStep(2)}
-          className='rounded-full bg-gray-200 px-6 py-3 font-medium text-[#3E2723] shadow-md transition-all duration-300'>
-          <ArrowLeft className='mr-1 inline-block' /> 上一步
-        </button>
+        <PrevButton onClick={() => setStep(1)} />
         <button
           onClick={handleSubmit}
           className={`'bg-[#2E8B57] text-white' : 'cursor-not-allowed opacity-50'} rounded-full bg-[#2E8B57] px-6 py-3 font-medium text-white shadow-md transition-all duration-300`}>

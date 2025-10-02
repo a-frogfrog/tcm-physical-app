@@ -11,7 +11,7 @@ import { useBookingStore } from '#/features/booking/store';
 
 import { useFetchService } from '#/features/services/hooks/useFetchService';
 import { Loader } from '#/components/common';
-import { services } from '#/features/booking/constants';
+// import { services } from '#/features/booking/constants';
 
 export default function BookingRoute() {
   const step = useBookingStore((state) => state.step);
@@ -19,7 +19,6 @@ export default function BookingRoute() {
 
   const { data: serviceData, isLoading } = useFetchService();
 
-  console.log(services);
   return (
     <div className='bg-[rgb(245,245,220)] font-sans text-[#3E2723]'>
       <div className='container mx-auto px-4 py-6'>

@@ -2,7 +2,7 @@ import { dateItems, timeSlots } from '../constants';
 import { useBookingStore } from '../store';
 import { BookingTitle } from './BookingTitle';
 import { DateSelect, DateSelectItem } from './DateSelect';
-import { NextButton, PrevButton } from './stepButton';
+import { NextButton, PrevButton } from './StepButton';
 import { TimePeriodSelect, TimePeriodSelectItem } from './TimePeriodSelect';
 
 const TimeSection = () => {
