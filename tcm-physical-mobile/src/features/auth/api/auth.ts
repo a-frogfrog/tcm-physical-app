@@ -36,7 +36,12 @@ const fetchAuthCode = async (params: CodeRequestParams) => {
   return await http.post('/Email/SendVerificationCode', params);
 };
 
+const fetchAuthCheck = async () => {
+  return await http.get('/Logins/Customer_Check_Login');
+};
+
 export const authApi = {
   fetchAuthLogin,
   fetchAuthCode,
+  fetchAuthCheck,
 };
