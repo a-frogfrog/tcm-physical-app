@@ -1,4 +1,4 @@
-import { Check, Info } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { useBooking } from '../hooks/useBooking';
 import { useBookingStore } from '../store';
 import { BookingTitle } from './BookingTitle';
@@ -9,6 +9,7 @@ import {
   DetailCardItem,
 } from './DetailCard';
 import { PrevButton } from './StepButton';
+import { NoticeCard } from '#/components/common';
 
 const ConfirmSection = () => {
   const booking = useBookingStore((state) => state.booking);
@@ -16,7 +17,6 @@ const ConfirmSection = () => {
   const selectedService = useBookingStore((state) => state.selectedService);
   const { formatDateReadable, handleSubmit } = useBooking();
 
-  console.log(booking);
   return (
     <section className='space-y-6'>
       <BookingTitle title='确认预约信息' />
@@ -45,7 +45,14 @@ const ConfirmSection = () => {
       </DetailCard>
 
       {/* 预约须知 */}
-      <BookingInfo />
+      <NoticeCard
+        title='预约须知'
+        contents={[
+          '请提前15分钟到达中医馆',
+          '如需取消预约，请提前2小时通知',
+          '如有特殊健康状况，请在备注中说明',
+        ]}
+      />
 
       <div className='mt-8 flex justify-between'>
         <PrevButton onClick={() => setStep(1)} />
@@ -56,21 +63,6 @@ const ConfirmSection = () => {
         </button>
       </div>
     </section>
-  );
-};
-
-const BookingInfo = () => {
-  return (
-    <article className='rounded-xl border border-[#2E8B57]/20 bg-[#2E8B57]/10 p-4'>
-      <h3 className='flex items-center font-bold text-[#2E8B57]'>
-        <Info className='mr-2' /> 预约须知
-      </h3>
-      <ul className='mt-2 list-inside list-disc space-y-1 text-sm text-gray-700'>
-        <li>请提前15分钟到达中医馆</li>
-        <li>如需取消预约，请提前2小时通知</li>
-        <li>如有特殊健康状况，请在备注中说明</li>
-      </ul>
-    </article>
   );
 };
 
