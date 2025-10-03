@@ -4,15 +4,21 @@ import { toast } from 'sonner';
 import { authApi } from '../api/auth';
 import { useAuthStore } from '#/store';
 
+import { useNavigate } from 'react-router-dom';
+import { routes } from '#/config/routes';
+
 export function useAuthLogin() {
   const queryClient = useQueryClient();
   const setToken = useAuthStore((state) => state.setToken);
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: authApi.fetchAuthLogin,
+    // 登录成功后，刷新登录查询，设置 token，并重定向到首页
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries({ queryKey: ['auth_login'] });
       setToken(data.data.token);
+      navigate(routes.tabbar.home.path);
     },
   });
 }
