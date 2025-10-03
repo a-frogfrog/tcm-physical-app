@@ -6,7 +6,6 @@ import { useAuthCheck } from '#/features/auth/hooks/useFetchAuth';
 export default function AuthRoute({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((state) => state.token);
   const { mutate: checkAuth, isError } = useAuthCheck();
-  console.log(user);
   if (!user) {
     checkAuth();
     if (isError) {
