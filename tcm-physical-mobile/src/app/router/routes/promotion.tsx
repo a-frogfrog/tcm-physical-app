@@ -1,9 +1,11 @@
 import { PageTitle } from '#/components/common';
-import PromotionLink from '#/features/promotion/components/PromotionLink';
-import PromotionMethod from '#/features/promotion/components/PromotionMethod';
-import PromotionStats from '#/features/promotion/components/PromotionStats';
-import PromotionStep from '#/features/promotion/components/PromotionStep';
-import PromotionTutorial from '#/features/promotion/components/PromotionTutorial';
+import {
+  PromotionLink,
+  PromotionMethod,
+  PromotionStats,
+  PromotionStep,
+  PromotionTutorial,
+} from '#/features/promotion/components';
 import {
   useFetchPromotionData,
   usePromotionEvents,
