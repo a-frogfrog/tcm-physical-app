@@ -6,14 +6,17 @@ import {
   PromotionStep,
   PromotionTutorial,
 } from '#/features/promotion/components';
+import { usePromotionLink } from '#/features/promotion/hooks/usePromotion';
 import {
   useFetchPromotionData,
   usePromotionEvents,
-} from '#/features/promotion/hooks';
+} from '#/features/promotion/hooks/usePromotionEvents';
 
 export default function PromotionRoute() {
   const { handleSaveImage } = usePromotionEvents();
   const { imageUrl } = useFetchPromotionData();
+
+  const { data: promotionLink } = usePromotionLink();
 
   return (
     <>
@@ -27,7 +30,7 @@ export default function PromotionRoute() {
         photoUrl={imageUrl}
       />
       <div className='flex flex-col gap-4 px-4'>
-        <PromotionLink link={location.origin + '/auth/register'} />
+        <PromotionLink link={promotionLink?.shortUrl || ''} />
         <PromotionTutorial />
         <PromotionStep />
       </div>
