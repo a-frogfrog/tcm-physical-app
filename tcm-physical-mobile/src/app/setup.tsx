@@ -10,6 +10,8 @@ import { LoaderPortal, Mask } from '#/components/common';
 
 import { AnimatePresence, motion } from 'motion/react';
 
+import { ErrorBoundary } from '#/components/error/ErrorBoundary';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -22,16 +24,18 @@ const queryClient = new QueryClient({
 
 export default function SetupApp() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Toaster
-        position={useToastStore((state) => state.sonnerPosition)}
-        richColors
-      />
-      <SetupLoader />
-      {/* <ScrollLinked /> */}
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <Toaster
+          position={useToastStore((state) => state.sonnerPosition)}
+          richColors
+        />
+        <SetupLoader />
+        {/* <ScrollLinked /> */}
 
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
