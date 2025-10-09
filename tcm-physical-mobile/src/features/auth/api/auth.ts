@@ -1,4 +1,5 @@
 import { http } from '#/lib/http';
+import { loginAdapter } from './adapter';
 
 export type LoginRequestParams = {
   email: string;
@@ -8,15 +9,6 @@ export type LoginRequestParams = {
 export type CodeRequestParams = {
   email: LoginRequestParams['email'];
 };
-
-const loginAdapter = (params: LoginRequestParams) => ({
-  account: params.email,
-  password: params.code,
-  code: '',
-  //cspell:words vipid
-  vipid: '',
-  vipCode: '',
-});
 
 /**
  * 登录
