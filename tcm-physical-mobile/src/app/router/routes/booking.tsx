@@ -11,7 +11,6 @@ import { useBookingStore } from '#/features/booking/store';
 
 import { useFetchService } from '#/features/services/hooks/useFetchService';
 import { Loader } from '#/components/common';
-// import { services } from '#/features/booking/constants';
 
 export default function BookingRoute() {
   const step = useBookingStore((state) => state.step);
