@@ -33,7 +33,6 @@ export default function LoginRoute() {
   const { mutate: login } = useFetchLogin();
 
   const onSubmit = (data: LoginSchema) => {
-    console.log(data);
     login(data);
   };
 
