@@ -79,6 +79,10 @@ export const sidebarMenu = [
         title: '新增',
         url: '/promotion/add',
       },
+      {
+        title: '规则',
+        url: '/promotion/rule',
+      },
     ],
   },
   {

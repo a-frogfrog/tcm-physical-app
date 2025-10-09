@@ -11,6 +11,10 @@ const promotionRoutes = {
       path: 'add',
       Component: lazy(() => import('#/pages/promotion/add')),
     },
+    {
+      path: 'rule',
+      Component: lazy(() => import('#/pages/promotion/rule')),
+    },
   ],
 };
 
