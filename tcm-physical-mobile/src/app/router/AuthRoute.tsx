@@ -1,17 +1,12 @@
 import { useAuthStore } from '#/store';
 import { Navigate } from 'react-router-dom';
 import { routes } from '#/config/routes';
-import { useAuthCheck } from '#/features/auth/hooks/useFetchAuth';
 
 export default function AuthRoute({ children }: { children: React.ReactNode }) {
-  const user = useAuthStore((state) => state.token);
-  const { mutate: checkAuth, isError } = useAuthCheck();
+  const user = useAuthStore((state) => state.user);
   if (!user) {
-    checkAuth();
-    if (isError) {
-      return <Navigate to={routes.auth.login.path} replace />;
-    }
-    return children;
+    console.log('user', user);
+    return <Navigate to={routes.auth.login.path} replace />;
   }
   return children;
 }

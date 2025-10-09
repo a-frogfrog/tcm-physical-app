@@ -1,3 +1,4 @@
+import { routes } from '#/config/routes';
 import { createAxiosRequest } from '#/lib/request';
 import { useAuthStore } from '#/store';
 
@@ -37,6 +38,8 @@ const RESPONSE_ERROR = {
   ERR_NETWORK: {
     //eslint-disable-next-line @typescript-eslint/no-unused-vars
     task: (_error: AxiosError) => {
+      console.log(_error);
+      window.location.href = routes.auth.login.path;
       toast.error('网络错误，请稍后重试！ 😵');
     },
   },
