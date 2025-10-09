@@ -1,3 +1,5 @@
+import { toast } from 'sonner';
+
 const fetchImage = async (url: string) => {
   const response = await fetch(url);
   const blob = await response.blob();
@@ -13,10 +15,17 @@ export const usePromotionEvents = () => {
       link.download = 'promotion-image.jpg';
       link.click();
     });
+    toast.success('图片保存成功');
+  };
+
+  const handleCopy = async () => {
+    toast.success('复制成功');
+    await navigator.clipboard.writeText(link.href);
   };
 
   return {
     handleSaveImage,
+    handleCopy,
   };
 };
 

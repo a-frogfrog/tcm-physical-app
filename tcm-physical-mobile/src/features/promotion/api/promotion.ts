@@ -19,14 +19,11 @@ const fetchPromotionLink = async () => {
   return promotionAdapter(res.data);
 };
 
-type GetPromotionQRCodeRequest = {
-  longUrl: string;
-};
-
-const fetchPromotionQRCode = async (request: GetPromotionQRCodeRequest) => {
-  return http.get('/Promotion/Get_QRCode', {
-    params: request,
+const fetchPromotionQRCode = async (longUrl: string) => {
+  const res = await http.get<string>('/Promotion/Get_QRCode', {
+    params: { longUrl },
   });
+  return res.data;
 };
 
 export const promotionApi = {

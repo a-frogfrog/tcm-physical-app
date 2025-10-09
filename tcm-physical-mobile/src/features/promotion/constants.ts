@@ -5,6 +5,9 @@ export const shareOptions = [
   {
     name: '微信',
     icon: React.createElement(Link2, { className: 'h-5 w-5 text-green-500' }),
+    handleClick: () => {
+      location.href = 'weixin://';
+    },
   },
   {
     name: '微博',

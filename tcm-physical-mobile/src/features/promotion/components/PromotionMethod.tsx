@@ -15,7 +15,7 @@ const PromotionMethod = ({ photoUrl, onSaveImage }: PromotionMethodProps) => {
         <CardContent className='flex flex-col items-center justify-center p-6'>
           {/* 示例二维码/图片 */}
           <img
-            src={photoUrl || 'https://via.placeholder.com/150'}
+            src={photoUrl}
             alt='推广二维码'
             className='mb-4 h-40 w-40 rounded-lg shadow'
           />

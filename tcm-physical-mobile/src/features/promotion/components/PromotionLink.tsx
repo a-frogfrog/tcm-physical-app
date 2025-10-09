@@ -1,16 +1,13 @@
 import { Card, CardContent, Button, Input } from '#/components/ui';
 import { shareOptions } from '../constants';
+import { usePromotionEvents } from '../hooks/usePromotionEvents';
 
 type PromotionLinkProps = {
   link: string;
 };
 
 const PromotionLink = ({ link }: PromotionLinkProps) => {
-  const handleCopy = async () => {
-    location.href = 'weixin://';
-    await navigator.clipboard.writeText(link);
-  };
-
+  const { handleCopy } = usePromotionEvents();
   return (
     <Card className='mx-auto max-w-md rounded-2xl shadow-sm'>
       <CardContent className='p-6'>
@@ -32,6 +29,7 @@ const PromotionLink = ({ link }: PromotionLinkProps) => {
         <div className='flex justify-center gap-4'>
           {shareOptions.map((item, idx) => (
             <div
+              onClick={item.handleClick}
               key={idx}
               className='flex cursor-pointer flex-col items-center justify-center'>
               <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-gray-50 shadow-sm hover:bg-gray-100'>
