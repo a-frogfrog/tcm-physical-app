@@ -121,7 +121,7 @@ export default function PackageTable() {
                 {pkg.items.map((item, idx) => (
                   <span
                     key={idx}
-                    className='mb-1 mr-1 inline-block rounded bg-gray-100 px-2 py-1 text-xs'>
+                    className='mr-1 mb-1 inline-block rounded bg-gray-100 px-2 py-1 text-xs'>
                     {item}
                   </span>
                 ))}

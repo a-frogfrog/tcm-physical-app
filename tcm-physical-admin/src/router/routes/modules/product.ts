@@ -5,15 +5,15 @@ const productRoutes = {
   children: [
     {
       path: 'service',
-      Component: lazy(() => import('#/pages/product/service')),
+      Component: lazy(() => import('#/features/product/service')),
     },
     {
       path: 'package',
-      Component: lazy(() => import('#/pages/product/package')),
+      Component: lazy(() => import('#/features/product/package')),
     },
     {
       path: 'add',
-      Component: lazy(() => import('#/pages/product/add')),
+      Component: lazy(() => import('#/features/product/add')),
     },
   ],
 };

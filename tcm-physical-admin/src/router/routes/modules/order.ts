@@ -5,7 +5,7 @@ const orderRoutes = {
   children: [
     {
       path: 'list',
-      Component: lazy(() => import('#/pages/order/list')),
+      Component: lazy(() => import('#/features/order/list')),
     },
   ],
 };

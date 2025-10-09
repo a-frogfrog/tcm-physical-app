@@ -77,7 +77,7 @@ const ProductFormBasic = () => {
               className='w-full pr-10'
               type='number'
             />
-            <span className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500'>
+            <span className='absolute top-1/2 right-3 -translate-y-1/2 text-gray-500'>
               分钟
             </span>
           </div>
@@ -102,7 +102,7 @@ const ProductFormPricing = memo(() => {
             原价 (元) <span className='text-red-500'>*</span>
           </Label>
           <div className='relative'>
-            <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>
+            <span className='absolute top-1/2 left-3 -translate-y-1/2 text-gray-500'>
               ¥
             </span>
             <Input
@@ -122,7 +122,7 @@ const ProductFormPricing = memo(() => {
             会员价 (元)
           </Label>
           <div className='relative'>
-            <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>
+            <span className='absolute top-1/2 left-3 -translate-y-1/2 text-gray-500'>
               ¥
             </span>
             <Input

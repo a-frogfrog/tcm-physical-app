@@ -5,7 +5,7 @@ const userRoutes = {
   children: [
     {
       path: 'profile',
-      Component: lazy(() => import('#/pages/user/profile')),
+      Component: lazy(() => import('#/features/user/profile')),
     },
   ],
 };

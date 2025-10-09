@@ -5,11 +5,11 @@ const customerRoutes = {
   children: [
     {
       path: 'list',
-      Component: lazy(() => import('#/pages/customer/list')),
+      Component: lazy(() => import('#/features/customer/list')),
     },
     {
       path: 'add',
-      Component: lazy(() => import('#/pages/customer/add')),
+      Component: lazy(() => import('#/features/customer/add')),
     },
   ],
 };

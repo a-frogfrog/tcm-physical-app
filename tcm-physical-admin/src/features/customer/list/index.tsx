@@ -54,7 +54,7 @@ export default function CustomerListPage() {
       <section className='my-6 grid grid-cols-2 gap-4 lg:grid-cols-4'>
         {cardItems.map(({ title, value, trend, icon }) => (
           <StatCard
-            className='duration-400 hover:scale-101 hover:-translate-y-1'
+            className='duration-400 hover:-translate-y-1 hover:scale-101'
             key={title}
             title={title}
             value={value}
