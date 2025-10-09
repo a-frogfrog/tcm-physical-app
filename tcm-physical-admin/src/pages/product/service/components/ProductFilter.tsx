@@ -13,7 +13,7 @@ import type {
   ProductFilterActionsProps,
   ProductFilterItemPropsPartial,
   ProductFilterProps,
-} from './constants';
+} from '../constants';
 
 const ProductFilter = ({ className, children }: ProductFilterProps) => {
   //获取子元素

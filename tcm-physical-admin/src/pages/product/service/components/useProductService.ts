@@ -1,8 +1,8 @@
-export const useProductList = () => {
+export const useProductService = () => {
   // Custom hook logic here
 };
 
-export const useProductListEvents = () => {
+export const useProductServiceEvents = () => {
   // Custom hook logic here
   const handleReset = () => {
     // Reset filter logic

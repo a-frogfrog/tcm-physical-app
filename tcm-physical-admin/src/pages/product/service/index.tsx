@@ -1,37 +1,34 @@
-import { ProductHeader } from './ProductHeader';
+import { ProductHeader } from './components/ProductHeader';
 import {
   ProductFilter,
   ProductFilterItem,
   ProductFilterItems,
   ProductFilterActions,
-} from './ProductFilter';
-import { filterItems, tableData } from './constants';
-import { useProductListEvents } from './useProductList';
-import ProductTable from './ProductTable';
+} from './components/ProductFilter';
+import { filterItems } from './constants';
+import { useProductServiceEvents } from './components/useProductService';
+import { ProductCard } from './components/ProductCard';
+import { productCardData } from './mock';
 
 export default function ProductServicePage() {
-  const { handleApply, handleReset } = useProductListEvents();
+  const { handleApply, handleReset } = useProductServiceEvents();
 
   return (
-    <div>
+    <>
       <ProductHeader />
       <ProductFilter>
         <ProductFilterItems>
           {filterItems.map((item) => (
-            <ProductFilterItem
-              key={item.name}
-              name={item.name}
-              group={item.group}
-              placeholder={item.placeholder}
-              options={item.options}
-              element={item.element}
-              onChange={item.handleChange}
-            />
+            <ProductFilterItem {...item} />
           ))}
         </ProductFilterItems>
         <ProductFilterActions onApply={handleApply} onReset={handleReset} />
       </ProductFilter>
-      <ProductTable data={tableData} />
-    </div>
+      <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
+        {productCardData.map((item, index) => (
+          <ProductCard key={index} {...item} />
+        ))}
+      </div>
+    </>
   );
 }
