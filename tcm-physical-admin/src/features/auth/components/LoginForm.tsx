@@ -59,12 +59,6 @@ function LoginForm({ className, ...props }: React.ComponentProps<'form'>) {
           Login with GitHub
         </Button>
       </div>
-      <p className='text-center text-sm'>
-        还没有账号？{' '}
-        <Link to='#' className='underline underline-offset-4'>
-          注册
-        </Link>
-      </p>
     </form>
   );
 }
