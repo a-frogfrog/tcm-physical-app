@@ -4,8 +4,8 @@ const productRoutes = {
   path: 'product',
   children: [
     {
-      path: 'list',
-      Component: lazy(() => import('#/pages/product/list')),
+      path: 'service',
+      Component: lazy(() => import('#/pages/product/service')),
     },
     {
       path: 'package',

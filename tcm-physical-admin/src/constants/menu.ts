@@ -31,8 +31,8 @@ export const sidebarMenu = [
     icon: Barcode,
     items: [
       {
-        title: '列表',
-        url: '/product/list',
+        title: '服务',
+        url: '/product/service',
       },
       {
         title: '套餐',

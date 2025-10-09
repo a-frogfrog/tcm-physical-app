@@ -9,7 +9,7 @@ import { filterItems, tableData } from './constants';
 import { useProductListEvents } from './useProductList';
 import ProductTable from './ProductTable';
 
-export default function ProductListPage() {
+export default function ProductServicePage() {
   const { handleApply, handleReset } = useProductListEvents();
 
   return (
