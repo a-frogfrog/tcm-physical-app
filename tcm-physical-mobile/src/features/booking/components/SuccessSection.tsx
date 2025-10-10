@@ -23,10 +23,6 @@ const SuccessSection = () => {
           <h3 className='mb-4 text-center font-bold'>预约信息</h3>
           <div className='space-y-2 text-sm'>
             <div className='flex justify-between'>
-              <span className='text-gray-600'>预约编号：</span>
-              <span className='font-medium'>{booking.bookingId}</span>
-            </div>
-            <div className='flex justify-between'>
               <span className='text-gray-600'>服务类型：</span>
               <span className='font-medium'>
                 {selectedService ? selectedService.title : '--'}

@@ -22,15 +22,17 @@ export const useBooking = () => {
     const id = `TCM${formatDateForId(booking.date)}${rand}`;
     setBooking({ ...booking, bookingId: id });
     setStep(4);
-    console.log(booking);
+
+    const [startTime, endTime] = booking.time?.split(' - ') || [];
 
     const newBookingRequest = {
       customerId: user?.id || '',
       serviceId: booking.serviceId || '',
       productPackageId: '',
-      bookingStartTime: `${booking.date} ${booking.time}`,
-      bookingEndTime: `${booking.date} ${booking.time}`,
+      bookingStartTime: `${booking.date} ${startTime}`,
+      bookingEndTime: `${booking.date} ${endTime}`,
     };
+
     console.log(newBookingRequest);
     newBooking(newBookingRequest);
   }
