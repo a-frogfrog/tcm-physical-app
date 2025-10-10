@@ -9,9 +9,12 @@ import { filterItems } from './constants';
 import { useProductServiceEvents } from './components/useProductService';
 import { ProductCard } from './components/ProductCard';
 import { productCardData } from './mock';
+import { useServiceList } from './hooks/useFetchService';
 
 export default function ProductServicePage() {
   const { handleApply, handleReset } = useProductServiceEvents();
+  const { data: serviceList } = useServiceList();
+  console.log(serviceList);
 
   return (
     <>

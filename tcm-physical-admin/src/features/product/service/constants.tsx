@@ -1,5 +1,14 @@
 import { Input } from '#/components/ui/input';
 
+export type Service = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  duration: number; // minutes
+  img: string;
+};
+
 export const filterItems = [
   {
     name: '产品分类',
