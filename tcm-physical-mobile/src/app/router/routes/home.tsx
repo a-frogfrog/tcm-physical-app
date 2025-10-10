@@ -2,7 +2,11 @@ import HealthArticleCard from '#/features/home/components/HealthArticleCard';
 import PromotionCard from '#/features/home/components/PromotionCard';
 import PromotionTools from '#/features/home/components/PromotionTools';
 
+import { useNavigate } from 'react-router-dom';
+
 export default function HomeRoute() {
+  const navigate = useNavigate();
+
   return (
     <div className='container mx-auto'>
       <PromotionCard
@@ -25,7 +29,7 @@ export default function HomeRoute() {
           ]}
           onCta={() => {
             // 跳转或打开文章列表
-            window.location.href = '/articles/health';
+            navigate('/article/list');
           }}
         />
       </div>
