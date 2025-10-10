@@ -1,13 +1,12 @@
 import { Card, CardContent, Button, Input } from '#/components/ui';
 import { shareOptions } from '../constants';
-import { usePromotionEvents } from '../hooks/usePromotionEvents';
 
 type PromotionLinkProps = {
   link: string;
+  handleCopy: (link: string) => void;
 };
 
-const PromotionLink = ({ link }: PromotionLinkProps) => {
-  const { handleCopy } = usePromotionEvents();
+const PromotionLink = ({ link, handleCopy }: PromotionLinkProps) => {
   return (
     <Card className='mx-auto max-w-md rounded-2xl shadow-sm'>
       <CardContent className='p-6'>
@@ -18,7 +17,7 @@ const PromotionLink = ({ link }: PromotionLinkProps) => {
         <div className='mb-6 flex'>
           <Input value={link} readOnly className='rounded-r-none' />
           <Button
-            onClick={handleCopy}
+            onClick={() => handleCopy(link)}
             className='min-h-12 rounded-l-none bg-green-700 hover:bg-green-800'>
             复制
           </Button>

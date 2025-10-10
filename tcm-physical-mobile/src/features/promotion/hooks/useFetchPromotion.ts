@@ -16,6 +16,13 @@ export function useFetchPromotionQRCode(longUrl: string) {
   });
 }
 
+export function useGenerateLinkAndQRCode() {
+  return useQuery({
+    queryKey: ['generateLinkAndQRCode'],
+    queryFn: promotionApi.fetchGenerateLinkAndQRCode,
+  });
+}
+
 export function useFetchPromotion() {
   const promotionLinkQuery = useFetchPromotionLink();
 

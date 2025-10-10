@@ -36,9 +36,9 @@ export const http = createAxiosRequest({
  */
 const RESPONSE_ERROR = {
   ERR_NETWORK: {
-    //eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     task: (_error: AxiosError) => {
-      console.log(_error);
+      // console.log(_error);
       window.location.href = routes.auth.login.path;
       toast.error('网络错误，请稍后重试！ 😵');
     },

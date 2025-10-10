@@ -11,6 +11,13 @@ export type PromotionLinkResponse = {
   cvcCreateTime: Date;
 };
 
+export type FetchGenerateLinkAndQRCodeResponse = {
+  vipId: string;
+  longUrl: string;
+  shortUrl: string;
+  qrCodeUrl: string;
+};
+
 const fetchPromotionLink = async () => {
   // TODO: change request body to match the API
   const res = await http.post<PromotionLinkResponse>(
@@ -26,7 +33,15 @@ const fetchPromotionQRCode = async (longUrl: string) => {
   return res.data;
 };
 
+const fetchGenerateLinkAndQRCode = async () => {
+  const res = await http.post<FetchGenerateLinkAndQRCodeResponse>(
+    '/Promotion/Generate_LinkAndQRCode',
+  );
+  return res.data;
+};
+
 export const promotionApi = {
   fetchPromotionLink,
   fetchPromotionQRCode,
+  fetchGenerateLinkAndQRCode,
 };
