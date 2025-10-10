@@ -6,3 +6,5 @@ export * from './dropdown-menu';
 export * from './avatar';
 export * from './form';
 export * from './input-otp';
+export * from './skeleton';
+export * from './spinner';
