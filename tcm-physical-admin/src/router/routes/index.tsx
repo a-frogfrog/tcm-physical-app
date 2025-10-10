@@ -13,6 +13,7 @@ import scheduleRoutes from './modules/schedule';
 import userRoutes from './modules/user';
 import AuthRoute from '../AuthRoute';
 import { routes as routeConfig } from '#/config/routes';
+import articleRoutes from './modules/article';
 
 const Layout = lazy(() => import('#/layouts'));
 
@@ -39,6 +40,7 @@ const routes = [
       promotionRoutes,
       scheduleRoutes,
       userRoutes,
+      articleRoutes,
     ],
   },
   authRoutes,

@@ -101,6 +101,17 @@ export const sidebarMenu = [
     ],
   },
   {
+    title: '文章管理',
+    url: '/article',
+    icon: Building2,
+    items: [
+      {
+        title: '列表',
+        url: '/article/list',
+      },
+    ],
+  },
+  {
     title: '组织架构',
     url: '/org',
     icon: Building2,
