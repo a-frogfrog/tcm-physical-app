@@ -20,17 +20,19 @@ public class PromotionController : BaseController
     }
 
     /// <summary>
-    /// 生成链接
+    /// 生成链接+二维码
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Generate_Link()
+    public async Task<IActionResult> Generate_LinkAndQRCode()
     {
         var user = this.Get_Current_Customer();
-        var result = await _promotion_Service.Generate_Link(user.id);
+        var result = await _promotion_Service.Generate_LinkAndQRCode(user.id);
         return Ok(result);
     }
+
+    
     /// <summary>
-    /// 删除推广链接
+    /// 删除推广链接(admin)
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
@@ -41,7 +43,7 @@ public class PromotionController : BaseController
         return Ok(result);
     }
     /// <summary>
-    /// 启用/禁用链接
+    /// 启用/禁用链接(admin)
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
@@ -77,19 +79,9 @@ public class PromotionController : BaseController
         });
     }
 
+    
     /// <summary>
-    /// 生成二维码
-    /// </summary>
-    /// <param name="longUrl">长链接地址</param>
-
-    [HttpGet]
-    public async Task<IActionResult> Get_QRCode(string longUrl)
-    {
-        var result = await _promotion_Service.Generate_QRCode(longUrl);
-        return Ok(result);
-    }
-    /// <summary>
-    /// 获取链接列表
+    /// 获取链接列表(admin)
     /// </summary>
     /// <param name="page"></param>
     /// <param name="limit"></param>
@@ -104,13 +96,12 @@ public class PromotionController : BaseController
     /// <summary>
     /// 获取推广数据统计
     /// </summary>
-    /// <param name="page"></param>
-    /// <param name="limit"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> Promotion_Data_Statistics(string id)
+    public async Task<IActionResult> Promotion_Data_Statistics()
     {
-        var result = await _promotion_Service.Promotion_Data_Statistics(id);
+        var user = this.Get_Current_Customer();
+        var result = await _promotion_Service.Promotion_Data_Statistics(user.id);
         return Ok(result);
     }
     /// <summary>
@@ -139,7 +130,7 @@ public class PromotionController : BaseController
         return Ok(result);
     }
     /// <summary>
-    /// 佣金收益趋势数据
+    /// 佣金收益趋势数据(sorry)
     /// </summary>
     /// <returns></returns>
     [HttpGet]

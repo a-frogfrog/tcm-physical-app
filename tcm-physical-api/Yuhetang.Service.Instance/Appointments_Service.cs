@@ -1,16 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 using ServiceStack;
-using ServiceStack.Script;
-using ServiceStack.Text;
+using System.IO.Packaging;
 using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
 using Yuhetang.Infrastructure.EFCore.MySql;
 using Yuhetang.Infrastructure.IOC;
-using Yuhetang.Infrastructure.Tools;
 using Yuhetang.Insfrastructure.Tools;
 using Yuhetang.Service.Interface;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Yuhetang.Service.Instance
 {
@@ -19,11 +17,13 @@ namespace Yuhetang.Service.Instance
     {
         private readonly Appointments_IOC _appointments_IOC;
         private readonly Sys_IOC _sys_IOC;
+        private readonly Product_Package_IOC _product_Package_IOC;
 
-        public Appointments_Service(Appointments_IOC appointments_IOC,Sys_IOC sys_IOC)
+        public Appointments_Service(Appointments_IOC appointments_IOC,Sys_IOC sys_IOC,Product_Package_IOC product_Package_IOC)
         {
             _appointments_IOC = appointments_IOC;
             _sys_IOC = sys_IOC;
+            _product_Package_IOC = product_Package_IOC;
         }
         /// <summary>
         /// 新增预约
@@ -87,13 +87,13 @@ namespace Yuhetang.Service.Instance
                 CreateTime = DateTime.Now,
             };
 
-            if (string.IsNullOrEmpty(dto.ProductId))
+            if (string.IsNullOrEmpty(dto.ServiceId))
             {
                 appointment.AppId = dto.ProductpackageId;
             }
             else
             {
-                appointment.ApId = dto.ProductId;
+                appointment.AsId = dto.ServiceId;
             }
 
             _appointments_IOC._appointments.Add(appointment);
@@ -101,6 +101,8 @@ namespace Yuhetang.Service.Instance
 
             return Result(1, "预约成功");
         }
+
+
 
        
         /// <summary>
@@ -155,10 +157,15 @@ namespace Yuhetang.Service.Instance
             // 1. 定义营业时间
             var targetDate = DateTime.Parse(date).Date;
             var workStart = targetDate.AddHours(9);   // 09:00
-            var workEnd = targetDate.AddHours(18);    // 18:00
+            var workEnd = targetDate.AddHours(22);    // 22:00
 
             // 2. 获取当前时间
             var now = DateTime.Now;
+
+            if (now > targetDate)
+            {
+                return Result(0, "请选择有效的时间");
+            }
 
             // 3. 查询当天已有预约（只取必要字段）
             var dayStart = targetDate;
@@ -184,7 +191,7 @@ namespace Yuhetang.Service.Instance
                 // 判断时间段是否已过期
                 if (targetDate == now.Date && end <= now)
                 {
-                    isBan = 1; // 1=已过期
+                    isBan = 1; // 1=已过期 
                 }
                 else
                 {
@@ -210,6 +217,129 @@ namespace Yuhetang.Service.Instance
 
             // 5. 返回所有时间段
             return Result(1, "ok", slots);
+        }
+        /// <summary>
+        /// 获取用户预约列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Get_My_Appointment(int page, int limit, string? id)
+        {
+            var iq = _appointments_IOC._appointments.QueryAll(out int total,page,limit,false,o=>o.CreateTime,d => d.AcId == id);
+            if (!await iq.AnyAsync())
+            {
+                return Result(0, "还没有预约服务哦");
+            }
+
+            var data = await iq.ToListAsync();
+
+            return Result(1, "ok", new
+            {
+                data,
+                total
+            });
+        }
+        /// <summary>
+        /// 更新预约
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Api_Response_Dto> Upd_Appointment(Appointments_Request_Dto dto)
+        {
+            var iq = await _appointments_IOC._appointments.QueryAll(d => d.AId == dto.id).SingleOrDefaultAsync();
+            if(iq == null)
+            {
+                return Result(0, "预约不存在");
+            }
+            iq.AppId = dto.id;
+            iq.AsId = dto.id;
+            iq.BookingStartTime = DateTime.Parse(dto.BookingStartTime);
+            iq.BookingEndTime = DateTime.Parse(dto.BookingEndTime);
+            iq.BookingStatus = dto.status;
+            iq.Remark = dto.Remark;
+
+            _appointments_IOC._appointments.Update(iq);
+            await _appointments_IOC._appointments.SaveChangesAsync();
+
+            return Result(1, "修改成功");
+        }
+        /// <summary>
+        /// 取消预约
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Cancel_Appointment(string id)
+        {
+            var iq = await _appointments_IOC._appointments.QueryAll(d => d.AId == id).SingleOrDefaultAsync();
+            if (iq == null)
+            {
+                return Result(0, "预约不存在");
+            }
+            iq.BookingStatus = 2;
+
+            _appointments_IOC._appointments.Update(iq);
+            await _appointments_IOC._appointments.SaveChangesAsync();
+
+            return Result(1, "取消成功");
+        }
+        /// <summary>
+        /// 获取预约详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Api_Response_Dto> Get_Appointment_Details(string id)
+        {
+            var iq = await _appointments_IOC._appointments.QueryAll(d => d.AId == id).SingleOrDefaultAsync();
+            if (iq == null)
+            {
+                return Result(0, "预约不存在");
+            }
+            var data = new Appointments_Response_Dto
+            {
+                id = iq.AId,
+                startTime = iq.BookingStartTime!.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+                endTime = iq.BookingEndTime!.Value.ToString("yyyy-MM-dd HH:mm:ss"),
+                status = iq.BookingStatus,
+            };
+            //获取服务
+            if (!string.IsNullOrEmpty(iq.AsId))
+            {
+                var service = await _product_Package_IOC._serviceTo_EFCore.QueryAll(d=>d.SId == iq.AsId).SingleOrDefaultAsync();
+                if (service != null)
+                {
+                    data.serviceName = service.SName;
+                    data.price = service.SPrice;
+                    data.cover = service.SCover;
+                    data.duration = service.SDuration;
+                }
+            }
+            //获取套餐
+            else if (!string.IsNullOrEmpty(iq.AppId))
+            {
+                var package = await _product_Package_IOC._product_Package_EFCore.QueryAll(d => d.PpId == iq.AppId).SingleOrDefaultAsync();
+                if (package != null)
+                {
+                    data.serviceName = package.PpName;
+                    data.price = package.PpPrice * package.PpCommissionRate;
+                }
+            }
+
+            return Result(1, "ok",data);
+        }
+        /// <summary>
+        /// 获取全部预约
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Api_Response_Dto> Get_Appointment(int page, int limit)
+        {
+            var iq = await _appointments_IOC._appointments.QueryAll(out int total, page, limit, false, o => o.CreateTime).ToListAsync();
+            return Result(1, "ok", iq);
         }
     }
 }

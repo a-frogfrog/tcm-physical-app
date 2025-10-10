@@ -72,7 +72,7 @@ namespace Yuhetang.Service.Instance
                 AcId = dto.CustomerId,
                 ArId = dto.RoomId,
                 AeId = dto.EmployeeId,
-                ApId = dto.ProductId,
+                AsId = dto.ProductId,
                 AppId = dto.ProductpackageId,
                 BookingStartTime = startTime,
                 BookingEndTime = endTime,
@@ -114,7 +114,7 @@ namespace Yuhetang.Service.Instance
                 EmployeeName = employee?.EName,
                 EmployeeId = appointment.AeId,
                 ProductName = product?.PName,
-                ProductId = appointment.ApId,
+                ProductId = appointment.AsId,
                 ProductpackageName = productPackage?.PpName,
                 ProductpackageId = appointment.AppId,
                 BookingStartTime = appointment.BookingStartTime?.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -165,9 +165,9 @@ namespace Yuhetang.Service.Instance
             );
 
             var productTask = Task.Run(() =>
-                string.IsNullOrEmpty(appointment.ApId)
+                string.IsNullOrEmpty(appointment.AsId)
                     ? null
-                    : _productIOC._product_EFCore.QueryAll(p => p.PId == appointment.ApId).FirstOrDefault()
+                    : _productIOC._product_EFCore.QueryAll(p => p.PId == appointment.AsId).FirstOrDefault()
             );
 
             var productPackageTask = Task.Run(() =>

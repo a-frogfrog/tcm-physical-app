@@ -32,6 +32,7 @@
   <ItemGroup>
     <Folder Include="Yuhetang\Cover\" />
     <Folder Include="Yuhetang\Avatar\" />
+    <Folder Include="Yuhetang\QRCodes\" />
   </ItemGroup>
 
 </Project>

@@ -24,15 +24,89 @@ namespace Yuhetang.Service.Instance
             _promotion_IOC = promotion_IOC;
         }
 
+        /// <summary>
+        /// 生成推广链接 + 二维码
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Api_Response_Dto> Generate_LinkAndQRCode(string id)
+        {
+            // 查是否已有推广记录
+            var iq = _promotion_IOC._customerVipCps_EFCore.QueryAll(d => d.CvcVipid == id);
+            CustomsVipCp customsVipCp;
+
+            if (!await iq.AnyAsync())
+            {
+                // 1️⃣ 新建推广记录
+                customsVipCp = new CustomsVipCp()
+                {
+                    CvcId = Config.GUID2(),
+                    CvcVipid = id,
+                    CvcCode = Config.GenerateCode(),
+                    CvcStatus = 1,
+                    CvcCreateTime = DateTime.Now
+                };
+
+                // 2️⃣ 生成推广长链接
+                string baseDomain = "http://8.134.187.124:8081/home";
+                customsVipCp.CvcLongUrl = $"{baseDomain}?user={id}&code={customsVipCp.CvcCode}";
+
+                // 3️⃣ 生成短链接（简单示例，可用第三方短链服务）
+                customsVipCp.CvcShortUrl = GenerateShortUrl(customsVipCp.CvcLongUrl);
+
+                // 4️⃣ 保存到数据库
+                _promotion_IOC._customerVipCps_EFCore.Add(customsVipCp);
+                await _promotion_IOC._customerVipCps_EFCore.SaveChangesAsync();
+            }
+            else
+            {
+                customsVipCp = await iq.FirstOrDefaultAsync();
+            }
+
+            // 5️⃣ 生成二维码（二维码内容用短链接）
+            using var qrGenerator = new QRCodeGenerator();
+            using var qrCodeData = qrGenerator.CreateQrCode(customsVipCp.CvcShortUrl, QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new BitmapByteQRCode(qrCodeData);
+            var qrBytes = qrCode.GetGraphic(4); // 尺寸稍小
+
+            // 6️⃣ 确保保存目录存在
+            var dirPath = Path.Combine(Directory.GetCurrentDirectory(), "Yuhetang", "QRCodes");
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+
+            // 7️⃣ 生成文件路径和URL
+            var fileName = $"qrcode_{customsVipCp.CvcCode}.png";
+            var filePath = Path.Combine(dirPath, fileName);
+            await File.WriteAllBytesAsync(filePath, qrBytes);
+
+            // 与 Program.cs 的静态文件映射保持一致
+            var fileUrl = $"http://8.134.187.124:5000/DaShuaiBi.XY/QRCodes/{fileName}";
+
+            // 8️⃣ 把二维码URL也存数据库（方便下次直接取）
+            customsVipCp.CvCQrUrl = fileUrl;
+           _promotion_IOC._customerVipCps_EFCore.Update(customsVipCp);
+
+
+
+            // 9️⃣ 返回完整结果
+            return Result(1, "ok", new
+            {
+                vipId = customsVipCp.CvcVipid,
+                longUrl = customsVipCp.CvcLongUrl,
+                shortUrl = customsVipCp.CvcShortUrl,
+                qrCodeUrl = fileUrl
+            });
+        }
 
         /// <summary>
         /// 生成链接
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public async Task<Api_Response_Dto> Generate_Link(string id)
         {
             var iq = _promotion_IOC._customerVipCps_EFCore.QueryAll(d => d.CvcVipid == id);
+
+
+
             if (!await iq.AnyAsync())
             {
                 // 1. 生成推广记录
@@ -71,16 +145,23 @@ namespace Yuhetang.Service.Instance
         /// </summary>
         /// <param name="longUrl"></param>
         /// <returns></returns>
-        public async Task<string> Generate_QRCode(string longUrl)
+        public async Task<Api_Response_Dto> Generate_QRCode(string longUrl)
         {
             using var qrGenerator = new QRCodeGenerator();
             using var qrCodeData = qrGenerator.CreateQrCode(longUrl, QRCodeGenerator.ECCLevel.Q);
             var qrCode = new BitmapByteQRCode(qrCodeData);
-            var qrBytes = qrCode.GetGraphic(20);
+            var qrBytes = qrCode.GetGraphic(4); // 小尺寸
 
-            var base64 = Convert.ToBase64String(qrBytes);
-            return $"data:image/png;base64,{base64}";
+            // 保存成文件（唯一名）
+            var fileName = $"qrcode_{Config.GUID()}.png";
+            var filePath = Path.Combine("Yuhetang/QRCodes", fileName);
+            await File.WriteAllBytesAsync(filePath, qrBytes);
+
+            var fileUrl = $"http://localhost:5000/DaShuaiBi.XY/QRCodes/{fileName}";
+
+            return Result(1, "ok", fileUrl);
         }
+
         /// <summary>
         /// 佣金明细
         /// </summary>
@@ -322,7 +403,5 @@ namespace Yuhetang.Service.Instance
                 unsettledCommission
             });
         }
-        
-
     }
 }

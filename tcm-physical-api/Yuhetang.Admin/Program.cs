@@ -12,6 +12,7 @@ using Yuhetang.Repository.Interface;
 using Yuhetang.Infrastructure.IOC;
 using Yuhetang.Service.Interface;
 using Yuhetang.Infrastructure.EFCore.MySql;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -163,6 +164,16 @@ builder.Services.AddSwaggerGen(options =>
 });
 #endregion
 var app = builder.Build();
+
+app.UseStaticFiles();
+
+//允许访问 UploadFiles 文件夹
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(
+       Path.Combine(Directory.GetCurrentDirectory(), @"Yuhetang")), //用于定位资源的文件系统
+    RequestPath = new PathString("/DaShuaiBi.XY") //虚拟路径
+});
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

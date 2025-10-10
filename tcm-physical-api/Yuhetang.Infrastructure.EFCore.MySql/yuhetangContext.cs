@@ -34,6 +34,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public virtual DbSet<ProductPackageDetail> ProductPackageDetails { get; set; } = null!;
         public virtual DbSet<ProductSpec> ProductSpecs { get; set; } = null!;
         public virtual DbSet<Room> Rooms { get; set; } = null!;
+        public virtual DbSet<ServiceTo> ServiceTos { get; set; } = null!;
         public virtual DbSet<SysDepartment> SysDepartments { get; set; } = null!;
         public virtual DbSet<SysDictionary> SysDictionaries { get; set; } = null!;
         public virtual DbSet<SysDuty> SysDuties { get; set; } = null!;
@@ -74,9 +75,9 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.HasIndex(e => e.AppId, "FK_booking_package");
 
-                entity.HasIndex(e => e.ApId, "FK_booking_product");
-
                 entity.HasIndex(e => e.ArId, "FK_booking_room");
+
+                entity.HasIndex(e => e.AsId, "FK_booking_service");
 
                 entity.Property(e => e.AId)
                     .HasMaxLength(32)
@@ -93,11 +94,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("Ae_id")
                     .HasComment("员工ID");
 
-                entity.Property(e => e.ApId)
-                    .HasMaxLength(32)
-                    .HasColumnName("Ap_id")
-                    .HasComment("产品ID");
-
                 entity.Property(e => e.AppId)
                     .HasMaxLength(32)
                     .HasColumnName("App_id")
@@ -106,6 +102,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.Property(e => e.ArId)
                     .HasColumnName("Ar_id")
                     .HasComment("房间ID");
+
+                entity.Property(e => e.AsId)
+                    .HasMaxLength(32)
+                    .HasColumnName("As_id")
+                    .HasComment("服务ID");
 
                 entity.Property(e => e.BookingEndTime)
                     .HasColumnType("datetime")
@@ -143,11 +144,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasForeignKey(d => d.AeId)
                     .HasConstraintName("FK_booking_employee");
 
-                entity.HasOne(d => d.Ap)
-                    .WithMany(p => p.Appointments)
-                    .HasForeignKey(d => d.ApId)
-                    .HasConstraintName("FK_booking_product");
-
                 entity.HasOne(d => d.App)
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.AppId)
@@ -157,6 +153,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.ArId)
                     .HasConstraintName("FK_booking_room");
+
+                entity.HasOne(d => d.As)
+                    .WithMany(p => p.Appointments)
+                    .HasForeignKey(d => d.AsId)
+                    .HasConstraintName("FK_booking_service");
             });
 
             modelBuilder.Entity<Article>(entity =>
@@ -532,6 +533,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("CVC_ID")
                     .HasComment("推广链接ID");
 
+                entity.Property(e => e.CvCQrUrl)
+                    .HasMaxLength(255)
+                    .HasColumnName("CvC_QrUrl")
+                    .HasComment("推广二维码");
+
                 entity.Property(e => e.CvcCode)
                     .HasMaxLength(255)
                     .HasColumnName("CVC_Code")
@@ -624,6 +630,20 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.HasIndex(e => e.OVip, "O_VIP");
 
+                entity.HasIndex(e => e.OaId, "fk_order_booking");
+
+                entity.HasIndex(e => e.OcId, "fk_order_customs");
+
+                entity.HasIndex(e => e.OeId, "fk_order_employees");
+
+                entity.HasIndex(e => e.OppId, "fk_order_package");
+
+                entity.HasIndex(e => e.OpId, "fk_order_product");
+
+                entity.HasIndex(e => e.OrId, "fk_order_rooms");
+
+                entity.HasIndex(e => e.OsId, "fk_orders_serviceto");
+
                 entity.Property(e => e.OId)
                     .HasMaxLength(100)
                     .HasColumnName("O_ID")
@@ -640,17 +660,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .HasComment("创建时间");
 
-                entity.Property(e => e.ODiscount)
-                    .HasPrecision(10, 2)
-                    .HasColumnName("O_Discount")
-                    .HasDefaultValueSql("'0.00'")
-                    .HasComment("折扣金额");
-
-                entity.Property(e => e.OPayAmount)
-                    .HasPrecision(10, 2)
-                    .HasColumnName("O_PayAmount")
-                    .HasComment("实际支付金额");
-
                 entity.Property(e => e.ORemark)
                     .HasMaxLength(200)
                     .HasColumnName("O_Remark")
@@ -658,29 +667,88 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.Property(e => e.OStatus)
                     .HasColumnName("O_Status")
-                    .HasComment("状态：1-待支付，2-已支付，3-已完成，4-已取消");
-
-                entity.Property(e => e.OType)
-                    .HasColumnName("O_Type")
-                    .HasComment("订单类型：1-商品订单，2-服务订单");
-
-                entity.Property(e => e.OUpdateTime)
-                    .HasColumnType("datetime")
-                    .ValueGeneratedOnAddOrUpdate()
-                    .HasColumnName("O_UpdateTime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("最后更新时间");
+                    .HasComment("状态：0-未支付，1-已支付");
 
                 entity.Property(e => e.OVip)
                     .HasMaxLength(32)
                     .HasColumnName("O_VIP")
                     .HasComment("VIP ID");
 
+                entity.Property(e => e.OaId)
+                    .HasMaxLength(50)
+                    .HasColumnName("Oa_ID")
+                    .HasComment("预约ID");
+
+                entity.Property(e => e.OcId)
+                    .HasMaxLength(32)
+                    .HasColumnName("Oc_ID")
+                    .HasComment("客户ID");
+
+                entity.Property(e => e.OeId)
+                    .HasMaxLength(32)
+                    .HasColumnName("Oe_ID")
+                    .HasComment("员工ID");
+
+                entity.Property(e => e.OpId)
+                    .HasMaxLength(32)
+                    .HasColumnName("Op_ID")
+                    .HasComment("产品ID");
+
+                entity.Property(e => e.OppId)
+                    .HasMaxLength(32)
+                    .HasColumnName("Opp_ID")
+                    .HasComment("套餐ID");
+
+                entity.Property(e => e.OrId)
+                    .HasColumnName("Or_ID")
+                    .HasComment("房间ID");
+
+                entity.Property(e => e.OsId)
+                    .HasMaxLength(32)
+                    .HasColumnName("Os_ID")
+                    .HasComment("服务ID");
+
                 entity.HasOne(d => d.OVipNavigation)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.OVip)
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("orders_ibfk_1");
+
+                entity.HasOne(d => d.Oa)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.OaId)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("fk_order_booking");
+
+                entity.HasOne(d => d.Oc)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.OcId)
+                    .HasConstraintName("fk_order_customs");
+
+                entity.HasOne(d => d.Oe)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.OeId)
+                    .HasConstraintName("fk_order_employees");
+
+                entity.HasOne(d => d.Op)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.OpId)
+                    .HasConstraintName("fk_order_product");
+
+                entity.HasOne(d => d.Opp)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.OppId)
+                    .HasConstraintName("fk_order_package");
+
+                entity.HasOne(d => d.Or)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.OrId)
+                    .HasConstraintName("fk_order_rooms");
+
+                entity.HasOne(d => d.Os)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.OsId)
+                    .HasConstraintName("fk_orders_serviceto");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -769,10 +837,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                 entity.Property(e => e.OpId)
                     .HasMaxLength(32)
                     .HasColumnName("OP_ID")
-                    .HasComment("支付记录ID");
+                    .HasComment("支付ID");
 
                 entity.Property(e => e.OpAmount)
-                    .HasPrecision(10, 2)
+                    .HasColumnType("double(10,2)")
                     .HasColumnName("OP_Amount")
                     .HasComment("支付金额");
 
@@ -787,27 +855,14 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("OP_OrderID")
                     .HasComment("订单ID");
 
-                entity.Property(e => e.OpPayTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("OP_PayTime")
-                    .HasComment("支付时间");
-
-                entity.Property(e => e.OpStatus)
-                    .HasColumnName("OP_Status")
-                    .HasComment("支付状态：1-支付中，2-支付成功，3-支付失败");
-
-                entity.Property(e => e.OpTransactionNo)
-                    .HasMaxLength(100)
-                    .HasColumnName("OP_TransactionNo")
-                    .HasComment("交易流水号");
-
                 entity.Property(e => e.OpType)
                     .HasColumnName("OP_Type")
-                    .HasComment("支付方式：1-现金，2-微信，3-支付宝，4-银行卡");
+                    .HasComment("支付方式：1-现金，2-微信，3-支付宝");
 
                 entity.HasOne(d => d.OpOrder)
                     .WithMany(p => p.OrderPayments)
                     .HasForeignKey(d => d.OpOrderId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("order_payment_ibfk_1");
             });
 
@@ -835,10 +890,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("P_CommissionRate")
                     .HasComment("佣金比例");
 
-                entity.Property(e => e.PCostPrice)
-                    .HasPrecision(10, 2)
-                    .HasColumnName("P_CostPrice")
-                    .HasComment("产品成本价");
+                entity.Property(e => e.PCover)
+                    .HasMaxLength(255)
+                    .HasColumnName("P_Cover")
+                    .HasComment("产品封面");
 
                 entity.Property(e => e.PCreateTime)
                     .HasColumnType("datetime")
@@ -850,10 +905,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnType("text")
                     .HasColumnName("P_Description")
                     .HasComment("产品描述");
-
-                entity.Property(e => e.PMpocommissionRate)
-                    .HasMaxLength(255)
-                    .HasColumnName("P_MPOCommissionRate");
 
                 entity.Property(e => e.PName)
                     .HasMaxLength(100)
@@ -869,17 +920,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("P_Status")
                     .HasDefaultValueSql("'1'")
                     .HasComment("状态：0-下架，1-上架");
-
-                entity.Property(e => e.PType)
-                    .HasColumnName("P_Type")
-                    .HasComment("产品类型：1-实物，2-服务");
-
-                entity.Property(e => e.PUpdateTime)
-                    .HasColumnType("datetime")
-                    .ValueGeneratedOnAddOrUpdate()
-                    .HasColumnName("P_UpdateTime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .HasComment("最后更新时间");
             });
 
             modelBuilder.Entity<ProductInventory>(entity =>
@@ -968,6 +1008,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("PP_ID")
                     .HasComment("套餐ID");
 
+                entity.Property(e => e.PpCommissionRate)
+                    .HasPrecision(5, 2)
+                    .HasColumnName("PP_CommissionRate")
+                    .HasComment("佣金比例");
+
                 entity.Property(e => e.PpCreateTime)
                     .HasColumnType("datetime")
                     .HasColumnName("PP_CreateTime")
@@ -1011,7 +1056,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.HasIndex(e => e.PpdPackageId, "PPD_PackageID");
 
-                entity.HasIndex(e => e.PpdProductId, "PPD_ProductID");
+                entity.HasIndex(e => e.PpdServiceId, "PPD_ProductID");
 
                 entity.Property(e => e.PpdId)
                     .HasMaxLength(32)
@@ -1034,15 +1079,15 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnName("PPD_Price")
                     .HasComment("明细价格");
 
-                entity.Property(e => e.PpdProductId)
-                    .HasMaxLength(32)
-                    .HasColumnName("PPD_ProductID")
-                    .HasComment("产品ID");
-
                 entity.Property(e => e.PpdQuantity)
                     .HasColumnName("PPD_Quantity")
                     .HasDefaultValueSql("'1'")
-                    .HasComment("产品数量");
+                    .HasComment("服务数量");
+
+                entity.Property(e => e.PpdServiceId)
+                    .HasMaxLength(32)
+                    .HasColumnName("PPD_ServiceID")
+                    .HasComment("服务ID");
 
                 entity.HasOne(d => d.PpdPackage)
                     .WithMany(p => p.ProductPackageDetails)
@@ -1050,9 +1095,9 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("product_package_details_ibfk_1");
 
-                entity.HasOne(d => d.PpdProduct)
+                entity.HasOne(d => d.PpdService)
                     .WithMany(p => p.ProductPackageDetails)
-                    .HasForeignKey(d => d.PpdProductId)
+                    .HasForeignKey(d => d.PpdServiceId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("product_package_details_ibfk_2");
             });
@@ -1119,6 +1164,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
             {
                 entity.ToTable("rooms");
 
+                entity.HasIndex(e => e.RAppointmentId, "fk_rooms_current_appointment");
+
+                entity.HasIndex(e => e.ROrderId, "fk_rooms_current_order");
+
                 entity.HasIndex(e => e.RoomNumber, "room_number")
                     .IsUnique();
 
@@ -1130,6 +1179,16 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
                     .HasColumnType("datetime")
                     .HasColumnName("create_time")
                     .HasComment("创建时间");
+
+                entity.Property(e => e.RAppointmentId)
+                    .HasMaxLength(32)
+                    .HasColumnName("r_appointment_id")
+                    .HasComment("当前预约房间的预约ID");
+
+                entity.Property(e => e.ROrderId)
+                    .HasMaxLength(100)
+                    .HasColumnName("r_order_id")
+                    .HasComment("当前占用房间的订单ID");
 
                 entity.Property(e => e.Remark)
                     .HasMaxLength(255)
@@ -1148,7 +1207,69 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
                 entity.Property(e => e.RoomStatus)
                     .HasColumnName("room_status")
-                    .HasComment("房间状态:0-可用,1-停用,2-维修");
+                    .HasComment("房间状态:0-空闲,1-占用,2-已预约,3-维修");
+
+                entity.HasOne(d => d.RAppointment)
+                    .WithMany(p => p.Rooms)
+                    .HasForeignKey(d => d.RAppointmentId)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("fk_rooms_current_appointment");
+
+                entity.HasOne(d => d.ROrder)
+                    .WithMany(p => p.Rooms)
+                    .HasForeignKey(d => d.ROrderId)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("fk_rooms_current_order");
+            });
+
+            modelBuilder.Entity<ServiceTo>(entity =>
+            {
+                entity.HasKey(e => e.SId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("service_to");
+
+                entity.HasComment("服务信息表");
+
+                entity.Property(e => e.SId)
+                    .HasMaxLength(32)
+                    .HasColumnName("S_ID")
+                    .HasComment("服务ID");
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("Create_Time")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasComment("创建时间");
+
+                entity.Property(e => e.SCommissionRate)
+                    .HasPrecision(5, 2)
+                    .HasColumnName("S_CommissionRate")
+                    .HasComment("佣金比例");
+
+                entity.Property(e => e.SCover)
+                    .HasMaxLength(255)
+                    .HasColumnName("S_Cover")
+                    .HasComment("封面");
+
+                entity.Property(e => e.SDescription)
+                    .HasMaxLength(500)
+                    .HasColumnName("S_Description")
+                    .HasComment("服务详情描述");
+
+                entity.Property(e => e.SDuration)
+                    .HasColumnName("S_Duration")
+                    .HasComment("服务时长（单位：分钟）");
+
+                entity.Property(e => e.SName)
+                    .HasMaxLength(100)
+                    .HasColumnName("S_Name")
+                    .HasComment("服务名称");
+
+                entity.Property(e => e.SPrice)
+                    .HasPrecision(10, 2)
+                    .HasColumnName("S_Price")
+                    .HasComment("服务价格");
             });
 
             modelBuilder.Entity<SysDepartment>(entity =>

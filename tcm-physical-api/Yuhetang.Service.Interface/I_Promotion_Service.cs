@@ -14,12 +14,16 @@ namespace Yuhetang.Service.Interface
         /// </summary>
         /// <returns></returns>
         Task<Api_Response_Dto> Generate_Link(string id);
-
+        /// <summary>
+        /// 生成链接+二维码
+        /// </summary>
+        /// <param name="shortUrl"></param>
+        Task<Api_Response_Dto> Generate_LinkAndQRCode(string id);
         /// <summary>
         /// 生成二维码
         /// </summary>
         /// <param name="shortUrl"></param>
-        Task<string> Generate_QRCode(string longUrl);
+        Task<Api_Response_Dto> Generate_QRCode(string longUrl);
         /// <summary>
         /// 获取推广链接
         /// </summary>

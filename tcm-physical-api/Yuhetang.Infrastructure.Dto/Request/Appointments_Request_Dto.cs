@@ -9,15 +9,19 @@ namespace Yuhetang.Infrastructure.Dto.Request
     public class Appointments_Request_Dto
     {
         /// <summary>
-        /// 客户ID
+        /// 预约id(新增不用填)
         /// </summary>
-        public string CustomerId { get; set; }
+        public string? id { get; set; }
+        /// <summary>
+        /// 客户ID(新增不用填)
+        /// </summary>
+        public string? CustomerId { get; set; }
 
 
         /// <summary>
-        /// 产品ID（可选）
+        /// 服务ID（可选）
         /// </summary>
-        public string? ProductId { get; set; }
+        public string? ServiceId { get; set; }
 
         /// <summary>
         /// 套餐ID
@@ -33,6 +37,11 @@ namespace Yuhetang.Infrastructure.Dto.Request
         /// 预约结束时间
         /// </summary>
         public string? BookingEndTime { get; set; }
+
+        /// <summary>
+        /// 预约状态
+        /// </summary>
+        public int? status { get; set; }
 
         /// <summary>
         /// 预约备注

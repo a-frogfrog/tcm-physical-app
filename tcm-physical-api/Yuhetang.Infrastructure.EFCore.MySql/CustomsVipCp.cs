@@ -29,6 +29,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string? CvcShortUrl { get; set; }
         /// <summary>
+        /// 推广二维码
+        /// </summary>
+        public string? CvCQrUrl { get; set; }
+        /// <summary>
         /// 状态：0-停用，1-启用
         /// </summary>
         public int? CvcStatus { get; set; }

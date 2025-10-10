@@ -11,6 +11,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public SysEmployee()
         {
             Appointments = new HashSet<Appointment>();
+            Orders = new HashSet<Order>();
         }
 
         /// <summary>
@@ -71,5 +72,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public DateTime? ECreateTime { get; set; }
 
         public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

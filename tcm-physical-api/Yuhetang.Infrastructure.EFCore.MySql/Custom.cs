@@ -13,6 +13,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
             Appointments = new HashSet<Appointment>();
             CustomFollows = new HashSet<CustomFollow>();
             MembershipCards = new HashSet<MembershipCard>();
+            Orders = new HashSet<Order>();
         }
 
         /// <summary>
@@ -79,5 +80,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<CustomFollow> CustomFollows { get; set; }
         public virtual ICollection<MembershipCard> MembershipCards { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

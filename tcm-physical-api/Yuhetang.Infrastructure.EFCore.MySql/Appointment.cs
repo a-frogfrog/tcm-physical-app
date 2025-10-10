@@ -8,6 +8,12 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
     /// </summary>
     public partial class Appointment
     {
+        public Appointment()
+        {
+            Orders = new HashSet<Order>();
+            Rooms = new HashSet<Room>();
+        }
+
         /// <summary>
         /// 预约ID
         /// </summary>
@@ -29,9 +35,9 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string? AppId { get; set; }
         /// <summary>
-        /// 产品ID
+        /// 服务ID
         /// </summary>
-        public string? ApId { get; set; }
+        public string? AsId { get; set; }
         /// <summary>
         /// 预约开始时间
         /// </summary>
@@ -55,8 +61,10 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
 
         public virtual Custom? Ac { get; set; }
         public virtual SysEmployee? Ae { get; set; }
-        public virtual Product? Ap { get; set; }
         public virtual ProductPackage? App { get; set; }
         public virtual Room? Ar { get; set; }
+        public virtual ServiceTo? As { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Room> Rooms { get; set; }
     }
 }

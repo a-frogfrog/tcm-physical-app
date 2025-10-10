@@ -17,11 +17,11 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// </summary>
         public string? PpdPackageId { get; set; }
         /// <summary>
-        /// 产品ID
+        /// 服务ID
         /// </summary>
-        public string? PpdProductId { get; set; }
+        public string? PpdServiceId { get; set; }
         /// <summary>
-        /// 产品数量
+        /// 服务数量
         /// </summary>
         public int PpdQuantity { get; set; }
         /// <summary>
@@ -34,6 +34,6 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         public DateTime? PpdCreateTime { get; set; }
 
         public virtual ProductPackage? PpdPackage { get; set; }
-        public virtual Product? PpdProduct { get; set; }
+        public virtual Product? PpdService { get; set; }
     }
 }

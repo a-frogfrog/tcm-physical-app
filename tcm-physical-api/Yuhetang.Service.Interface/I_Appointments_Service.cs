@@ -15,9 +15,25 @@ namespace Yuhetang.Service.Interface
         /// <summary>
         /// 新增预约
         /// </summary>
-        /// <param name="requestDto">预约请求数据</param>
         /// <returns>新增的预约信息</returns>
         Task<Api_Response_Dto> Add_Appointment(Appointments_Request_Dto dto);
+        /// <summary>
+        /// 更新预约
+        /// </summary>
+        /// <returns>新增的预约信息</returns>
+        Task<Api_Response_Dto> Upd_Appointment(Appointments_Request_Dto dto);
+        /// <summary>
+        /// 取消预约
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Cancel_Appointment(string id);
+        /// <summary>
+        /// 获取预约详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Get_Appointment_Details(string id);
         /// <summary>
         /// 获取可预约日期
         /// </summary>
@@ -30,5 +46,20 @@ namespace Yuhetang.Service.Interface
         /// <param name="minutes"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> GetAvailableSlots(string date, double minutes);
+        /// <summary>
+        /// 获取用户预约
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Get_My_Appointment(int page, int limit, string? id);
+        /// <summary>
+        /// 获取预约
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Get_Appointment(int page, int limit);
     }
 }

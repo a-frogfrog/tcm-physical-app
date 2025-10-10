@@ -36,7 +36,7 @@
                 {
                     count = 1;
                 }
-                var number = "Y" + DateTime.Now.ToString("yyMMddHHmmss") + count.ToString("0000");
+                var number = "R" + DateTime.Now.ToString("yyMMddHHmmss") + count.ToString("0000");
                 count++;
                 return number;
             }

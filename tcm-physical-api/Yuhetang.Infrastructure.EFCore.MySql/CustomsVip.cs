@@ -21,7 +21,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 客户ID
         /// </summary>
-        public string CvCustomerId { get; set; } = null!;
+        public string? CvCustomerId { get; set; }
         /// <summary>
         /// VIP等级
         /// </summary>
