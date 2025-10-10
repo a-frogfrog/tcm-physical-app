@@ -43,6 +43,10 @@ const routes: RouteObject[] = [
         Component: lazy(() => import('./routes/booking')),
       },
       {
+        path: routesConfig.tabbar.booking.path + '/list',
+        Component: lazy(() => import('./routes/booking/list')),
+      },
+      {
         path: routesConfig.article.list.path,
         Component: lazy(() => import('./routes/article/list')),
       },
