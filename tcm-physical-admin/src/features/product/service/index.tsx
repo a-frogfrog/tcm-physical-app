@@ -18,8 +18,8 @@ export default function ProductServicePage() {
       <ProductHeader />
       <ProductFilter>
         <ProductFilterItems>
-          {filterItems.map((item) => (
-            <ProductFilterItem {...item} />
+          {filterItems.map((item, index) => (
+            <ProductFilterItem key={index} {...item} />
           ))}
         </ProductFilterItems>
         <ProductFilterActions onApply={handleApply} onReset={handleReset} />
