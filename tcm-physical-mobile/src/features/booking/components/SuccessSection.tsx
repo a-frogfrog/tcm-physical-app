@@ -1,13 +1,14 @@
 import { Check } from 'lucide-react';
-import { useBooking } from '../hooks/useBooking';
 import { useBookingStore } from '../store';
+
+import { useFormatDate } from '#/hooks';
 
 const SuccessSection = () => {
   const booking = useBookingStore((state) => state.booking);
   const selectedService = useBookingStore((state) => state.selectedService);
   const resetAll = useBookingStore((state) => state.resetAll);
 
-  const { formatDateReadable } = useBooking();
+  const { formatDateReadable } = useFormatDate();
 
   return (
     <section className='py-10'>

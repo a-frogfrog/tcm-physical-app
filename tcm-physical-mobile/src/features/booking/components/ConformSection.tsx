@@ -10,12 +10,14 @@ import {
 } from './DetailCard';
 import { PrevButton } from './StepButton';
 import { NoticeCard } from '#/components/common';
+import { useFormatDate } from '#/hooks';
 
 const ConfirmSection = () => {
   const booking = useBookingStore((state) => state.booking);
   const setStep = useBookingStore((state) => state.setStep);
   const selectedService = useBookingStore((state) => state.selectedService);
-  const { formatDateReadable, handleSubmit } = useBooking();
+  const { handleSubmit } = useBooking();
+  const { formatDateReadable } = useFormatDate();
 
   return (
     <section className='space-y-6'>
