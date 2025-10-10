@@ -1,13 +1,15 @@
+import { AuthLayout } from '#/components/layout';
 import { LoginForm } from './components';
 import { Link } from 'react-router-dom';
 
 import { GalleryVerticalEnd } from 'lucide-react';
-import { AuthLayout } from '#/components/layout';
+
 import { useApplication } from '#/hooks';
-import { loginSchema, type LoginSchema } from './constants';
+
+import { type LoginSchema } from './constants';
+import { useFetchLogin } from './hooks/useFetchAuth';
+
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useFetchLogin } from './api/auth';
 
 const Logo = () => {
   const { name } = useApplication();
@@ -23,13 +25,11 @@ const Logo = () => {
 
 export default function LoginRoute() {
   const loginForm = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
     defaultValues: {
       account: '',
       password: '',
     },
   });
-
   const { mutate: login } = useFetchLogin();
 
   const onSubmit = (data: LoginSchema) => {

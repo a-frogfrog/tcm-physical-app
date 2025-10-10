@@ -1,4 +1,5 @@
-import type { FetchLoginRequest, LoginSchema } from './auth';
+import type { FetchLoginRequest } from './auth';
+import type { LoginSchema } from '../constants';
 
 const fetchLoginAdapter = (request: LoginSchema): FetchLoginRequest => ({
   account: request.account,
