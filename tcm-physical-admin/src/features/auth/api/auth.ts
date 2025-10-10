@@ -23,8 +23,13 @@ const fetchLogin = (request: LoginSchema) => {
   );
 };
 
+const fetchAuthCheck = () => {
+  return http.get('/Logins/Check_Login');
+};
+
 export const authApi = {
   fetchLogin,
+  fetchAuthCheck,
 };
 
 export type { FetchLoginRequest, FetchLoginResponse };

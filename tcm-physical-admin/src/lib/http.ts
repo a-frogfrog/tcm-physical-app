@@ -2,11 +2,12 @@ import { createAxiosRequest } from 'frog-request';
 
 import type { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import { useAuthStore } from '#/stores';
 
 export const http = createAxiosRequest({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   handleRequestSuccess: (config) => {
-    // config.headers['Authorization'] = `Bearer ${useAuthStore.getState().token}`;
+    config.headers['Authorization'] = `Bearer ${useAuthStore.getState().token}`;
     return config;
   },
   handleRequestError: (error) => {
