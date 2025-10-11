@@ -1,6 +1,7 @@
-import './globals.css';
-import './styles/index.css';
-import SetupRouter from './router/setup';
+import '../globals.css';
+import '../styles/index.css';
+
+import { SetupRouter } from './provider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 

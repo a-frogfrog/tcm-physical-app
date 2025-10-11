@@ -11,7 +11,7 @@ import orgRoutes from './modules/org';
 import promotionRoutes from './modules/promotion';
 import scheduleRoutes from './modules/schedule';
 import userRoutes from './modules/user';
-import AuthRoute from '../AuthRoute';
+import AuthRoute from './AuthRoute';
 import { routes as routeConfig } from '#/config/routes';
 import articleRoutes from './modules/article';
 
