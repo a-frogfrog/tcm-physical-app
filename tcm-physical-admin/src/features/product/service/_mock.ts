@@ -1,6 +1,4 @@
-import type { ProductCardProps } from './components';
-
-export const productCardData: ProductCardProps[] = [
+export const productCardData = [
   {
     title: '中医针灸理疗套餐',
     price: 298,

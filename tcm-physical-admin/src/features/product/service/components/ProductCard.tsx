@@ -1,18 +1,6 @@
 import { Badge, Button } from '#/components/ui';
 import { Eye, Pencil, Star, Trash, UserRound } from 'lucide-react';
-
-interface ProductCardProps {
-  title: string;
-  price: number;
-  duration: string;
-  features: string[];
-  description: string;
-  imageUrl: string;
-  status: '正常运营' | '休息中' | '已下架';
-  servicesCount: number;
-  rating: number;
-  lastUpdated: string;
-}
+import type { ProductCardProps } from '../constants';
 
 const getStatusClasses = (status: ProductCardProps['status']) => {
   switch (status) {
@@ -40,7 +28,7 @@ const ProductCard = ({
   lastUpdated,
 }: ProductCardProps) => {
   return (
-    <div className='bg-card text-card-foreground mx-auto max-w-lg rounded-lg border shadow-sm'>
+    <div className='bg-card text-card-foreground mx-auto w-full rounded-lg border shadow-sm'>
       {/* 图片部分 */}
       <div className='relative h-48 overflow-hidden rounded-t-lg'>
         <img
@@ -123,4 +111,3 @@ const ProductCard = ({
 };
 
 export { ProductCard };
-export type { ProductCardProps };

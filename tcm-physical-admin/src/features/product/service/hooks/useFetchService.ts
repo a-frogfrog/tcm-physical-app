@@ -6,5 +6,6 @@ export function useServiceList() {
   return useQuery({
     queryKey: ['serviceList'],
     queryFn: serviceApi.fetchServiceList,
+    staleTime: 1000 * 60 * 5, // 5分钟
   });
 }

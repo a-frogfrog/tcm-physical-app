@@ -5,7 +5,7 @@ export type ServiceResponse = {
   id: string;
   name: string;
   duration: number; // minutes
-  price: string;
+  price: number;
   time: Date;
   desc: string;
 };

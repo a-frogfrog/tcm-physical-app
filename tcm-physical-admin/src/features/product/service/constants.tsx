@@ -1,48 +1,16 @@
-import { Input } from '#/components/ui/input';
-
-export type Service = {
+export interface ProductCardProps {
   id: string;
   title: string;
-  description: string;
   price: number;
-  duration: number; // minutes
-  img: string;
-};
-
-export const filterItems = [
-  {
-    name: '产品分类',
-    group: '分类',
-    placeholder: '选择产品分类',
-    options: ['分类1', '分类2', '分类3'],
-    handleChange: (value: string) => {
-      console.log('Selected category:', value);
-    },
-  },
-  {
-    name: '品牌',
-    group: '品牌',
-    placeholder: '选择品牌',
-    options: ['品牌1', '品牌2', '品牌3'],
-    handleChange: (value: string) => {
-      console.log('Selected brand:', value);
-    },
-  },
-  {
-    name: '价格区间',
-    group: '价格',
-    placeholder: '选择价格区间',
-    options: ['0-100', '100-200', '200-300'],
-    handleChange: (value: string) => {
-      console.log('Selected price range:', value);
-    },
-  },
-  {
-    name: '产品搜索',
-    options: ['0-100', '100-200', '200-300'],
-    element: <Input type='search' placeholder='产品搜索' />,
-  },
-];
+  duration: string;
+  features: string[];
+  description: string;
+  imageUrl: string;
+  status: '正常运营' | '休息中' | '已下架';
+  servicesCount: number;
+  rating: number;
+  lastUpdated: string;
+}
 
 export type ProductFilterItemProps = {
   name: string;

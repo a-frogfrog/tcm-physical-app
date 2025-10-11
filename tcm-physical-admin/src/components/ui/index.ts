@@ -24,3 +24,4 @@ export * from './form';
 export * from './radio-group';
 export * from './checkbox';
 export * from './dialog';
+export * from './skeleton';
