@@ -2,7 +2,7 @@ const Switch = () => {
   return (
     <label className='relative inline-flex items-center'>
       <input className='peer hidden' id='toggle' type='checkbox' />
-      <div className="relative h-[35px] w-[77px] rounded-full bg-white from-orange-500 to-yellow-400 shadow-sm duration-300 after:absolute after:left-[3.5px] after:top-[3.5px] after:h-[28px] after:w-[28px] after:rounded-full after:bg-gradient-to-r after:shadow-md after:duration-300 after:content-[''] active:after:w-[35px] peer-checked:bg-zinc-500 peer-checked:after:left-[73.5px] peer-checked:after:translate-x-[-100%] peer-checked:after:from-zinc-900 peer-checked:after:to-zinc-900"></div>
+      <div className="relative h-[35px] w-[77px] rounded-full bg-white from-orange-500 to-yellow-400 shadow-sm duration-300 peer-checked:bg-zinc-500 after:absolute after:top-[3.5px] after:left-[3.5px] after:h-[28px] after:w-[28px] after:rounded-full after:bg-gradient-to-r after:shadow-md after:duration-300 after:content-[''] peer-checked:after:left-[73.5px] peer-checked:after:translate-x-[-100%] peer-checked:after:from-zinc-900 peer-checked:after:to-zinc-900 active:after:w-[35px]"></div>
       <svg
         height='0'
         width='70'
