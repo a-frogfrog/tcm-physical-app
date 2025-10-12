@@ -1,9 +1,9 @@
 import { PageTitle, StatCard } from '#/components/common';
-import OrderTrendChart from './OrderTrendChart';
-import OrderTable from './OrderTable';
-import { useOrderList } from './useOrderList';
+import { OrderTable, OrderTrendChart } from '#/features/order/components';
 
-export default function OrderListPage() {
+import { useOrderList } from '#/features/order/hooks/useOrderList';
+
+export default function OrderListRoute() {
   const { cardItems } = useOrderList();
   return (
     <>

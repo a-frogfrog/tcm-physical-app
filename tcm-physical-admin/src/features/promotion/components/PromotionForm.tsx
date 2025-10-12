@@ -2,12 +2,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Button, Card, Form } from '#/components/ui';
-import StepIndicator from './modules/StepIndicator';
-import FormBasic from './modules/FormBasic';
-import FormContent from './modules/FormContent';
-import FormDiscount from './modules/FormDiscount';
-import FormActions from './modules/FormActions';
-import { formSchema, type PromotionFormData } from './constants';
+import StepIndicator from './StepIndicator';
+import FormBasic from './FormBasic';
+import FormContent from './FormContent';
+import FormDiscount from './FormDiscount';
+import FormActions from './FormActions';
+import { formSchema, type PromotionFormData } from '../constants';
 
 const PromotionForm = () => {
   // 状态管理

@@ -5,7 +5,7 @@ const orgRoutes = {
   children: [
     {
       path: 'manager',
-      Component: lazy(() => import('#/features/org/manager')),
+      Component: lazy(() => import('#/pages/org/manager')),
     },
   ],
 };

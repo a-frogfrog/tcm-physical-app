@@ -1,9 +1,11 @@
 import { PageTitle } from '#/components/common';
-import CalendarControl from './CalendarControl';
-import ScheduleTable from './ScheduleTable';
-import ServiceLegend from './ServiceLegend';
+import {
+  CalendarControl,
+  ScheduleTable,
+  ServiceLegend,
+} from '#/features/schedule/components';
 
-export default function ScheduleArrangePage() {
+export default function ScheduleArrangeRoute() {
   return (
     <>
       <PageTitle title='排班管理' desc='安排技术人员的服务排班计划' />

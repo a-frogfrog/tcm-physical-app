@@ -5,7 +5,7 @@ const scheduleRoutes = {
   children: [
     {
       path: 'arrange',
-      Component: lazy(() => import('#/features/schedule/arrange')),
+      Component: lazy(() => import('#/pages/schedule/arrange')),
     },
   ],
 };

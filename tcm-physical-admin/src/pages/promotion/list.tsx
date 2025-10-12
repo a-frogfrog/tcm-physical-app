@@ -1,8 +1,10 @@
 import { PageTitle } from '#/components/common';
-import PromotionFilter from './PromotionFilter';
-import PromotionTable from './PromotionTable';
+import {
+  PromotionFilter,
+  PromotionTable,
+} from '#/features/promotion/components';
 
-export default function PromotePage() {
+export default function PromotionListRoute() {
   return (
     <>
       <PageTitle title='促销管理' desc='管理促销活动' />

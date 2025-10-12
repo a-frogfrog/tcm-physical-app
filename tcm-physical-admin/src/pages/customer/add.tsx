@@ -1,7 +1,7 @@
 import { PageTitle } from '#/components/common';
-import CustomerForm from './CustomerForm';
+import { CustomerForm } from '#/features/customer/components';
 
-export default function CustomerAdd() {
+export default function CustomerAddRoute() {
   return (
     <>
       <PageTitle

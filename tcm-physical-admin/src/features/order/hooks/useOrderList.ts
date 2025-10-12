@@ -1,4 +1,4 @@
-import { cardItems } from './constants';
+import { cardItems } from '../constants';
 
 export const useOrderList = () => {
   return {

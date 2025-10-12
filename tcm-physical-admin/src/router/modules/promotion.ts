@@ -5,15 +5,15 @@ const promotionRoutes = {
   children: [
     {
       path: 'list',
-      Component: lazy(() => import('#/features/promotion/list')),
+      Component: lazy(() => import('#/pages/promotion/list')),
     },
     {
       path: 'add',
-      Component: lazy(() => import('#/features/promotion/add')),
+      Component: lazy(() => import('#/pages/promotion/add')),
     },
     {
       path: 'rule',
-      Component: lazy(() => import('#/features/promotion/rule')),
+      Component: lazy(() => import('#/pages/promotion/rule')),
     },
   ],
 };

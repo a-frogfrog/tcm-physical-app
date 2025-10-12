@@ -1,7 +1,7 @@
 import { PageTitle } from '#/components/common';
-import PromotionForm from './PromotionForm';
+import { PromotionForm } from '#/features/promotion/components';
 
-export default function PromotionAdd() {
+export default function PromotionAddRoute() {
   return (
     <>
       <PageTitle

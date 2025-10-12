@@ -1,6 +1,8 @@
 import { PageTitle, StatCard } from '#/components/common';
+import { CustomerTable } from '#/features/customer/components';
+
 import { Bike, Bubbles, Calculator, CloudDrizzle } from 'lucide-react';
-import CustomerTable from './CustomerTable';
+
 const cardItems = [
   {
     title: '套餐总数',
@@ -44,7 +46,8 @@ const cardItems = [
     icon: CloudDrizzle,
   },
 ];
-export default function CustomerListPage() {
+
+export default function CustomerListRoute() {
   return (
     <>
       <PageTitle

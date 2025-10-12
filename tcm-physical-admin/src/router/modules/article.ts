@@ -5,7 +5,7 @@ const articleRoutes = {
   children: [
     {
       path: 'list',
-      Component: lazy(() => import('#/features/article/list')),
+      Component: lazy(() => import('#/pages/article/list')),
     },
   ],
 };

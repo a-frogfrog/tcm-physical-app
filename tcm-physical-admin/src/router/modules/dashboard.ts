@@ -6,11 +6,11 @@ const dashboardRoutes = {
     {
       index: true,
       path: 'workbench',
-      Component: lazy(() => import('#/features/dashboard/workbench')),
+      Component: lazy(() => import('#/pages/dashboard/workbench')),
     },
     {
       path: 'analysis',
-      Component: lazy(() => import('#/features/dashboard/analysis')),
+      Component: lazy(() => import('#/pages/dashboard/analysis')),
     },
   ],
 };

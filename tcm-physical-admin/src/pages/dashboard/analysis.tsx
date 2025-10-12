@@ -1,6 +1,6 @@
 import Wave from 'react-wavify';
 
-export default function Analysis() {
+export default function AnalysisRoute() {
   return (
     <div>
       Dashboard Analysis Page
