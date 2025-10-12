@@ -11,6 +11,10 @@ const customerRoutes = {
       path: 'add',
       Component: lazy(() => import('#/pages/customer/add')),
     },
+    {
+      path: 'pool',
+      Component: lazy(() => import('#/pages/customer/pool')),
+    },
   ],
 };
 

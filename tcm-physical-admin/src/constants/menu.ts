@@ -98,6 +98,10 @@ export const sidebarMenu = [
         title: '新增',
         url: '/customer/add',
       },
+      {
+        title: '客户池',
+        url: '/customer/pool',
+      },
     ],
   },
   {
