@@ -16,8 +16,6 @@ jobs:
         # 安装 pnpm
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10.18.1 # 你项目里用的 pnpm 版本
 
       # 配置 Node.js
       - name: Setup Node.js
