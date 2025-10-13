@@ -52,6 +52,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "dompurify": "^3.2.6",
+    "framer-motion": "^12.23.24",
     "frog-request": "^0.0.1",
     "howler": "^2.2.4",
     "husky": "^9.1.7",

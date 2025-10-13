@@ -1,20 +1,25 @@
-import Wave from 'react-wavify';
+import {
+  BestSellerCard,
+  CustomerAnalysisChart,
+  TransactionsCard,
+} from '#/features/customer/components';
+import { TrendsChart } from '#/features/customer/components/TrendsChart';
 
 export default function AnalysisRoute() {
   return (
-    <div>
-      Dashboard Analysis Page
-      <Wave
-        fill='#2B7FFF'
-        paused={false}
-        style={{ display: 'flex' }}
-        options={{
-          height: 20,
-          amplitude: 20,
-          speed: 0.15,
-          points: 3,
-        }}
-      />
+    <div className='grid grid-cols-3 gap-4'>
+      <section className='col-span-1'>
+        <BestSellerCard />
+      </section>
+      <section className='col-span-2'>
+        <TransactionsCard />
+      </section>
+      <section className='col-span-3'>
+        <TrendsChart />
+      </section>
+      <section className='col-span-3'>
+        <CustomerAnalysisChart />
+      </section>
     </div>
   );
 }

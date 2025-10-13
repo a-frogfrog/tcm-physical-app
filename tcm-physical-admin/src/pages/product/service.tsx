@@ -6,10 +6,11 @@ import {
   ProductCard,
   ProductHeader,
 } from '#/features/product/service/components';
-import { Input, SkeletonCard } from '#/components/ui';
+import { Input } from '#/components/ui';
 
 import { useProductServiceEvents } from '#/features/product/service/hooks/useServiceEvent';
 import { useServiceList } from '#/features/product/service/hooks/useFetchService';
+import { Loader } from '#/components/common';
 
 const filterItems = [
   {
@@ -61,13 +62,18 @@ export default function ProductServiceRoute() {
         </ProductFilterItems>
         <ProductFilterActions onApply={handleApply} onReset={handleReset} />
       </ProductFilter>
-      <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
-        {isLoading ? (
-          <SkeletonCard />
-        ) : (
-          serviceList?.map((item) => <ProductCard key={item.id} {...item} />)
-        )}
-      </div>
+
+      {isLoading ? (
+        <div className='flex h-full w-full items-center justify-center'>
+          <Loader />
+        </div>
+      ) : (
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
+          {serviceList?.map((item) => (
+            <ProductCard key={item.id} {...item} />
+          ))}
+        </div>
+      )}
     </>
   );
 }
