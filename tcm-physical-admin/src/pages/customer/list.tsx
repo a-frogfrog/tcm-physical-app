@@ -62,9 +62,7 @@ export default function CustomerListRoute() {
             title={title}
             value={value}
             trend={{
-              percentage: trend.percentage,
-              isIncrease: trend.isIncrease,
-              compareText: trend.compareText,
+              ...trend,
             }}
             icon={icon}
           />
