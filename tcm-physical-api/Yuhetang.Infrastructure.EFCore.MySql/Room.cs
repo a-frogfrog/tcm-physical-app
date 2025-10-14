@@ -26,7 +26,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 房间状态:0-空闲,1-占用,2-已预约,3-维修
         /// </summary>
-        public int? RoomStatus { get; set; }
+        public int RoomStatus { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

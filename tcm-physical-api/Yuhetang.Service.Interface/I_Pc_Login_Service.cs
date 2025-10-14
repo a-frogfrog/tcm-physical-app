@@ -4,26 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Yuhetang.Infrastructure.Attr;
-using Yuhetang.Infrastructure.Dto.Request.Pc;
+using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
 
 namespace Yuhetang.Service.Interface
 {
     [Provider_]
-    public interface I_Pc_Customs_Service
+    public interface I_Pc_Login_Service
     {
         /// <summary>
-        /// 获取所有客户
+        /// 员工登录
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<Api_Response_Dto> Get_Customs(Pc_Customs_Request_Dto dto);
+        Task<Api_Response_Dto> Logins(Login_Request_Dto dto);
 
         /// <summary>
-        /// 新增客户
+        /// 检查登录
         /// </summary>
-        /// <param name=""></param>
+        /// <param name="code"></param>
+        /// <param name="account">账号</param>
         /// <returns></returns>
-        Task<Api_Response_Dto> Add_Customs(Pc_Customs_Request_Dto dto);
+        User_Response_Dto Check_Login(string code, string account);
     }
 }
