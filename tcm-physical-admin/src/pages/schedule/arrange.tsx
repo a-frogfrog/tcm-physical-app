@@ -9,25 +9,31 @@ import {
   DroppableScheduleDay,
   ScheduleTable,
 } from '#/features/schedule/components';
-import { departments } from '#/features/schedule/mock/emp';
-import { DndContext, type DragEndEvent } from '@dnd-kit/core';
-import { useState } from 'react';
 
-interface Schedule {
-  [dayId: string]: string | null; // Key: DroppableScheduleDay 的 droppableId (如 '周日'), Value: DraggableEmployeeItem 的 draggableId (员工ID) 或 null
-}
-const initialSchedule: Schedule = {
-  周日: null,
-  周一: null,
-  周二: null,
-  周三: null,
-  周四: null,
-  周五: null,
-  周六: null,
-};
+import { useDepartment } from '#/features/org/hooks/useFetchOrg';
+
+import { DndContext, type DragEndEvent } from '@dnd-kit/core';
+
+import {
+  useScheduleDay,
+  type Schedule,
+} from '#/features/schedule/hooks/useFetchSchedule';
+import { useCallback } from 'react';
 
 export default function ScheduleArrangeRoute() {
-  const [schedule, setSchedule] = useState<Schedule>(initialSchedule);
+  const { data: schedule, mutate: setSchedule } = useScheduleDay();
+  const { data: departments } = useDepartment();
+
+  const findEmployeeById = useCallback(
+    (id: string) => {
+      for (const dept of departments) {
+        const emp = dept.employees.find((e) => e.id === id);
+        if (emp) return emp;
+      }
+      return null;
+    },
+    [departments],
+  );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -36,12 +42,13 @@ export default function ScheduleArrangeRoute() {
       const employeeId = active.id.toString(); // 员工ID (draggableId)
       const dayId = over.id.toString(); // 目标日期的ID (droppableId)
 
-      setSchedule((prevSchedule) => ({
+      setSchedule((prevSchedule: Schedule) => ({
         ...prevSchedule,
         [dayId]: employeeId,
       }));
     }
   };
+
   return (
     <>
       <PageTitle title='排班管理' desc='安排技术人员的服务排班计划' />
@@ -56,7 +63,6 @@ export default function ScheduleArrangeRoute() {
                 {dept.employees.map((emp) => {
                   return (
                     <DraggableEmployeeItem
-                      className='bg-white'
                       draggableId={emp.id}
                       key={emp.id}
                       {...emp}
@@ -67,43 +73,34 @@ export default function ScheduleArrangeRoute() {
             ))}
           </EmployeeList>
 
-          <div className='col-span-2 xl:col-span-3'>
+          <div className='col-span-1 md:col-span-2 xl:col-span-3'>
             <ScheduleTable>
-              {['周日', '周一', '周二', '周三', '周四', '周五', '周六'].map(
-                (dayOfWeek) => {
-                  const assignedEmployeeId = schedule[dayOfWeek];
-                  console.log(assignedEmployeeId);
-                  // 2. 找到该员工的完整数据 (需要一个辅助函数或数据结构)
-                  // 假设我们有一个 findEmployeeById 函数
-                  const findEmployeeById = (id: string) => {
-                    for (const dept of departments) {
-                      const emp = dept.employees.find((e) => e.id === id);
-                      if (emp) return emp;
-                    }
-                    return null;
-                  };
-                  const assignedEmployee = assignedEmployeeId
-                    ? findEmployeeById(assignedEmployeeId)
-                    : null;
+              {Object.keys(schedule).map((dayOfWeek) => {
+                const assignedEmployeeId = schedule[dayOfWeek];
+                // 2. 找到该员工的完整数据 (需要一个辅助函数或数据结构)
+                // 假设我们有一个 findEmployeeById 函数
 
-                  return (
-                    <DroppableScheduleDay
-                      droppableId={dayOfWeek}
-                      key={dayOfWeek}
-                      dayOfWeek={dayOfWeek}
-                      date={'10.24'}>
-                      {/* 3. 如果找到了已分配的员工，则渲染其 EmployeeItem */}
-                      {assignedEmployee ? (
-                        <EmployeeItem
-                          className='border border-gray-200'
-                          key={assignedEmployee.id}
-                          {...assignedEmployee}
-                        />
-                      ) : null}
-                    </DroppableScheduleDay>
-                  );
-                },
-              )}
+                const assignedEmployee = assignedEmployeeId
+                  ? findEmployeeById(assignedEmployeeId)
+                  : null;
+
+                return (
+                  <DroppableScheduleDay
+                    droppableId={dayOfWeek}
+                    key={dayOfWeek}
+                    dayOfWeek={dayOfWeek}
+                    date={'10.24'}>
+                    {/* 3. 如果找到了已分配的员工，则渲染其 EmployeeItem */}
+                    {assignedEmployee ? (
+                      <EmployeeItem
+                        className='border border-gray-200'
+                        key={assignedEmployee.id}
+                        {...assignedEmployee}
+                      />
+                    ) : null}
+                  </DroppableScheduleDay>
+                );
+              })}
             </ScheduleTable>
           </div>
         </div>
