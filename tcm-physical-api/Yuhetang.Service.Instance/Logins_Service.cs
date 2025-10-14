@@ -230,6 +230,7 @@ namespace Yuhetang.Service.EFCore
                     //判断是否是推广人邀请的
                     if (!string.IsNullOrEmpty(dto.VIPID) && !string.IsNullOrEmpty(dto.VIPCode))
                     {
+
                         custom = new Custom
                         {
                             CId = NewVIPID,
@@ -252,19 +253,20 @@ namespace Yuhetang.Service.EFCore
                             CvccVipid = dto.VIPID,
                             CvccNewVipid = NewVIPID,
                             CvccAmount = 10,
-                            CvccStatus = 0,
+                            CvccStatus = 1,
                             CvccSettleTime = DateTime.Now,
                             CvccCreateTime = DateTime.Now
                         };
 
                         _promotion_IOC._customerVipCpsCommission_EFCore.Add(customerVipCpsCommission);
                         await _promotion_IOC._customerVipCpsCommission_EFCore.SaveChangesAsync();
-
-                        //初始化会员
+                        //初始化钱包
                         CustomsVip customsVip = new CustomsVip()
                         {
                             CvId = Config.GUID2(),
                             CvCustomerId = NewVIPID,
+                            CvLevel = 0,
+                            CvBalance = 0,
                             CvTotalConsume = 0,
                             CvTotalRecharge = 0,
                             CvStatus = 1,
@@ -272,24 +274,12 @@ namespace Yuhetang.Service.EFCore
                         };
                         _promotion_IOC._customsVip_EFCore.Add(customsVip);
                         await _promotion_IOC._customsVip_EFCore.SaveChangesAsync();
-                        //找到新用户的上级
-                        var card = await _promotion_IOC._membership_Card_EFCore.QueryAll(d => d.CId == dto.VIPID).SingleOrDefaultAsync();
-                        card.Balance += 10;
-                        //初始化会员卡
-                        MembershipCard membershipCard = new MembershipCard()
-                        {
-                            CardId = Config.GUID2(),
-                            CId = NewVIPID,
-                            Balance = 0,
-                            Password = "7EECDB185F6A5935B37D5B1B71C55C",
-                            Salt = "4RUsKyHyA2ePFDecCBrFu6hH8vDYnwbB",
-                            CreatedTime = DateTime.Now,
-                            CardStatus = 1
-                        };
-                        _promotion_IOC._membership_Card_EFCore.Update(card);
-                        _promotion_IOC._membership_Card_EFCore.Add(membershipCard);
+                        //推广人余额追加佣金
+                        var balance = await _promotion_IOC._customsVip_EFCore.QueryAll(d => d.CvCustomerId == dto.VIPID).SingleOrDefaultAsync();
+                        balance!.CvBalance += 10;
 
-                        await _promotion_IOC._membership_Card_EFCore.SaveChangesAsync();
+                        _promotion_IOC._customsVip_EFCore.Update(balance);
+                        await _promotion_IOC._customsVip_EFCore.SaveChangesAsync();
                     }
                     else
                     {

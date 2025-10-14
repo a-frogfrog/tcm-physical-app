@@ -12,10 +12,9 @@ using Yuhetang.Repository.Interface;
 using Yuhetang.Infrastructure.IOC;
 using Yuhetang.Service.Interface;
 using Yuhetang.Infrastructure.EFCore.MySql;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 builder.WebHost.UseUrls("http://*:5000"); //指定运行端口 并允许外网访问
 
 // Add services to the container.
@@ -115,7 +114,8 @@ builder.Services.AddCors(c =>
     c.AddPolicy("AllRequests", policy =>
     {
         policy.AllowAnyOrigin()    // 允许所有来源
-            .AllowAnyMethod()    // 允许所有HTTP方法
+        //policy.WithOrigins("http://8.134.187.124:8081", "http://8.134.187.124:8080")
+          .AllowAnyMethod()    // 允许所有HTTP方法
             .AllowAnyHeader();   // 允许所有请求头
     });
 });
@@ -138,8 +138,6 @@ builder.Services.AddSwaggerGen(options =>
     string basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Yuhetang.Admin.xml"), true);
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Yuhetang.Infrastructure.Dto.xml"), true);
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -163,9 +161,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 #endregion
-
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
@@ -177,21 +173,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseStaticFiles();
-
-//允许访问 UploadFiles 文件夹
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), @"Yuhetang")),
-    RequestPath = new PathString("/DaShuaiBi.XY"),
-    OnPrepareResponse = ctx =>
-    {
-        ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
-        ctx.Context.Response.Headers.Append("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS");
-    }
-});
 
 app.MapControllers();
 

@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ServiceStack.Text;
 using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Dto.Request.Pc;
 using Yuhetang.Infrastructure.Dto.Response;
 using Yuhetang.Infrastructure.Dto.Response.Pc;
+using Yuhetang.Infrastructure.EFCore.MySql;
 using Yuhetang.Infrastructure.IOC;
-using Yuhetang.Service.EFCore;
+using Yuhetang.Infrastructure.Tools;
 using Yuhetang.Service.Interface;
+using Config = Yuhetang.Infrastructure.Tools.Config;
+
 
 namespace Yuhetang.Service.Instance
 {
@@ -25,6 +24,25 @@ namespace Yuhetang.Service.Instance
         }
 
         /// <summary>
+        /// 新增客户
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<Api_Response_Dto> Add_Customs(Pc_Customs_Request_Dto dto)
+        {
+            Custom custom = new Custom()
+            {
+                CId = Config.GUID(),
+                CPhone = dto.phone,
+                CGender = dto.Gender,
+                CName = dto.name,
+            };
+            _custom_IOC._custom_EFCore.Add(custom);
+            var result =await _custom_IOC._custom_EFCore.SaveChangesAsync();
+            return Result(result);
+        }
+
+        /// <summary>
         ///PC端  获取所有客户
         /// </summary>
         /// <param name="dto"></param>
@@ -35,7 +53,7 @@ namespace Yuhetang.Service.Instance
             .Select(d => new Pc_Customs_Response_Dto
             {
                 id = d.CId,
-                name = d.CName,
+                name = d.CName, 
                 phone = d.CPhone,
                 CreateTime = d.CCreateTime!.Value.ToString("yyyy-MM-dd HH:mm:ss"),
                 ConsumptionTime = d.CConsumptionTime!.Value.ToString("yyyy-MM-dd HH:mm:ss"),

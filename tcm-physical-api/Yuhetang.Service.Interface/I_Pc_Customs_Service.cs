@@ -18,5 +18,12 @@ namespace Yuhetang.Service.Interface
         /// <param name="dto"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> Get_Customs(Pc_Customs_Request_Dto dto);
+
+        /// <summary>
+        /// 新增客户
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        Task<Api_Response_Dto> Add_Customs(Pc_Customs_Request_Dto dto);
     }
 }
