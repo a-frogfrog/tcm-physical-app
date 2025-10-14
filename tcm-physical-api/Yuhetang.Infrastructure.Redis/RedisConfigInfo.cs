@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Yuhetang.Infrastructure.Attr;
 
-namespace Yuhetang.Infrastructure.Redis
+namespace Goods.Infrastructure.Redis
 {
     [Provider_, Inject_]
     public class RedisConfigInfo

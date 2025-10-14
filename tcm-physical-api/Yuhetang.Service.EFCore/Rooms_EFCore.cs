@@ -14,7 +14,6 @@ namespace Yuhetang.Service.EFCore
     {
         public Rooms_EFCore(I_MySql_Repository<Room> repository) : base(repository)
         {
-
         }
     }
 }

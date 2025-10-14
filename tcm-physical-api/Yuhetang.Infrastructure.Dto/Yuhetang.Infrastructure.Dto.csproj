@@ -7,8 +7,4 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Yuhetang.Infrastructure.EFCore.MySql\Yuhetang.Infrastructure.EFCore.MySql.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -4,27 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Yuhetang.Infrastructure.Attr;
-using Yuhetang.Infrastructure.Dto.Request;
 using Yuhetang.Infrastructure.Dto.Response;
 
 namespace Yuhetang.Service.Interface
 {
     [Provider_]
-    public interface I_Pc_Login_Service
+    public interface I_Order_Service
     {
         /// <summary>
-        /// 员工登录
+        /// 获取我的订单
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        Task<Api_Response_Dto> Logins(Login_Request_Dto dto);
-
+        Task<Api_Response_Dto> Get_My_Order(int page,int limit,int type,string id);
         /// <summary>
-        /// 检查登录
+        /// 获取订单(Admin)
         /// </summary>
-        /// <param name="code"></param>
-        /// <param name="account">账号</param>
         /// <returns></returns>
-        User_Response_Dto Check_Login(string code, string account);
+        Task<Api_Response_Dto> Get_Order(int page=1,int limit = 10);
     }
 }

@@ -10,9 +10,9 @@ using Yuhetang.Repository.Interface;
 namespace Yuhetang.Service.EFCore
 {
     [Provider_, Inject_]
-    public class Order_payment_EFCore : Base_EFCore<OrderPayment>
+    public class Order_Details_EFCore : Base_EFCore<OrderDetail>
     {
-        public Order_payment_EFCore(I_MySql_Repository<OrderPayment> repository) : base(repository)
+        public Order_Details_EFCore(I_MySql_Repository<OrderDetail> repository) : base(repository)
         {
         }
     }

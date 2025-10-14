@@ -1,4 +1,4 @@
-﻿using Yuhetang.Infrastructure.Redis;
+﻿using Goods.Infrastructure.Redis;
 using Microsoft.Extensions.Configuration;
 using ServiceStack.Redis;
 using Yuhetang.Infrastructure.Attr;

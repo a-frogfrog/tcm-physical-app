@@ -4,37 +4,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yuhetang.Infrastructure.Dto.Response.Pc
+namespace Yuhetang.Infrastructure.Dto.Request
 {
-    public class Pc_Service_Response_Dto
+    public class Service_Request_Dto
     {
-        /// <summary>
-        /// 服务id
-        /// </summary>
         public string? id { get; set; }
         /// <summary>
         /// 服务名称
         /// </summary>
         public string? name { get; set; }
-
         /// <summary>
-        /// 服务时间
+        /// 封面
+        /// </summary>
+        public string? cover { get; set; }
+        /// <summary>
+        /// 服务时长(min)
         /// </summary>
         public int? duration { get; set; }
-
         /// <summary>
-        /// 服务价格
+        /// 价格
         /// </summary>
         public decimal? price { get; set; }
-
         /// <summary>
-        /// 服务详情
+        /// 描述
         /// </summary>
-        public string? description { get; set; }
-
+        public string? desc { get; set; }
         /// <summary>
-        /// 创建时间
+        /// 佣金比例
         /// </summary>
-        public string? createtime { get; set; }
+        public decimal? rate { get; set; }
     }
 }

@@ -4,38 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yuhetang.Infrastructure.Dto.Response.Pc
+namespace Yuhetang.Infrastructure.Dto.Request
 {
-    public class Pc_Product_package_Response_Dto
+    public class Package_Resquest_Dto
     {
-        /// <summary>
-        /// 套餐id
-        /// </summary>
         public string? id { get; set; }
-
         /// <summary>
         /// 套餐名称
         /// </summary>
         public string? name { get; set; }
-
         /// <summary>
-        /// 套餐描述
+        /// 套餐详情
         /// </summary>
         public string? desc { get; set; }
-
         /// <summary>
         /// 套餐价格
         /// </summary>
         public decimal? price { get; set; }
-
         /// <summary>
-        /// 套餐状态
+        /// 折扣率
+        /// </summary>
+        public decimal? discount { get; set; }
+        /// <summary>
+        /// 佣金比例
+        /// </summary>
+        public decimal? rate { get; set; }
+        /// <summary>
+        /// 0-下架,1-上架
         /// </summary>
         public int? status { get; set; }
-
         /// <summary>
-        /// 创建时间
+        /// 服务(需要服务id)
         /// </summary>
-        public string? CreateTime { get; set; }
+        public List<Service_Request_Dto>? service { get; set; }
     }
 }
