@@ -14,9 +14,12 @@ export default function ScheduleArrangeRoute() {
       <div className='my-4 grid grid-cols-1 gap-4 xl:grid-cols-4'>
         <EmployeeList className='col-span-1'>
           {departments.map((dept) => (
-            <EmployeeSection key={dept.id} dept={dept}>
+            <EmployeeSection
+              key={dept.id}
+              name={dept.name}
+              number={dept.employees.length}>
               {dept.employees.map((emp) => (
-                <EmployeeItem key={emp.id} emp={emp} />
+                <EmployeeItem key={emp.id} {...emp} />
               ))}
             </EmployeeSection>
           ))}
@@ -33,13 +36,7 @@ export default function ScheduleArrangeRoute() {
                   <EmployeeItem
                     className='border border-gray-200'
                     key={1}
-                    emp={{
-                      id: 1,
-                      name: '王小明',
-                      role: '前端开发',
-                      avatar: 'https://i.pravatar.cc/100?img=1',
-                      status: 'online',
-                    }}
+                    {...departments[0].employees[0]}
                   />
                 </ScheduleDay>
               ),

@@ -43,15 +43,21 @@ function EmployeeList({ children }: React.ComponentProps<'div'>) {
   );
 }
 
+type EmployeeSectionProps = {
+  name: string;
+  number: number;
+};
+
 function EmployeeSection({
-  dept,
+  name,
+  number,
   children,
-}: React.ComponentProps<'section'> & { dept: Department }) {
+}: React.ComponentProps<'section'> & EmployeeSectionProps) {
   return (
     <div className='flex flex-col divide-y divide-gray-200'>
-      <div key={dept.id} className='pt-2'>
+      <div className='pt-2'>
         <p className='mb-2 text-sm font-medium text-gray-500'>
-          {dept.name}（{dept.employees.length}人）
+          {name}（{number}人）
         </p>
 
         <div className='flex flex-col gap-1'>{children}</div>
@@ -60,27 +66,33 @@ function EmployeeSection({
   );
 }
 
+type EmployeeItemProps = {
+  [key in keyof Employee]: Employee[key];
+};
+
 function EmployeeItem({
-  emp,
+  name,
+  role,
+  avatar,
+  status,
   className,
-}: { emp: Employee } & React.ComponentProps<'div'>) {
+}: EmployeeItemProps & { className?: string }) {
   return (
     <motion.div
-      key={emp.id}
       className={`flex cursor-pointer items-center justify-between rounded-xl p-2 transition-all ${className}`}
       whileTap={{ scale: 0.98 }}>
       <div className='flex items-center gap-3'>
         <img
-          src={emp.avatar}
-          alt={emp.name}
+          src={avatar}
+          alt={name}
           className='h-10 w-10 rounded-full object-cover'
         />
         <div>
-          <p className='font-medium text-gray-800'>{emp.name}</p>
-          <p className='text-sm text-gray-500'>{emp.role}</p>
+          <p className='font-medium text-gray-800'>{name}</p>
+          <p className='text-sm text-gray-500'>{role}</p>
         </div>
       </div>
-      <div className={`h-3 w-3 rounded-full ${statusColor[emp.status]}`} />
+      <div className={`h-3 w-3 rounded-full ${statusColor[status]}`} />
     </motion.div>
   );
 }

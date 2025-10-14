@@ -1,2 +1,2 @@
-export * from './EmployeeList';
-export type * from './EmployeeList';
+export * from './Employee';
+export type * from './Employee';
