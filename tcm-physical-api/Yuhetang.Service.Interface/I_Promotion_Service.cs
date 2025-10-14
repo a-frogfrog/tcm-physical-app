@@ -1,5 +1,12 @@
-﻿using Yuhetang.Infrastructure.Attr;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Dto.Response;
+using Yuhetang.Infrastructure.EFCore.MySql;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Yuhetang.Service.Interface
 {
@@ -14,16 +21,12 @@ namespace Yuhetang.Service.Interface
         /// </summary>
         /// <returns></returns>
         Task<Api_Response_Dto> Generate_Link(string id);
-        /// <summary>
-        /// 生成链接+二维码
-        /// </summary>
-        /// <param name="shortUrl"></param>
-        Task<Api_Response_Dto> Generate_LinkAndQRCode(string id);
+
         /// <summary>
         /// 生成二维码
         /// </summary>
         /// <param name="shortUrl"></param>
-        Task<Api_Response_Dto> Generate_QRCode(string longUrl);
+        Task<string> Generate_QRCode(string longUrl);
         /// <summary>
         /// 获取推广链接
         /// </summary>
@@ -31,18 +34,6 @@ namespace Yuhetang.Service.Interface
         /// <param name="limit"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> Get_CustomsVipCps(int page=1,int limit = 10);
-        /// <summary>
-        /// 删除推广链接
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        Task<Api_Response_Dto> Del_Link(string id);
-        /// <summary>
-        /// 启用/禁用链接
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        Task<Api_Response_Dto> Upd_Link_Status(string id);
         /// <summary>
         /// 推广数据统计
         /// </summary>
@@ -71,19 +62,5 @@ namespace Yuhetang.Service.Interface
         /// <param name="amount"></param>
         /// <returns></returns>
         Task<Api_Response_Dto> Withdraw(string vipId, decimal amount);
-        /// <summary>
-        /// 佣金数据统计
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        Task<Api_Response_Dto> Commission_Data_Statistics(string id);
-        /// <summary>
-        /// 佣金收益趋势数据
-        /// </summary>
-        /// <param name="userId">用户ID</param>
-        /// <param name="period">时间周期：month/quarter/year</param>
-        /// <param name="year">年份，默认当前年份</param>
-        /// <returns>收益趋势响应</returns>
-        //Task<Api_Response_Dto> GetIncomeTrendAsync(string userId, string period = "month", int? year = null);
     }
 }

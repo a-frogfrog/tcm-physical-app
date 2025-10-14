@@ -20,40 +20,15 @@ public class PromotionController : BaseController
     }
 
     /// <summary>
-    /// 生成链接+二维码
+    /// 生成链接
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Generate_LinkAndQRCode()
+    public async Task<IActionResult> Generate_Link()
     {
         var user = this.Get_Current_Customer();
-        var result = await _promotion_Service.Generate_LinkAndQRCode(user.id);
+        var result = await _promotion_Service.Generate_Link(user.id);
         return Ok(result);
     }
-
-    
-    /// <summary>
-    /// 删除推广链接(admin)
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpDelete]
-    public async Task<IActionResult> Del_Link(string id)
-    {
-        var result = await _promotion_Service.Del_Link(id);
-        return Ok(result);
-    }
-    /// <summary>
-    /// 启用/禁用链接(admin)
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<IActionResult> Upd_Link_Status(string id)
-    {
-        var result = await _promotion_Service.Upd_Link_Status(id);
-        return Ok(result);
-    }
-
     /// <summary>
     /// 跳转链接
     /// </summary>
@@ -79,9 +54,19 @@ public class PromotionController : BaseController
         });
     }
 
-    
     /// <summary>
-    /// 获取链接列表(admin)
+    /// 生成二维码
+    /// </summary>
+    /// <param name="longUrl">长链接地址</param>
+
+    [HttpGet]
+    public async Task<IActionResult> Get_QRCode(string longUrl)
+    {
+        var result = await _promotion_Service.Generate_QRCode(longUrl);
+        return Ok(result);
+    }
+    /// <summary>
+    /// 获取链接列表
     /// </summary>
     /// <param name="page"></param>
     /// <param name="limit"></param>
@@ -96,12 +81,13 @@ public class PromotionController : BaseController
     /// <summary>
     /// 获取推广数据统计
     /// </summary>
+    /// <param name="page"></param>
+    /// <param name="limit"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> Promotion_Data_Statistics()
+    public async Task<IActionResult> Promotion_Data_Statistics(string id)
     {
-        var user = this.Get_Current_Customer();
-        var result = await _promotion_Service.Promotion_Data_Statistics(user.id);
+        var result = await _promotion_Service.Promotion_Data_Statistics(id);
         return Ok(result);
     }
     /// <summary>
@@ -117,26 +103,6 @@ public class PromotionController : BaseController
         var user = this.Get_Current_Customer();
         var result = await _promotion_Service.Get_Commission_List(user.id,status,page,limit);
         return Ok(result);
-    }
-    /// <summary>
-    /// 佣金数据统计
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<IActionResult> Commission_Data_Statistics()
-    {
-        var user = this.Get_Current_Customer();
-        var result = await _promotion_Service.Commission_Data_Statistics(user.id);
-        return Ok(result);
-    }
-    /// <summary>
-    /// 佣金收益趋势数据(sorry)
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<IActionResult> GetIncomeTrendAsync(string period = "month", int? year = null)
-    {
-        return Ok("没写sorry");
     }
     /// <summary>
     /// 获取余额
@@ -161,5 +127,4 @@ public class PromotionController : BaseController
         var result = await _promotion_Service.Withdraw(user.id,amount);
         return Ok(result);
     }
-
 }

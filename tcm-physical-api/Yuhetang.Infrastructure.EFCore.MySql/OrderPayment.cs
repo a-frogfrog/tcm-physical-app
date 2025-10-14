@@ -23,7 +23,7 @@ namespace Yuhetang.Infrastructure.EFCore.MySql
         /// <summary>
         /// 支付金额
         /// </summary>
-        public double? OpAmount { get; set; }
+        public decimal? OpAmount { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
