@@ -5,11 +5,11 @@ import {
   ProductFilterActions,
   ProductCard,
   ProductHeader,
-} from '#/features/product/service/components';
+} from '#/features/product/components';
 import { Input } from '#/components/ui';
 
-import { useProductServiceEvents } from '#/features/product/service/hooks/useServiceEvent';
-import { useServiceList } from '#/features/product/service/hooks/useFetchService';
+import { useProductServiceEvents } from '#/features/product/hooks/useServiceEvent';
+import { useServiceList } from '#/features/product/hooks/useFetchService';
 import { Loader } from '#/components/common';
 
 const filterItems = [
