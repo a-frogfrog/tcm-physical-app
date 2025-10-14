@@ -1,3 +1,5 @@
+import { EmployeeItem } from '#/features/org/components';
+import { departments } from '#/features/schedule/mock/emp';
 import {
   DndContext,
   closestCenter,
@@ -47,17 +49,18 @@ function SortableItem({ id }: { id: string }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    padding: '12px 16px',
-    border: '1px solid #ccc',
-    marginBottom: 8,
-    borderRadius: 8,
-    background: '#f3f4f6',
     cursor: 'grab',
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      项目 {id}
+    <div
+      className='flex cursor-pointer items-center justify-between rounded-xl p-2'
+      {...departments[0].employees[0]}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}>
+      <EmployeeItem {...departments[0].employees[0]} />
     </div>
   );
 }

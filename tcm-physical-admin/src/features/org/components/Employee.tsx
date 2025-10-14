@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Search, Filter } from 'lucide-react';
 
 export type Employee = {
-  id: number;
+  id: string;
   name: string;
   role: string;
   avatar: string;
@@ -76,11 +76,10 @@ function EmployeeItem({
   avatar,
   status,
   className,
-}: EmployeeItemProps & { className?: string }) {
+}: EmployeeItemProps & React.ComponentProps<'div'>) {
   return (
-    <motion.div
-      className={`flex cursor-pointer items-center justify-between rounded-xl p-2 transition-all ${className}`}
-      whileTap={{ scale: 0.98 }}>
+    <div
+      className={`flex cursor-pointer items-center justify-between rounded-xl p-2 ${className}`}>
       <div className='flex items-center gap-3'>
         <img
           src={avatar}
@@ -93,7 +92,7 @@ function EmployeeItem({
         </div>
       </div>
       <div className={`h-3 w-3 rounded-full ${statusColor[status]}`} />
-    </motion.div>
+    </div>
   );
 }
 

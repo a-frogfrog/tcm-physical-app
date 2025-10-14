@@ -16,7 +16,7 @@ const ScheduleDay = ({
         <p className='text-base text-gray-500'>{date}</p>
         {/* 日期与排班状态栏 */}
       </div>
-      <div className='mt-2 p-2 text-sm text-gray-300'> {children}</div>
+      <div className='mt-2 p-2 text-sm text-gray-300'>{children}</div>
     </div>
   );
 };
