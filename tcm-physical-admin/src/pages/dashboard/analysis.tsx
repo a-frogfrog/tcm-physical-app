@@ -2,8 +2,8 @@ import {
   BestSellerCard,
   CustomerAnalysisChart,
   TransactionsCard,
+  TrendsChart,
 } from '#/features/customer/components';
-import { TrendsChart } from '#/features/customer/components/TrendsChart';
 
 export default function AnalysisRoute() {
   return (
