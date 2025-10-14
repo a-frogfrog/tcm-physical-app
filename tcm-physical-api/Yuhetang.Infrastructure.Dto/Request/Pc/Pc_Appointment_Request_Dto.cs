@@ -16,7 +16,7 @@ namespace Yuhetang.Infrastructure.Dto.Request.Pc
         /// <summary>
         /// 客户ID
         /// </summary>
-        public string? CustomerId { get; set; }
+        public string CustomerId { get; set; }
 
         /// <summary>
         /// 房间ID（可选）
@@ -31,26 +31,26 @@ namespace Yuhetang.Infrastructure.Dto.Request.Pc
         /// <summary>
         /// 产品ID（可选）
         /// </summary>
-        public string? ServiceId { get; set; }
+        public string? ProductId { get; set; }
 
         /// <summary>
         /// 套餐ID
         /// </summary>
-        public string? PackageId { get; set; }
+        public string? ProductpackageId { get; set; }
 
-            /// <summary>
-            /// 预约开始时间
-            /// </summary>
-            public string? BookingStartTime { get; set; }
+        /// <summary>
+        /// 预约开始时间
+        /// </summary>
+        public string? BookingStartTime { get; set; }
 
-            /// <summary>
-            /// 预约结束时间
-            /// </summary>
-            public string? BookingEndTime { get; set; }
+        /// <summary>
+        /// 预约结束时间
+        /// </summary>
+        public string? BookingEndTime { get; set; }
 
-            /// <summary>
-            /// 预约备注
-            /// </summary>
-            public string? Remark { get; set; }
-        }
+        /// <summary>
+        /// 预约备注
+        /// </summary>
+        public string? Remark { get; set; }
+    }
 }
