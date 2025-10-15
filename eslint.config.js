@@ -6,7 +6,36 @@ import tseslint from 'typescript-eslint';
 import { globalIgnores } from 'eslint/config';
 
 export default tseslint.config([
-  globalIgnores(['dist', 'tcm-physical-pc']),
+  globalIgnores([
+    'dist',
+    'tcm-physical-pc',
+    'node_modules',
+    'build/',
+    'out/',
+    'coverage/',
+    'temp/',
+    'tmp/',
+    '.cache/',
+    '.next/',
+    '.storybook-out/',
+    '.vite/',
+    'vite-dist/',
+    '*.min.js',
+    '*.bundle.js',
+    '*.map',
+    '*.log',
+    '*.lock',
+    '*.svg',
+    '*.png',
+    '*.jpg',
+    '*.jpeg',
+    '*.gif',
+    '*.ico',
+    '.idea/',
+    '.vscode/',
+    '.DS_Store',
+    '__snapshots__/',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
