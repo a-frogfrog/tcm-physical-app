@@ -1,0 +1,39 @@
+# Node & 构建输出
+node_modules/
+dist/
+build/
+out/
+coverage/
+temp/
+tmp/
+.cache/
+.next/
+.storybook-out/
+.vite/
+vite-dist/
+
+# 环境配置文件
+.env
+.env.*
+*.local
+
+# 静态资源
+*.min.js
+*.bundle.js
+*.map
+*.log
+*.lock
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+
+# 编辑器 & 工具目录
+.idea/
+.vscode/
+.DS_Store
+
+# 测试快照
+__snapshots__/
