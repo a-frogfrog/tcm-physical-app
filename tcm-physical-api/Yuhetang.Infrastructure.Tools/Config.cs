@@ -22,9 +22,6 @@ namespace Yuhetang.Infrastructure.Tools
     /// </summary>
     public class Config
     {
-        private readonly static Random rd = new();
-
-
         /// <summary>
         /// 获取时间戳
         /// </summary>
@@ -34,6 +31,8 @@ namespace Yuhetang.Infrastructure.Tools
             // 计算当前时间与 Unix 起始时间的差值（秒）
             return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
         }
+        private readonly static Random rd = new();
+
         // 随机名称固定前缀
         private const string NamePrefix = "堂人";
 

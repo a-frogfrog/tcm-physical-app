@@ -24,6 +24,24 @@
             }
         }
 
+        /// <summary>
+        /// 生成预约号
+        /// </summary>
+        /// <returns></returns>
+        public static string GeneraAppointmentNumber()
+        {
+            lock (_lock)
+            {
+                if (count >= 10000)
+                {
+                    count = 1;
+                }
+                var number = "R" + DateTime.Now.ToString("yyMMddHHmmss") + count.ToString("0000");
+                count++;
+                return number;
+            }
+        }
+
         public static string GeneraOrderNumber2()
         {
             lock (_lock)

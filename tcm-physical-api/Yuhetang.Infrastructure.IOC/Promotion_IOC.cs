@@ -16,7 +16,8 @@ namespace Yuhetang.Infrastructure.IOC
         public readonly CustomsVip_EFCore _customsVip_EFCore;
         public readonly Order_EFCore _order_EFCore;
         public readonly Custom_EFCore _custom_EFCore;
-        public CustomerVipCpsCommission_EFCore _customerVipCpsCommission_EFCore;
+        public readonly CustomerVipCpsCommission_EFCore _customerVipCpsCommission_EFCore;
+        public readonly Membership_Card_EFCore _membership_Card_EFCore;
 
         public Promotion_IOC
             (
@@ -25,7 +26,8 @@ namespace Yuhetang.Infrastructure.IOC
                 CustomsVip_EFCore customsVip_EFCore,
                 Order_EFCore order_EFCore,
                 Custom_EFCore custom_EFCore,
-                CustomerVipCpsCommission_EFCore customerVipCpsCommission_EFCore
+                CustomerVipCpsCommission_EFCore customerVipCpsCommission_EFCore,
+                Membership_Card_EFCore membership_Card_EFCore
             )
         {
             _customerVipCps_EFCore = customerVipCps_EFCore;
@@ -34,6 +36,7 @@ namespace Yuhetang.Infrastructure.IOC
             _order_EFCore = order_EFCore;
             _custom_EFCore = custom_EFCore;
             _customerVipCpsCommission_EFCore = customerVipCpsCommission_EFCore;
+            _membership_Card_EFCore = membership_Card_EFCore;
         }
 
     }

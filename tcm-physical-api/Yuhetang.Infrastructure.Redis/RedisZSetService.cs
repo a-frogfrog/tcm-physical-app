@@ -1,7 +1,7 @@
 ﻿using Yuhetang.Infrastructure.Attr;
 using Yuhetang.Infrastructure.Redis;
 
-namespace Yuhetang.Infrastructure.Redis
+namespace Goods.Infrastructure.Redis
 {
     [Provider_, Inject_]
     public class RedisZSetService:RedisBase

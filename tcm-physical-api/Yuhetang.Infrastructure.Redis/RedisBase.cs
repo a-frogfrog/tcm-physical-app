@@ -1,4 +1,4 @@
-﻿using Yuhetang.Infrastructure.Redis;
+﻿using Goods.Infrastructure.Redis;
 using ServiceStack.Redis;
 
 namespace Yuhetang.Infrastructure.Redis
