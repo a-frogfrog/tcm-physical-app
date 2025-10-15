@@ -1,4 +1,4 @@
-import type { ProductCardProps } from '../constants';
+import type { ProductCardProps } from '../types';
 import type { ServiceResponse } from './service';
 
 export const serviceAdapter = (service: ServiceResponse): ProductCardProps => ({
