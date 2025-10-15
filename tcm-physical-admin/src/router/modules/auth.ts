@@ -6,7 +6,7 @@ const authRoutes = {
   children: [
     {
       path: ROUTES.LOGIN,
-      Component: lazy(() => import('#/features/auth/login')),
+      Component: lazy(() => import('#/pages/auth/login')),
     },
   ],
 };
